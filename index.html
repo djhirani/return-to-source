@@ -5,539 +5,321 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Return to Source">
+<meta name="theme-color" content="#030c18">
 <title>Return to Source — Self-Inquiry</title>
 <style>
-/* ═══════════════════════════════════════════════════════
-   TOKENS
-═══════════════════════════════════════════════════════ */
 :root {
-  --bg:        #030c18;
-  --surface:   #071828;
-  --card:      #0b2235;
-  --border:    rgba(77,184,212,0.12);
-  --accent:    #4db8d4;
-  --accent2:   #2a8aaa;
-  --glow:      rgba(77,184,212,0.18);
-  --txt:       #d8eff7;
-  --txt2:      #7aadbe;
-  --txt3:      #3d6f84;
-  --quote:     #eaf5fb;
-  --gold:      #d4a96a;
-  --serif:     Georgia,'Times New Roman',serif;
-  --sans:      -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --nav:       64px;
-  --safe:      env(safe-area-inset-bottom,0px);
-  --circ:      477.52; /* 2π×76 */
+  --bg:#030c18;--surface:#071828;--card:#0b2235;
+  --border:rgba(77,184,212,0.12);--accent:#4db8d4;--accent2:#2a8aaa;
+  --glow:rgba(77,184,212,0.18);--txt:#d8eff7;--txt2:#7aadbe;--txt3:#3d6f84;
+  --quote:#eaf5fb;--gold:#d4a96a;--warm:rgba(212,169,106,0.22);
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --nav:64px;--safe:env(safe-area-inset-bottom,0px);--circ:477.52;
 }
-
-/* ═══════════════════════════════════════════════════════
-   BASE
-═══════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;-webkit-tap-highlight-color:transparent}
-body{
-  height:100%;background:var(--bg);color:var(--txt);
-  font-family:var(--sans);overflow:hidden;
-  user-select:none;-webkit-user-select:none;
-}
+body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sans);overflow:hidden;user-select:none;-webkit-user-select:none;}
 button{border:none;cursor:pointer;font-family:inherit}
 ::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(77,184,212,0.2);border-radius:2px}
 
-/* ═══════════════════════════════════════════════════════
-   LAYOUT
-═══════════════════════════════════════════════════════ */
-#bg-canvas{
-  position:fixed;inset:0;width:100%;height:100%;
-  pointer-events:none;z-index:0;
-}
-#app{
-  position:relative;z-index:1;
-  height:100%;display:flex;flex-direction:column;
-}
-.screen{
-  display:none;flex:1;flex-direction:column;overflow:hidden;
-  padding-bottom:calc(var(--nav) + var(--safe));
-}
+/* ── Layout ── */
+#bg-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+#app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;}
+.screen{display:none;flex:1;flex-direction:column;overflow:hidden;padding-bottom:calc(var(--nav) + var(--safe));}
 .screen.active{display:flex}
 
-/* ═══════════════════════════════════════════════════════
-   MEDITATE SCREEN
-═══════════════════════════════════════════════════════ */
-.med-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:1.1rem 1.5rem 0.4rem;z-index:2;
-}
-.hdr-group{
-  font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
-  color:var(--txt3);transition:opacity 0.6s;
-}
-.hdr-clock{
-  font-size:0.72rem;font-variant-numeric:tabular-nums;
-  color:var(--txt3);letter-spacing:0.1em;
-  opacity:0;transition:opacity 0.4s;
-}
+/* ── Meditate header ── */
+.med-header{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.5rem 0.4rem;z-index:2;}
+.hdr-left{display:flex;align-items:center;gap:.5rem}
+.hdr-group{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);}
+.addr-badge{display:none;background:rgba(212,169,106,.12);border:.5px solid rgba(212,169,106,.35);border-radius:10px;padding:.18rem .55rem;font-size:.55rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;}
+.addr-badge.on{display:inline-block}
+.hdr-right{display:flex;align-items:center;gap:.6rem}
+.btn-mood{background:rgba(77,184,212,.07);border:.5px solid rgba(77,184,212,.18);border-radius:20px;padding:.28rem .65rem;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);transition:all .2s;}
+.btn-mood:hover,.btn-mood.on{background:rgba(77,184,212,.18);border-color:rgba(77,184,212,.42);color:var(--accent);}
+.btn-breath{background:rgba(77,184,212,.07);border:.5px solid rgba(77,184,212,.18);border-radius:20px;padding:.28rem .65rem;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);transition:all .2s;}
+.btn-breath:hover,.btn-breath.on{background:rgba(77,184,212,.18);border-color:rgba(77,184,212,.42);color:var(--accent);}
+.hdr-clock{font-size:.72rem;font-variant-numeric:tabular-nums;color:var(--txt3);letter-spacing:.1em;opacity:0;transition:opacity .4s;}
 .hdr-clock.on{opacity:1}
 
-/* ── Orb ─────────────────────────────────────────── */
-.med-body{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:0.5rem 2rem 0;
-}
-.orb-wrap{
-  position:relative;width:164px;height:164px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
-.ring{
-  position:absolute;border-radius:50%;
-  border:1px solid rgba(77,184,212,0.07);
-  animation:ring-pulse 7s ease-in-out infinite;
-}
-.ring.r1{width:164px;height:164px}
-.ring.r2{width:122px;height:122px;animation-delay:1.6s}
-.ring.r3{width:80px;height:80px;animation-delay:3.2s}
-@keyframes ring-pulse{
-  0%,100%{opacity:.18;transform:scale(1)}
-  50%{opacity:.55;transform:scale(1.04)}
-}
-.orb-core{
-  width:38px;height:38px;border-radius:50%;
-  background:radial-gradient(circle at 38% 35%,
-    rgba(140,230,250,.85),rgba(40,140,180,.45));
-  animation:orb-breathe 7s ease-in-out infinite;
-  box-shadow:0 0 22px rgba(77,184,212,.35),0 0 60px rgba(77,184,212,.1);
-}
-@keyframes orb-breathe{
-  0%,100%{transform:scale(1);box-shadow:0 0 22px rgba(77,184,212,.35),0 0 60px rgba(77,184,212,.1)}
-  50%{transform:scale(1.22);box-shadow:0 0 34px rgba(77,184,212,.55),0 0 90px rgba(77,184,212,.18)}
-}
-
-/* ── Arc progress ────────────────────────────────── */
-.arc-svg{
-  position:absolute;top:0;left:0;width:164px;height:164px;
-  transform:rotate(-90deg);overflow:visible;
-}
+/* ── Orb ── */
+.med-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.5rem 2rem 0;}
+.orb-wrap{position:relative;width:164px;height:164px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(77,184,212,.07);animation:ring-pulse 7s ease-in-out infinite;}
+.ring.r1{width:164px;height:164px}.ring.r2{width:122px;height:122px;animation-delay:1.6s}.ring.r3{width:80px;height:80px;animation-delay:3.2s}
+@keyframes ring-pulse{0%,100%{opacity:.18;transform:scale(1)}50%{opacity:.55;transform:scale(1.04)}}
+.orb-core{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 38% 35%,rgba(140,230,250,.85),rgba(40,140,180,.45));animation:orb-breathe 7s ease-in-out infinite;box-shadow:0 0 22px rgba(77,184,212,.35),0 0 60px rgba(77,184,212,.1);}
+@keyframes orb-breathe{0%,100%{transform:scale(1);box-shadow:0 0 22px rgba(77,184,212,.35),0 0 60px rgba(77,184,212,.1)}50%{transform:scale(1.22);box-shadow:0 0 34px rgba(77,184,212,.55),0 0 90px rgba(77,184,212,.18)}}
+.arc-svg{position:absolute;top:0;left:0;width:164px;height:164px;transform:rotate(-90deg);overflow:visible;}
 .arc-track{fill:none;stroke:rgba(77,184,212,.06);stroke-width:1.5}
-#arc-fill{
-  fill:none;stroke:rgba(77,184,212,.5);stroke-width:1.5;
-  stroke-linecap:round;
-  stroke-dasharray:var(--circ);
-  stroke-dashoffset:var(--circ);
-}
-#arc-fill.running{
-  animation:arc-go var(--dur,10s) linear forwards;
-}
-@keyframes arc-go{
-  from{stroke-dashoffset:var(--circ)}
-  to{stroke-dashoffset:0}
-}
+#arc-fill{fill:none;stroke:rgba(77,184,212,.5);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:var(--circ);stroke-dashoffset:var(--circ);}
+#arc-fill.running{animation:arc-go var(--dur,10s) linear forwards;}
+#arc-fill.warm{stroke:rgba(212,169,106,.55);}
+@keyframes arc-go{from{stroke-dashoffset:var(--circ)}to{stroke-dashoffset:0}}
 
-/* ── Pointer text ────────────────────────────────── */
-.ptr-wrap{
-  text-align:center;max-width:540px;width:100%;
-  margin-top:1.6rem;
-  min-height:110px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:.5rem;
-}
-.ptr-grp{
-  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--txt3);opacity:0;transition:opacity 1.6s ease;
-}
+/* ── Pointer text ── */
+.ptr-wrap{text-align:center;max-width:540px;width:100%;margin-top:1.6rem;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;}
+.ptr-grp{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);opacity:0;transition:opacity 1.6s ease;}
 .ptr-grp.on{opacity:1}
-.ptr-text{
-  font-family:var(--serif);
-  font-size:clamp(1.28rem,4.2vw,1.82rem);
-  font-style:italic;font-weight:300;
-  color:var(--quote);line-height:1.55;letter-spacing:.012em;
-  opacity:0;transition:opacity 1.8s ease;
-}
+.ptr-text{font-family:var(--serif);font-size:clamp(1.22rem,4.2vw,1.75rem);font-style:italic;font-weight:300;color:var(--quote);line-height:1.55;opacity:0;transition:opacity 1.8s ease;}
 .ptr-text.on{opacity:1}
-.ptr-count{
-  font-size:.6rem;color:var(--txt3);letter-spacing:.12em;
-  opacity:0;transition:opacity 1.6s ease;margin-top:.2rem;
-}
+.ptr-count{font-size:.6rem;color:var(--txt3);letter-spacing:.12em;opacity:0;transition:opacity 1.6s ease;margin-top:.2rem;}
 .ptr-count.on{opacity:1}
 
-/* ── Dots ────────────────────────────────────────── */
-.dots-wrap{
-  display:flex;gap:4px;flex-wrap:wrap;
-  justify-content:center;max-width:290px;
-  margin:1rem auto .6rem;
-  transition:opacity .5s;
-}
-.dot{
-  width:5px;height:5px;border-radius:50%;
-  background:rgba(77,184,212,.14);
-  cursor:pointer;transition:background .3s,transform .2s;
-}
-.dot.active{background:rgba(77,184,212,.72)}
-.dot.grp{background:rgba(77,184,212,.3)}
-.dot:hover{transform:scale(1.5)}
+/* ── Dots / Controls ── */
+.dots-wrap{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:290px;margin:1rem auto .6rem;transition:opacity .5s;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(77,184,212,.14);cursor:pointer;transition:background .3s,transform .2s;}
+.dot.active{background:rgba(77,184,212,.72)}.dot.grp{background:rgba(77,184,212,.3)}.dot:hover{transform:scale(1.5)}
+.controls{display:flex;align-items:center;justify-content:center;gap:.9rem;padding:.4rem 1rem .8rem;transition:opacity .5s;}
+.cbtn{background:rgba(255,255,255,.03);border:.5px solid rgba(77,184,212,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(150,210,230,.7);transition:all .22s ease;flex-shrink:0;}
+.cbtn:hover,.cbtn:active{background:rgba(77,184,212,.14);color:rgba(230,250,255,.95);border-color:rgba(77,184,212,.45);}
+.cbtn.on{background:rgba(77,184,212,.18);color:rgba(200,245,255,1);border-color:rgba(77,184,212,.5);}
+.cbtn.sm{width:40px;height:40px;font-size:.95rem}.cbtn.lg{width:58px;height:58px;font-size:1.3rem}
+.sound-lbl{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);text-align:center;padding-bottom:.3rem;transition:opacity .4s;}
 
-/* ── Controls ────────────────────────────────────── */
-.controls{
-  display:flex;align-items:center;justify-content:center;
-  gap:.9rem;padding:.4rem 1rem .8rem;
-  transition:opacity .5s;
-}
-.cbtn{
-  background:rgba(255,255,255,.03);
-  border:.5px solid rgba(77,184,212,.2);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:rgba(150,210,230,.7);
-  transition:all .22s ease;flex-shrink:0;
-}
-.cbtn:hover,.cbtn:active{
-  background:rgba(77,184,212,.14);
-  color:rgba(230,250,255,.95);
-  border-color:rgba(77,184,212,.45);
-}
-.cbtn.on{
-  background:rgba(77,184,212,.18);
-  color:rgba(200,245,255,1);
-  border-color:rgba(77,184,212,.5);
-}
-.cbtn.sm{width:40px;height:40px;font-size:.95rem}
-.cbtn.md{width:48px;height:48px;font-size:1.1rem}
-.cbtn.lg{width:58px;height:58px;font-size:1.3rem}
-.sound-lbl{
-  font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--txt3);text-align:center;padding-bottom:.3rem;
-  transition:opacity .4s;
-}
-
-/* ═══════════════════════════════════════════════════════
-   JOURNEY SCREEN
-═══════════════════════════════════════════════════════ */
-.scr-inner{
-  flex:1;overflow-y:auto;padding:1.4rem 1.1rem;
-}
-.scr-title{
-  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--txt3);margin-bottom:1.5rem;text-align:center;
-}
-
-/* Favorites strip */
+/* ── Journey ── */
+.scr-inner{flex:1;overflow-y:auto;padding:1.4rem 1.1rem;}
+.scr-title{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--txt3);margin-bottom:1.5rem;text-align:center;}
 .favs-band{margin-bottom:1.4rem}
-.favs-lbl{
-  font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--txt3);margin-bottom:.7rem;
-  display:flex;align-items:center;gap:.6rem;
-}
+.favs-lbl{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);margin-bottom:.7rem;display:flex;align-items:center;gap:.6rem;}
 .favs-lbl::after{content:'';flex:1;height:.5px;background:var(--border)}
 .fav-chips{display:flex;flex-wrap:wrap;gap:.4rem}
-.fav-chip{
-  padding:.38rem .75rem;
-  background:rgba(77,184,212,.05);
-  border:.5px solid rgba(77,184,212,.16);
-  border-radius:20px;
-  font-family:var(--serif);font-size:.82rem;font-style:italic;
-  color:var(--txt2);cursor:pointer;transition:background .2s;
-}
+.fav-chip{padding:.38rem .75rem;background:rgba(77,184,212,.05);border:.5px solid rgba(77,184,212,.16);border-radius:20px;font-family:var(--serif);font-size:.82rem;font-style:italic;color:var(--txt2);cursor:pointer;transition:background .2s;}
 .fav-chip:hover{background:rgba(77,184,212,.12)}
-
-/* Group cards */
-.g-card{
-  margin-bottom:.8rem;
-  border:.5px solid var(--border);
-  border-radius:12px;overflow:hidden;
-  transition:border-color .3s;
-}
+.g-card{margin-bottom:.8rem;border:.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .3s;}
 .g-card.open{border-color:rgba(77,184,212,.28)}
-.g-card-hdr{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:.85rem 1rem;cursor:pointer;
-  background:rgba(77,184,212,.025);transition:background .2s;
-}
+.g-card-hdr{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;cursor:pointer;background:rgba(77,184,212,.025);transition:background .2s;}
 .g-card-hdr:hover{background:rgba(77,184,212,.06)}
-.g-num{
-  font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--txt3);margin-bottom:.2rem;
-}
-.g-name{
-  font-size:.85rem;color:var(--accent);
-  letter-spacing:.04em;font-weight:500;
-}
-.g-meta{
-  font-size:.62rem;color:var(--txt3);letter-spacing:.08em;
-  margin-top:.15rem;
-}
-.g-chev{
-  font-size:.7rem;color:var(--txt3);
-  transition:transform .3s;flex-shrink:0;margin-left:.8rem;
-}
+.g-num{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--txt3);margin-bottom:.2rem}
+.g-name{font-size:.85rem;color:var(--accent);letter-spacing:.04em;font-weight:500}
+.g-meta{font-size:.62rem;color:var(--txt3);letter-spacing:.08em;margin-top:.15rem}
+.g-chev{font-size:.7rem;color:var(--txt3);transition:transform .3s;flex-shrink:0;margin-left:.8rem}
 .g-card.open .g-chev{transform:rotate(180deg)}
-
 .g-card-body{display:none;padding:.2rem 0}
 .g-card.open .g-card-body{display:block}
-
-.p-item{
-  display:flex;align-items:center;
-  padding:.65rem 1rem;cursor:pointer;
-  border-top:.5px solid rgba(77,184,212,.05);
-  transition:background .2s;gap:.6rem;
-}
+.p-item{display:flex;align-items:center;padding:.65rem 1rem;cursor:pointer;border-top:.5px solid rgba(77,184,212,.05);transition:background .2s;gap:.6rem;}
 .p-item:hover{background:rgba(77,184,212,.05)}
-.p-item-num{
-  font-size:.6rem;color:var(--txt3);
-  width:18px;flex-shrink:0;letter-spacing:.05em;
-}
-.p-item-txt{
-  font-family:var(--serif);font-size:.9rem;
-  font-style:italic;color:var(--txt2);flex:1;line-height:1.5;
-}
-.p-fav{
-  font-size:.9rem;color:var(--txt3);flex-shrink:0;
-  padding:.2rem .2rem .2rem .5rem;
-  transition:color .2s,transform .15s;
-}
-.p-fav:hover{transform:scale(1.25)}
-.p-fav.on{color:var(--gold)}
+.p-item-num{font-size:.6rem;color:var(--txt3);width:18px;flex-shrink:0}
+.p-item-txt{font-family:var(--serif);font-size:.9rem;font-style:italic;color:var(--txt2);flex:1;line-height:1.5}
+.p-fav{font-size:.9rem;color:var(--txt3);flex-shrink:0;padding:.2rem .2rem .2rem .5rem;transition:color .2s,transform .15s}
+.p-fav:hover{transform:scale(1.25)}.p-fav.on{color:var(--gold)}
 
-/* ═══════════════════════════════════════════════════════
-   GUIDE SCREEN
-═══════════════════════════════════════════════════════ */
-.guide-block{
-  margin-bottom:1.7rem;
-  padding-left:1rem;
-  border-left:1px solid rgba(77,184,212,.2);
-}
-.guide-ttl{
-  font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--accent2);margin-bottom:.45rem;
-}
-.guide-body{
-  font-family:var(--serif);font-size:.97rem;
-  font-style:italic;font-weight:300;
-  color:rgba(180,220,235,.76);line-height:1.88;
-}
-.guide-sub{
-  color:rgba(120,175,200,.55);font-size:.9rem;
-  display:block;margin-top:.5rem;
-}
+/* ── Journal ── */
+.jrn-compose{margin-bottom:1.4rem}
+.jrn-textarea{width:100%;min-height:120px;background:rgba(77,184,212,.04);border:.5px solid rgba(77,184,212,.18);border-radius:10px;padding:.9rem 1rem;color:var(--txt);font-family:var(--serif);font-size:.95rem;font-style:italic;line-height:1.7;resize:vertical;outline:none;user-select:text;-webkit-user-select:text;}
+.jrn-textarea::placeholder{color:var(--txt3)}.jrn-textarea:focus{border-color:rgba(77,184,212,.4)}
+.jrn-save-btn{margin-top:.65rem;padding:.6rem 1.5rem;background:rgba(77,184,212,.1);border:.5px solid rgba(77,184,212,.3);border-radius:20px;color:var(--accent);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.jrn-save-btn:hover{background:rgba(77,184,212,.2)}
+.jrn-entry{padding:.9rem 1rem;margin-bottom:.7rem;background:rgba(77,184,212,.03);border:.5px solid var(--border);border-radius:10px;position:relative;}
+.jrn-entry-date{font-size:.6rem;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem}
+.jrn-entry-ptr{font-size:.74rem;color:var(--accent2);font-family:var(--serif);font-style:italic;margin-bottom:.45rem;opacity:.8}
+.jrn-entry-body{font-family:var(--serif);font-size:.92rem;font-style:italic;color:var(--txt2);line-height:1.7}
+.jrn-del{position:absolute;top:.65rem;right:.65rem;background:transparent;border:none;color:var(--txt3);font-size:.85rem;cursor:pointer;padding:.2rem .45rem;transition:color .2s;}
+.jrn-del:hover{color:var(--accent)}
+.jrn-empty{text-align:center;padding:2.5rem 1rem;color:var(--txt3);font-family:var(--serif);font-style:italic;font-size:.9rem;line-height:1.8}
 
-/* ═══════════════════════════════════════════════════════
-   SETTINGS SCREEN
-═══════════════════════════════════════════════════════ */
+/* ── Guide ── */
+.guide-block{margin-bottom:1.7rem;padding-left:1rem;border-left:1px solid rgba(77,184,212,.2);}
+.guide-ttl{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent2);margin-bottom:.45rem}
+.guide-body{font-family:var(--serif);font-size:.97rem;font-style:italic;font-weight:300;color:rgba(180,220,235,.76);line-height:1.88}
+.guide-sub{color:rgba(120,175,200,.55);font-size:.9rem;display:block;margin-top:.5rem}
+
+/* ── Settings ── */
 .set-grp{margin-bottom:1.8rem}
-.set-grp-ttl{
-  font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--txt3);margin-bottom:.75rem;
-  padding-bottom:.45rem;border-bottom:.5px solid var(--border);
-}
+.set-grp-ttl{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--txt3);margin-bottom:.75rem;padding-bottom:.45rem;border-bottom:.5px solid var(--border);}
 .chip-row{display:flex;flex-wrap:wrap;gap:.45rem}
-.chip{
-  padding:.42rem .95rem;border-radius:20px;
-  border:.5px solid rgba(77,184,212,.18);
-  background:rgba(77,184,212,.03);
-  font-size:.8rem;color:var(--txt2);cursor:pointer;transition:all .2s;
-}
-.chip.on{
-  background:rgba(77,184,212,.18);
-  border-color:rgba(77,184,212,.48);
-  color:var(--txt);
-}
+.chip{padding:.42rem .95rem;border-radius:20px;border:.5px solid rgba(77,184,212,.18);background:rgba(77,184,212,.03);font-size:.8rem;color:var(--txt2);cursor:pointer;transition:all .2s;}
+.chip.on{background:rgba(77,184,212,.18);border-color:rgba(77,184,212,.48);color:var(--txt);}
 .chip:hover:not(.on){background:rgba(77,184,212,.08)}
-
-.set-hint{
-  font-size:.72rem;color:var(--txt3);
-  font-family:var(--serif);font-style:italic;
-  margin-top:.6rem;line-height:1.6;
-}
-
-/* Stats bar */
-.stats-bar{
-  display:flex;gap:1.5rem;
-  background:rgba(77,184,212,.04);
-  border:.5px solid var(--border);
-  border-radius:12px;padding:1rem 1.2rem;
-  margin-bottom:1.6rem;
-}
+.set-hint{font-size:.72rem;color:var(--txt3);font-family:var(--serif);font-style:italic;margin-top:.6rem;line-height:1.6}
+.stats-bar{display:flex;gap:1.5rem;background:rgba(77,184,212,.04);border:.5px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.6rem;}
 .stat-item{display:flex;flex-direction:column;gap:.25rem}
 .stat-val{font-size:1.4rem;color:var(--accent);font-weight:300}
 .stat-lbl{font-size:.58rem;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase}
+.install-btn{display:none;width:100%;padding:.75rem;background:rgba(77,184,212,.08);border:.5px solid rgba(77,184,212,.28);border-radius:10px;color:var(--accent);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.install-btn.visible{display:block}.install-btn:hover{background:rgba(77,184,212,.18)}
 
-/* ═══════════════════════════════════════════════════════
-   BOTTOM NAV
-═══════════════════════════════════════════════════════ */
-#nav{
-  position:fixed;bottom:0;left:0;right:0;
-  height:calc(var(--nav) + var(--safe));
-  padding-bottom:var(--safe);
-  display:flex;align-items:stretch;
-  background:rgba(3,11,22,.92);
-  backdrop-filter:blur(22px) saturate(1.6);
-  border-top:.5px solid rgba(77,184,212,.1);
-  z-index:100;
-}
-.nav-tab{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4px;
-  background:transparent;color:var(--txt3);
-  font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
-  transition:color .2s;
-}
-.nav-tab .ni{font-size:1.18rem;transition:transform .2s}
-.nav-tab.on{color:var(--accent)}
-.nav-tab.on .ni{transform:scale(1.12)}
+/* ── Level cards in Settings ── */
+.level-row{display:flex;flex-direction:column;gap:.5rem}
+.lvl-card{display:flex;align-items:center;gap:.9rem;padding:.8rem 1rem;background:rgba(77,184,212,.03);border:.5px solid rgba(77,184,212,.14);border-radius:12px;cursor:pointer;transition:all .2s;text-align:left;}
+.lvl-card:hover{background:rgba(77,184,212,.09)}
+.lvl-card.on{background:rgba(77,184,212,.14);border-color:rgba(77,184,212,.42);}
+.lvl-icon{font-size:1.4rem;flex-shrink:0}
+.lvl-name{font-size:.85rem;color:var(--accent);font-weight:500;letter-spacing:.04em}
+.lvl-desc{font-size:.7rem;color:var(--txt3);line-height:1.5;margin-top:.18rem;font-family:var(--serif);font-style:italic}
 
-/* ═══════════════════════════════════════════════════════
-   SESSION COMPLETE OVERLAY
-═══════════════════════════════════════════════════════ */
-#complete{
-  display:none;position:fixed;inset:0;z-index:200;
-  background:rgba(3,10,20,.96);
-  flex-direction:column;align-items:center;justify-content:center;
-  gap:1.1rem;text-align:center;padding:2rem;
-}
+/* ── Nav ── */
+#nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav) + var(--safe));padding-bottom:var(--safe);display:flex;align-items:stretch;background:rgba(3,11,22,.92);backdrop-filter:blur(22px) saturate(1.6);border-top:.5px solid rgba(77,184,212,.1);z-index:100;}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:transparent;color:var(--txt3);font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;}
+.nav-tab .ni{font-size:1.05rem;transition:transform .2s}
+.nav-tab.on{color:var(--accent)}.nav-tab.on .ni{transform:scale(1.12)}
+
+/* ── Complete overlay ── */
+#complete{display:none;position:fixed;inset:0;z-index:200;background:rgba(3,10,20,.96);flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;text-align:center;padding:2rem;}
 #complete.on{display:flex}
-.cmp-orb{
-  width:56px;height:56px;border-radius:50%;
-  background:radial-gradient(circle at 38% 35%,
-    rgba(140,230,250,.7),rgba(40,140,180,.3));
-  box-shadow:0 0 40px rgba(77,184,212,.4),0 0 100px rgba(77,184,212,.15);
-  animation:orb-breathe 4s ease-in-out infinite;
-  margin-bottom:.4rem;
-}
-.cmp-title{
-  font-family:var(--serif);font-size:1.75rem;
-  font-style:italic;color:var(--txt);
-}
-.cmp-sub{
-  font-size:.7rem;color:var(--txt3);letter-spacing:.14em;
-  text-transform:uppercase;max-width:280px;line-height:1.8;
-}
+.cmp-orb{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 38% 35%,rgba(140,230,250,.7),rgba(40,140,180,.3));box-shadow:0 0 40px rgba(77,184,212,.4),0 0 100px rgba(77,184,212,.15);animation:orb-breathe 4s ease-in-out infinite;margin-bottom:.4rem;}
+.cmp-title{font-family:var(--serif);font-size:1.75rem;font-style:italic;color:var(--txt)}
+.cmp-sub{font-size:.7rem;color:var(--txt3);letter-spacing:.14em;text-transform:uppercase;max-width:280px;line-height:1.8}
 .cmp-stats{display:flex;gap:2.5rem}
 .cmp-stat{display:flex;flex-direction:column;align-items:center;gap:.25rem}
 .cmp-num{font-size:1.9rem;color:var(--accent);font-weight:300}
 .cmp-lbl{font-size:.58rem;color:var(--txt3);letter-spacing:.14em;text-transform:uppercase}
-.cmp-btn{
-  margin-top:.3rem;padding:.75rem 2rem;
-  border:.5px solid rgba(77,184,212,.3);
-  border-radius:30px;background:rgba(77,184,212,.1);
-  color:var(--accent);font-size:.82rem;cursor:pointer;
-  letter-spacing:.1em;text-transform:uppercase;transition:all .2s;
-}
+.cmp-btn{margin-top:.3rem;padding:.75rem 2rem;border:.5px solid rgba(77,184,212,.3);border-radius:30px;background:rgba(77,184,212,.1);color:var(--accent);font-size:.82rem;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;}
 .cmp-btn:hover{background:rgba(77,184,212,.22)}
 
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════════════ */
-@media(min-width:600px){
-  .med-body{max-width:600px;margin:0 auto;width:100%}
-  .ptr-text{font-size:1.8rem}
-}
-@media(max-width:360px){
-  .ptr-text{font-size:1.2rem}
-  .orb-wrap{width:140px;height:140px}
-  .ring.r1{width:140px;height:140px}
-  .ring.r2{width:104px;height:104px}
-  .ring.r3{width:68px;height:68px}
-  .arc-svg{width:140px;height:140px}
-}
+/* ── Breath overlay ── */
+#breath-overlay{display:none;position:fixed;inset:0;z-index:150;background:rgba(3,10,20,.97);flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;}
+#breath-overlay.on{display:flex}
+.breath-ring-wrap{position:relative;width:220px;height:220px;display:flex;align-items:center;justify-content:center;}
+.breath-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(77,184,212,.15);transition:transform .1s linear;}
+.breath-inner{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 38% 35%,rgba(100,200,240,.6),rgba(20,100,160,.3));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;transition:transform .1s linear,box-shadow .1s linear;box-shadow:0 0 30px rgba(77,184,212,.2);z-index:1;}
+.breath-phase-lbl{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);}
+.breath-count-lbl{font-size:2.8rem;font-weight:200;color:var(--txt);line-height:1}
+.breath-pattern-lbl{font-size:.58rem;color:var(--txt3);letter-spacing:.2em;text-transform:uppercase}
+.breath-cycles-lbl{font-size:.65rem;color:var(--txt3);letter-spacing:.12em}
+.breath-close-btn{position:absolute;top:1.5rem;right:1.5rem;background:transparent;border:none;color:var(--txt3);font-size:1.3rem;cursor:pointer;padding:.4rem .6rem;transition:color .2s;}
+.breath-close-btn:hover{color:var(--txt)}
+
+/* ── Onboarding overlay ── */
+#onboard{display:none;position:fixed;inset:0;z-index:400;background:rgba(3,10,20,.99);flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.2rem;}
+#onboard.on{display:flex}
+.ob-title{font-family:var(--serif);font-style:italic;font-size:1.55rem;color:var(--txt);text-align:center}
+.ob-sub{font-size:.68rem;color:var(--txt3);text-align:center;letter-spacing:.1em;line-height:1.8;max-width:290px}
+.ob-cards{display:flex;flex-direction:column;gap:.65rem;width:100%;max-width:320px}
+.ob-card{display:flex;align-items:center;gap:.9rem;padding:.95rem 1.1rem;background:rgba(77,184,212,.04);border:.5px solid rgba(77,184,212,.16);border-radius:14px;cursor:pointer;transition:all .2s;text-align:left;}
+.ob-card:hover{background:rgba(77,184,212,.12);border-color:rgba(77,184,212,.4);}
+.ob-icon{font-size:1.5rem;flex-shrink:0}
+.ob-name{font-size:.9rem;color:var(--accent);font-weight:500;letter-spacing:.05em}
+.ob-desc{font-size:.7rem;color:var(--txt3);margin-top:.2rem;line-height:1.5;font-family:var(--serif);font-style:italic}
+
+/* ── Mood panel ── */
+#mood-panel{display:none;position:fixed;inset:0;z-index:300;background:rgba(3,10,20,.97);flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1rem;}
+#mood-panel.on{display:flex}
+.mood-q{font-family:var(--serif);font-style:italic;font-size:1.35rem;color:var(--txt);text-align:center}
+.mood-hint{font-size:.65rem;color:var(--txt3);letter-spacing:.1em;text-align:center;margin-bottom:.3rem}
+.mood-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;width:100%;max-width:320px}
+.mood-tile{padding:.75rem .4rem;background:rgba(77,184,212,.04);border:.5px solid rgba(77,184,212,.14);border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:.3rem;}
+.mood-tile:hover{background:rgba(77,184,212,.12);border-color:rgba(77,184,212,.35)}
+.mood-tile-icon{font-size:1.4rem}
+.mood-tile-lbl{font-size:.58rem;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase}
+.mood-skip{font-size:.68rem;color:var(--txt3);letter-spacing:.1em;background:transparent;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color .2s;padding:.4rem;margin-top:.4rem;}
+.mood-skip:hover{color:var(--txt2)}
+
+/* ── Beginner task card ── */
+#task-card{display:none;position:fixed;inset:0;z-index:160;background:rgba(3,10,20,.96);flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 2rem;gap:1.1rem;text-align:center;}
+#task-card.on{display:flex}
+.task-badge{font-size:.58rem;color:var(--txt3);letter-spacing:.2em;text-transform:uppercase}
+.task-text{font-family:var(--serif);font-size:1.18rem;font-style:italic;color:var(--txt);line-height:1.75;max-width:320px}
+.task-next-btn{margin-top:.5rem;padding:.65rem 1.8rem;background:rgba(77,184,212,.08);border:.5px solid rgba(77,184,212,.25);border-radius:20px;color:var(--accent);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.task-next-btn:hover{background:rgba(77,184,212,.18)}
+.task-skip{font-size:.62rem;color:var(--txt3);background:transparent;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-top:.2rem;transition:color .2s;}
+.task-skip:hover{color:var(--txt2)}
+
+@media(min-width:600px){.med-body{max-width:600px;margin:0 auto;width:100%}.ptr-text{font-size:1.75rem}}
+@media(max-width:360px){.ptr-text{font-size:1.15rem}.orb-wrap{width:140px;height:140px}.ring.r1{width:140px;height:140px}.ring.r2{width:104px;height:104px}.ring.r3{width:68px;height:68px}.arc-svg{width:140px;height:140px}}
 </style>
 </head>
 <body>
-
 <canvas id="bg-canvas"></canvas>
-
 <div id="app">
 
-<!-- ══════════════════════════════════════════════════
-     MEDITATE
-══════════════════════════════════════════════════ -->
+<!-- MEDITATE -->
 <div id="s-meditate" class="screen active">
   <div class="med-header">
-    <div class="hdr-group" id="hdr-group">·</div>
-    <div class="hdr-clock" id="hdr-clock">∞</div>
+    <div class="hdr-left">
+      <div class="hdr-group" id="hdr-group">·</div>
+      <div class="addr-badge" id="addr-badge">Addressing</div>
+    </div>
+    <div class="hdr-right">
+      <button class="btn-mood" id="btn-mood" data-ui="moodBtn">How are you?</button>
+      <button class="btn-breath" id="btn-breath" data-ui="breathe">☽</button>
+      <div class="hdr-clock" id="hdr-clock">∞</div>
+    </div>
   </div>
   <div class="med-body">
-    <!-- Orb -->
     <div class="orb-wrap">
-      <div class="ring r1"></div>
-      <div class="ring r2"></div>
-      <div class="ring r3"></div>
+      <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
       <svg class="arc-svg" viewBox="0 0 164 164">
         <circle class="arc-track" cx="82" cy="82" r="76"/>
         <circle id="arc-fill" cx="82" cy="82" r="76"/>
       </svg>
       <div class="orb-core"></div>
     </div>
-    <!-- Pointer -->
     <div class="ptr-wrap">
       <div class="ptr-grp" id="ptr-grp"></div>
       <p class="ptr-text" id="ptr-text"></p>
       <div class="ptr-count" id="ptr-count"></div>
     </div>
   </div>
-  <!-- Dots -->
   <div class="dots-wrap" id="dots"></div>
-  <!-- Controls -->
   <div class="controls" id="controls">
-    <button class="cbtn sm" id="btn-prev" title="Previous (←)">&#8249;</button>
-    <button class="cbtn sm" id="btn-fav" title="Favourite (F)">♡</button>
-    <button class="cbtn lg" id="btn-pause" title="Pause (Space)">⏸</button>
-    <button class="cbtn sm" id="btn-sound" title="Sound (S)">🔇</button>
-    <button class="cbtn sm" id="btn-next" title="Next (→)">&#8250;</button>
+    <button class="cbtn sm" id="btn-prev">&#8249;</button>
+    <button class="cbtn sm" id="btn-fav">♡</button>
+    <button class="cbtn lg" id="btn-pause">⏸</button>
+    <button class="cbtn sm" id="btn-sound">🔇</button>
+    <button class="cbtn sm" id="btn-next">&#8250;</button>
   </div>
-  <div class="sound-lbl" id="sound-lbl">sound off</div>
+  <div class="sound-lbl" id="sound-lbl"></div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     JOURNEY
-══════════════════════════════════════════════════ -->
+<!-- JOURNEY -->
 <div id="s-journey" class="screen">
-  <div class="scr-inner" id="journey-inner">
-    <div class="scr-title">All Pointers</div>
-    <!-- Favorites -->
+  <div class="scr-inner">
+    <div class="scr-title" data-ui="allPointers">All Pointers</div>
     <div class="favs-band" id="favs-band" style="display:none">
-      <div class="favs-lbl">Saved</div>
+      <div class="favs-lbl" data-ui="saved">Saved</div>
       <div class="fav-chips" id="fav-chips"></div>
     </div>
-    <!-- Groups -->
     <div id="groups-list"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     GUIDE
-══════════════════════════════════════════════════ -->
+<!-- JOURNAL -->
+<div id="s-journal" class="screen">
+  <div class="scr-inner">
+    <div class="scr-title" data-ui="journal">Journal</div>
+    <div class="jrn-compose">
+      <textarea class="jrn-textarea" id="jrn-text" data-ph="journalPlaceholder"></textarea>
+      <button class="jrn-save-btn" id="jrn-save" data-ui="saveEntry">Save entry</button>
+    </div>
+    <div id="jrn-entries"></div>
+  </div>
+</div>
+
+<!-- GUIDE -->
 <div id="s-guide" class="screen">
   <div class="scr-inner">
-    <div class="scr-title">How to Use</div>
+    <div class="scr-title" data-ui="guide">Guide</div>
     <div id="guide-content"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     SETTINGS
-══════════════════════════════════════════════════ -->
+<!-- SETTINGS -->
 <div id="s-settings" class="screen">
   <div class="scr-inner">
-    <div class="scr-title">Settings</div>
-
-    <!-- Stats -->
+    <div class="scr-title" data-ui="settings">Settings</div>
     <div class="stats-bar">
-      <div class="stat-item">
-        <div class="stat-val" id="st-sessions">0</div>
-        <div class="stat-lbl">Sessions</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-val" id="st-mins">0</div>
-        <div class="stat-lbl">Minutes sat</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-val" id="st-ptrs">0</div>
-        <div class="stat-lbl">Pointers met</div>
+      <div class="stat-item"><div class="stat-val" id="st-sessions">0</div><div class="stat-lbl" data-ui="sessions">Sessions</div></div>
+      <div class="stat-item"><div class="stat-val" id="st-mins">0</div><div class="stat-lbl" data-ui="minutesSat">Minutes sat</div></div>
+      <div class="stat-item"><div class="stat-val" id="st-ptrs">0</div><div class="stat-lbl" data-ui="ptrsMet">Pointers met</div></div>
+    </div>
+    <div class="set-grp">
+      <div class="set-grp-ttl" data-ui="levelTitle">Seeker Level</div>
+      <div class="level-row" id="level-row"></div>
+    </div>
+    <div class="set-grp">
+      <div class="set-grp-ttl" data-ui="language">Language</div>
+      <div class="chip-row" id="lang-chips">
+        <button class="chip on" data-v="en">English</button>
+        <button class="chip" data-v="hi">हिन्दी</button>
+        <button class="chip" data-v="gu">ગુજરાતી</button>
       </div>
     </div>
-
     <div class="set-grp">
-      <div class="set-grp-ttl">Pointer Hold Time</div>
+      <div class="set-grp-ttl" data-ui="pointerHold">Pointer Hold Time</div>
       <div class="chip-row" id="dur-chips">
         <button class="chip" data-v="5000">5 s</button>
         <button class="chip on" data-v="10000">10 s</button>
@@ -548,9 +330,8 @@ button{border:none;cursor:pointer;font-family:inherit}
         <button class="chip" data-v="300000">5 min</button>
       </div>
     </div>
-
     <div class="set-grp">
-      <div class="set-grp-ttl">Session Length</div>
+      <div class="set-grp-ttl" data-ui="sessionLength">Session Length</div>
       <div class="chip-row" id="sess-chips">
         <button class="chip on" data-v="0">∞ Open</button>
         <button class="chip" data-v="300">5 min</button>
@@ -561,746 +342,706 @@ button{border:none;cursor:pointer;font-family:inherit}
         <button class="chip" data-v="3600">60 min</button>
       </div>
     </div>
-
     <div class="set-grp">
-      <div class="set-grp-ttl">Advance Mode</div>
+      <div class="set-grp-ttl" data-ui="advanceMode">Advance Mode</div>
       <div class="chip-row" id="mode-chips">
-        <button class="chip on" data-v="seq">Sequential</button>
-        <button class="chip" data-v="rand">Random</button>
-        <button class="chip" data-v="man">Manual</button>
+        <button class="chip on" data-v="seq" data-ui="sequential">Sequential</button>
+        <button class="chip" data-v="rand" data-ui="random">Random</button>
+        <button class="chip" data-v="man" data-ui="manual">Manual</button>
       </div>
-      <div class="set-hint">Sequential moves through all groups in order. Random draws from all 26. Manual only advances when you tap next.</div>
+      <div class="set-hint" id="mode-hint"></div>
     </div>
-
     <div class="set-grp">
-      <div class="set-grp-ttl">Sound</div>
+      <div class="set-grp-ttl" data-ui="sound">Sound</div>
       <div class="chip-row" id="snd-chips">
-        <button class="chip on" data-v="off">Off</button>
-        <button class="chip" data-v="bowls">Singing Bowls</button>
-        <button class="chip" data-v="bells">Bells</button>
-        <button class="chip" data-v="drone">Deep Drone</button>
+        <button class="chip on" data-v="off" data-ui="soundOff">Off</button>
+        <button class="chip" data-v="bowls" data-ui="singingBowls">Singing Bowls</button>
+        <button class="chip" data-v="bells" data-ui="bells">Bells</button>
+        <button class="chip" data-v="drone" data-ui="deepDrone">Deep Drone</button>
       </div>
     </div>
-
     <div class="set-grp">
-      <div class="set-grp-ttl">Starting Pointer</div>
+      <div class="set-grp-ttl" data-ui="startingPointer">Starting Pointer</div>
       <div class="chip-row" id="start-chips">
-        <button class="chip on" data-v="0">From beginning</button>
-        <button class="chip" data-v="rand">Random each time</button>
+        <button class="chip on" data-v="0" data-ui="fromBeginning">From beginning</button>
+        <button class="chip" data-v="rand" data-ui="randomEach">Random each time</button>
       </div>
+    </div>
+    <div class="set-grp" id="pwa-grp" style="display:none">
+      <div class="set-grp-ttl" data-ui="appInstall">App</div>
+      <button class="install-btn visible" id="btn-install" data-ui="installApp">+ Add to Home Screen</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     BOTTOM NAV
-══════════════════════════════════════════════════ -->
+<!-- NAV -->
 <nav id="nav">
-  <button class="nav-tab on" data-s="meditate">
-    <span class="ni">◉</span><span>Meditate</span>
-  </button>
-  <button class="nav-tab" data-s="journey">
-    <span class="ni">◎</span><span>Journey</span>
-  </button>
-  <button class="nav-tab" data-s="guide">
-    <span class="ni">≡</span><span>Guide</span>
-  </button>
-  <button class="nav-tab" data-s="settings">
-    <span class="ni">⚙</span><span>Settings</span>
-  </button>
+  <button class="nav-tab on" data-s="meditate"><span class="ni">◉</span><span data-ui="meditate">Meditate</span></button>
+  <button class="nav-tab" data-s="journey"><span class="ni">◎</span><span data-ui="journey">Journey</span></button>
+  <button class="nav-tab" data-s="journal"><span class="ni">✎</span><span data-ui="journal">Journal</span></button>
+  <button class="nav-tab" data-s="guide"><span class="ni">≡</span><span data-ui="guide">Guide</span></button>
+  <button class="nav-tab" data-s="settings"><span class="ni">⚙</span><span data-ui="settings">Settings</span></button>
 </nav>
 
-<!-- ══════════════════════════════════════════════════
-     SESSION COMPLETE
-══════════════════════════════════════════════════ -->
+<!-- COMPLETE -->
 <div id="complete">
   <div class="cmp-orb"></div>
-  <div class="cmp-title">Session Complete</div>
-  <div class="cmp-sub" id="cmp-sub">The silence was always here.<br>It remains.</div>
+  <div class="cmp-title" data-ui="sessionComplete">Session Complete</div>
+  <div class="cmp-sub" id="cmp-sub"></div>
   <div class="cmp-stats">
-    <div class="cmp-stat">
-      <div class="cmp-num" id="cmp-mins">0</div>
-      <div class="cmp-lbl">Minutes</div>
-    </div>
-    <div class="cmp-stat">
-      <div class="cmp-num" id="cmp-ptrs">0</div>
-      <div class="cmp-lbl">Pointers</div>
-    </div>
-    <div class="cmp-stat">
-      <div class="cmp-num" id="cmp-favs">0</div>
-      <div class="cmp-lbl">Saved</div>
+    <div class="cmp-stat"><div class="cmp-num" id="cmp-mins">0</div><div class="cmp-lbl" data-ui="minutes">Minutes</div></div>
+    <div class="cmp-stat"><div class="cmp-num" id="cmp-ptrs">0</div><div class="cmp-lbl" data-ui="pointers">Pointers</div></div>
+    <div class="cmp-stat"><div class="cmp-num" id="cmp-favs">0</div><div class="cmp-lbl" data-ui="saved">Saved</div></div>
+  </div>
+  <button class="cmp-btn" id="btn-continue" data-ui="returnBtn">Return</button>
+</div>
+
+<!-- BREATH OVERLAY -->
+<div id="breath-overlay">
+  <button class="breath-close-btn" id="breath-close">✕</button>
+  <div class="breath-ring-wrap">
+    <div class="breath-ring" id="breath-ring"></div>
+    <div class="breath-inner" id="breath-inner">
+      <div class="breath-phase-lbl" id="breath-phase">INHALE</div>
+      <div class="breath-count-lbl" id="breath-count">4</div>
     </div>
   </div>
-  <button class="cmp-btn" id="btn-continue">Return</button>
+  <div class="breath-pattern-lbl">4 · 4 · 6 · 2</div>
+  <div class="breath-cycles-lbl" id="breath-cycles-lbl"></div>
+</div>
+
+<!-- MOOD PANEL -->
+<div id="mood-panel">
+  <div class="mood-q" id="mood-q">How is the mind right now?</div>
+  <div class="mood-hint" id="mood-hint">Choose honestly — this shapes your session</div>
+  <div class="mood-grid" id="mood-grid"></div>
+  <button class="mood-skip" id="mood-skip">Begin directly →</button>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboard">
+  <div class="ob-title" id="ob-title">Who walks this path?</div>
+  <div class="ob-sub" id="ob-sub">Choose what feels true. You can change this anytime in Settings.</div>
+  <div class="ob-cards" id="ob-cards"></div>
+</div>
+
+<!-- BEGINNER TASK CARD -->
+<div id="task-card">
+  <div class="task-badge" id="task-badge">Preparation · Task 1 of 5</div>
+  <div class="task-text" id="task-text"></div>
+  <button class="task-next-btn" id="task-next">Continue</button>
+  <button class="task-skip" id="task-skip">Skip to meditation</button>
 </div>
 
 </div><!-- #app -->
-
 <script>
 // ═══════════════════════════════════════════════════════════
-// DATA
+// UI STRINGS
+// ═══════════════════════════════════════════════════════════
+const UI = {
+  en:{
+    meditate:"Meditate",journey:"Journey",journal:"Journal",guide:"Guide",settings:"Settings",
+    allPointers:"All Pointers",saved:"Saved",
+    soundOff:"Off",singingBowls:"Singing Bowls",bells:"Bells",deepDrone:"Deep Drone",
+    group:"Group",of:"of",sessionComplete:"Session Complete",
+    minutes:"Minutes",pointers:"Pointers",returnBtn:"Return",
+    breathe:"☽",moodBtn:"How are you?",
+    inhale:"INHALE",hold:"HOLD",exhale:"EXHALE",rest:"REST",
+    journalPlaceholder:"What arose in your sitting today…",
+    saveEntry:"Save entry",noEntries:"No entries yet.\nWrite after a sitting.",
+    sessions:"Sessions",minutesSat:"Minutes sat",ptrsMet:"Pointers met",
+    levelTitle:"Seeker Level",language:"Language",pointerHold:"Pointer Hold Time",
+    sessionLength:"Session Length",advanceMode:"Advance Mode",sound:"Sound",
+    startingPointer:"Starting Pointer",sequential:"Sequential",random:"Random",manual:"Manual",
+    fromBeginning:"From beginning",randomEach:"Random each time",
+    appInstall:"App",installApp:"+ Add to Home Screen",
+    seqHint:"Sequential moves through all groups in order. Random draws from all {n}. Manual advances only when you tap next.",
+    cmpSub:"The silence was always here.\nIt remains.",
+    breathCycles:"Cycle {n}",
+    addrBadge:"Addressing",
+    taskBadge:"Preparation · Task {a} of {b}",
+    taskContinue:"Continue",taskSkip:"Skip to meditation",
+  },
+  hi:{
+    meditate:"ध्यान",journey:"यात्रा",journal:"डायरी",guide:"मार्ग",settings:"सेटिंग",
+    allPointers:"सभी संकेत",saved:"सहेजे",
+    soundOff:"बंद",singingBowls:"गायन कटोरे",bells:"घंटियाँ",deepDrone:"गहरा स्वर",
+    group:"समूह",of:"में से",sessionComplete:"सत्र पूर्ण",
+    minutes:"मिनट",pointers:"संकेत",returnBtn:"वापस",
+    breathe:"☽",moodBtn:"मन कैसा है?",
+    inhale:"श्वास लो",hold:"रोको",exhale:"छोड़ो",rest:"विराम",
+    journalPlaceholder:"आज के ध्यान में क्या उठा…",
+    saveEntry:"सहेजें",noEntries:"अभी कोई प्रविष्टि नहीं।\nध्यान के बाद लिखें।",
+    sessions:"सत्र",minutesSat:"बैठे मिनट",ptrsMet:"संकेत मिले",
+    levelTitle:"साधक स्तर",language:"भाषा",pointerHold:"संकेत समय",
+    sessionLength:"सत्र अवधि",advanceMode:"अग्रिम मोड",sound:"ध्वनि",
+    startingPointer:"प्रारंभ",sequential:"क्रमिक",random:"यादृच्छिक",manual:"मैनुअल",
+    fromBeginning:"शुरू से",randomEach:"हर बार यादृच्छिक",
+    appInstall:"ऐप",installApp:"+ होम स्क्रीन पर जोड़ें",
+    seqHint:"क्रमिक सभी समूहों से गुज़रता है। यादृच्छिक {n} में से लेता है।",
+    cmpSub:"मौन सदा यहाँ था।\nयह बना रहता है।",
+    breathCycles:"चक्र {n}",
+    addrBadge:"संबोधन",
+    taskBadge:"तैयारी · कार्य {a} / {b}",
+    taskContinue:"आगे",taskSkip:"ध्यान पर जाएँ",
+  },
+  gu:{
+    meditate:"ધ્યાન",journey:"યાત્રા",journal:"ડાયRi",guide:"માHrg",settings:"seTing",
+    allPointers:"Badha sanket",saved:"Sahelaaya",
+    soundOff:"Band",singingBowls:"GaAyan KaTora",bells:"GhaNTi",deepDrone:"GaHro Svar",
+    group:"Samuh",of:"Mathi",sessionComplete:"Satr Purn",
+    minutes:"MiniT",pointers:"Sanket",returnBtn:"PaChi",
+    breathe:"☽",moodBtn:"Man kaevun che?",
+    inhale:"Shvaas lo",hold:"Roko",exhale:"Chodo",rest:"ViRAm",
+    journalPlaceholder:"Aaj na dhyAn ma shu jagyu…",
+    saveEntry:"Sahejvo",noEntries:"Koi pravishTi naThi.\nBethak pachhi lakho.",
+    sessions:"Satr",minutesSat:"BeThelA miniT",ptrsMet:"Sanket maLyA",
+    levelTitle:"Sadhak Star",language:"BhAshA",pointerHold:"Sanket samay",
+    sessionLength:"Satr avadhi",advanceMode:"Agrim mode",sound:"Dhvani",
+    startingPointer:"ShurU bindu",sequential:"Kramik",random:"YadruChhik",manual:"Manual",
+    fromBeginning:"ShurUatThi",randomEach:"Har vaar yadruChhik",
+    appInstall:"App",installApp:"+ Home screen par umer",
+    seqHint:"Kramik badha samUha ma jAye. YadruChhik {n} ma thi le.",
+    cmpSub:"MaUn sadA ahiyA haTu.\nTe rahe che.",
+    breathCycles:"ChakrA {n}",
+    addrBadge:"Sambodhan",
+    taskBadge:"TaiyAri · KArya {a} / {b}",
+    taskContinue:"Age",taskSkip:"DhyAn par jAo",
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// LEVELS
+// ═══════════════════════════════════════════════════════════
+const LEVELS = [
+  { key:'beginner', icon:'🌱',
+    label:{en:'Beginner',hi:'शुरुआती',gu:'ShuruvAti'},
+    desc:{en:'Gentle concentration tasks & basic questions. First steps on the path.',
+          hi:'सौम्य एकाग्रता कार्य और मूल प्रश्न। पथ पर पहले कदम।',
+          gu:'Komal dhyAn kAryo ane mulabhUt prashno. Path par pahelA pag.'},
+    groups:[0,1,2,3,4], // first 5 groups only
+  },
+  { key:'seeker', icon:'🔍',
+    label:{en:'Seeker',hi:'साधक',gu:'Sadhak'},
+    desc:{en:'All pointers. The inquiry deepens across all 12 groups.',
+          hi:'सभी संकेत। सभी 12 समूहों में अन्वेषण गहरा होता है।',
+          gu:'Badha sanket. Badha 12 samUhoma anweshanA gahri thAy.'},
+    groups:null, // all
+  },
+  { key:'advanced', icon:'✦',
+    label:{en:'Advanced',hi:'उन्नत',gu:'UnnAt'},
+    desc:{en:'Direct, uncompromising pointing. For those ready to fully dissolve.',
+          hi:'सीधे, अटल संकेत। उनके लिए जो पूर्णतः विलीन होने के लिए तैयार हैं।',
+          gu:'Seedhaa, makkam pointing. Temana maaTe je pUrna vilin thavA taiyAr che.'},
+    groups:null, // all + extra
+  },
+];
+
+// ═══════════════════════════════════════════════════════════
+// MOODS
+// ═══════════════════════════════════════════════════════════
+const MOODS = [
+  {key:'peace',   icon:'🌙', label:{en:'At peace',hi:'शांत',gu:'ShAnt'}},
+  {key:'neutral', icon:'·',  label:{en:'Neutral',  hi:'तटस्थ',gu:'TaTasth'}},
+  {key:'scattered',icon:'〰',label:{en:'Scattered',hi:'विचलित',gu:'Vichlit'}},
+  {key:'sad',     icon:'☁', label:{en:'Sad',       hi:'दुखी',gu:'Dukhi'}},
+  {key:'worried', icon:'〜', label:{en:'Worried',   hi:'चिंतित',gu:'Chintit'}},
+  {key:'upset',   icon:'⊙', label:{en:'Upset',     hi:'परेशान',gu:'PareshAn'}},
+];
+
+const MOOD_PTRS = {
+  scattered:[
+    {en:"Is the mind scattered right now?",              hi:"क्या अभी मन विचलित है?",                         gu:"Shu abhi man vichlit che?"},
+    {en:"Who notices the scattered mind?",               hi:"विचलित मन को कौन देखता है?",                     gu:"Vichlit man ne kon jue che?"},
+    {en:"Who is trying to gather the mind?",             hi:"मन को इकट्ठा करने की कोशिश कौन कर रहा है?",     gu:"Man ne gather karva kone koshish kare che?"},
+    {en:"The one who wants stillness — who is that?",    hi:"जो शांति चाहता है — वह कौन है?",                 gu:"Je shAnti iChhe che — te kon che?"},
+    {en:"Can you find the one who is restless?",         hi:"क्या तुम बेचैन वाले को खोज सकते हो?",           gu:"Shu tame bechaain ne dhundhi shako cho?"},
+  ],
+  sad:[
+    {en:"Are you sad?",                                  hi:"क्या तुम दुखी हो?",                               gu:"Shu tame dukhi cho?"},
+    {en:"Who is sad?",                                   hi:"कौन दुखी है?",                                     gu:"Kon dukhi che?"},
+    {en:"Who lost what? Who needed what that is now gone?",hi:"किसने क्या खोया? किसे क्या चाहिए था जो अब नहीं है?",gu:"Kone shu gumAvyu? Kone shu joitu hatu je hve naThi?"},
+    {en:"Who needs things to be different?",             hi:"कौन चाहता है कि चीज़ें बदल जाएँ?",               gu:"Kon iChhe che ke vatu badlAy?"},
+    {en:"Can you find the one who is sad? Look directly.",hi:"दुखी वाले को खोजो। सीधे देखो।",                 gu:"Dukhi ne shodho. Seedho juo."},
+  ],
+  worried:[
+    {en:"Are you worried?",                              hi:"क्या तुम चिंतित हो?",                             gu:"Shu tame chintit cho?"},
+    {en:"Who is worried?",                               hi:"कौन चिंतित है?",                                   gu:"Kon chintit che?"},
+    {en:"What does this worry want?",                    hi:"यह चिंता क्या चाहती है?",                         gu:"Aa chintA shu iChhe che?"},
+    {en:"Are you resisting what might happen?",          hi:"जो हो सकता है उसका विरोध कौन कर रहा है?",        gu:"Je Thai shake te no virodh kon kare che?"},
+    {en:"Who is the one that needs things to be safe?",  hi:"सुरक्षित रहने की ज़रूरत किसे है?",                gu:"Surakshit rehvAnu jarur enu kone che?"},
+    {en:"Can you find the one who is worried? Look.",    hi:"चिंतित वाले को खोजो। देखो।",                     gu:"Chintit ne dhundho. Juo."},
+  ],
+  upset:[
+    {en:"Are you upset?",                                hi:"क्या तुम परेशान हो?",                             gu:"Shu tame pareshAn cho?"},
+    {en:"Who is upset?",                                 hi:"कौन परेशान है?",                                   gu:"Kon pareshAn che?"},
+    {en:"Are you resisting — trying not to feel this way?",hi:"क्या तुम विरोध कर रहे हो — इस तरह न महसूस करने की कोशिश?",gu:"Shu tame virodh karo cho — A rite na anubhavvAni koshish?"},
+    {en:"Are you feeling the urge to change your feelings?",hi:"क्या तुम अपनी भावनाओं को बदलने की इच्छा महसूस कर रहे हो?",gu:"Shu tame tamari laagnio badlavAni ichHa anubhavo cho?"},
+    {en:"Who is fighting to change these feelings?",     hi:"इन भावनाओं को बदलने के लिए कौन लड़ रहा है?",     gu:"Aa laagnio ne badlavA kaun lade che?"},
+    {en:"Who is scared? Find out who is getting upset.", hi:"कौन डरा हुआ है? कौन परेशान हो रहा है — उसे खोजो।",gu:"Kon darAlo che? Kon pareshAn Thay che — tene dhundho."},
+    {en:"Who resists? Who wants to change? Look at that one.",hi:"कौन विरोध करता है? कौन बदलना चाहता है? उसे देखो।",gu:"Kon virodh kare? Kon badlaavu iChhe? Te ne juo."},
+  ],
+  peace:[],
+  neutral:[],
+};
+
+// ═══════════════════════════════════════════════════════════
+// BEGINNER TASKS
+// ═══════════════════════════════════════════════════════════
+const BEGINNER_TASKS = [
+  {en:"Close your eyes. Take three slow breaths. Simply feel that you are here — before any thought.",
+   hi:"आँखें बंद करो। तीन धीमी साँसें लो। बस महसूस करो कि तुम यहाँ हो — किसी भी विचार से पहले।",
+   gu:"Aankh band karo. Tran dheemi svaas lo. Bas anubhavo ke tame ahiyA cho — koi pan vichar thi pehla."},
+  {en:"Feel the weight of your body. Where does it touch the surface beneath you? Stay with that feeling.",
+   hi:"अपने शरीर का वज़न महसूस करो। यह नीचे की सतह को कहाँ छू रहा है? उस अनुभव के साथ रहो।",
+   gu:"Tara shrir no bhojar anubhavo. Te nicheni satah ne kyaA sparsh kare che? Te anubhav sAthe raho."},
+  {en:"Listen to any sound near you — without naming it. Just hear the sound. Who is hearing?",
+   hi:"अपने पास किसी भी ध्वनि को सुनो — बिना नाम दिए। बस उस ध्वनि को सुनो। सुनने वाला कौन है?",
+   gu:"Tari pAse ni koi pan dhvani sano — nAm AapyA vinA. Fakt e dhvani sano. Sananaar kon che?"},
+  {en:"Notice: before you think 'I am here' — are you already here? Check for yourself.",
+   hi:"ध्यान दो: 'मैं यहाँ हूँ' सोचने से पहले — क्या तुम पहले से यहाँ नहीं हो? खुद जाँचो।",
+   gu:"Dhyaan aap: 'hum ahiyA chhu' vichArvA thi pehla — shu tame pahela thi ahiyA naThi? Jaat tapAso."},
+  {en:"Ask yourself gently: Who is reading these words? Look for that one — without using the word 'I.'",
+   hi:"खुद से धीरे से पूछो: इन शब्दों को कौन पढ़ रहा है? उसे खोजो — 'मैं' शब्द के बिना।",
+   gu:"Pote ne dhime dhime puChho: Aa shbdo kon vAanche che? Tene dhundho — 'Hum' shbad vinA."},
+];
+
+// ═══════════════════════════════════════════════════════════
+// POINTER DATA
 // ═══════════════════════════════════════════════════════════
 const GROUPS = [
-  { label:"Turning toward the I", pointers:[
-    "Watch I without words",
-    "Who is behind this I?",
-    "Who is that for which the word I arises?",
-    "The source from which I arises"
+  {label:{en:"Turning toward the I",hi:"'मैं' की ओर",gu:"'Hum' taraf"}, pointers:[
+    {en:"Watch I without words",hi:"शब्दों के बिना 'मैं' को देखो",gu:"Shabdo vinA 'Hum' ne juo"},
+    {en:"Who is behind this I?",hi:"इस 'मैं' के पीछे कौन है?",gu:"Aa 'Hum' ni pAChhal kon che?"},
+    {en:"Who is that for which the word I arises?",hi:"वह कौन है जिसके लिए 'मैं' शब्द उठता है?",gu:"'Hum' shabd jeni mAaTe uThe che te kon che?"},
+    {en:"The source from which I arises",hi:"'मैं' जहाँ से उठता है — वह स्रोत",gu:"'Hum' jyAnthi uThe — te srot"},
   ]},
-  { label:"The timeless one", pointers:[
-    "The one always there — whether I arises or not",
-    "The one before the body came into existence",
-    "The one present while the body lives",
-    "The one there when the body dies",
-    "The one that remains after the body dissolves"
+  {label:{en:"The timeless one",hi:"कालातीत एक",gu:"KAlAtit Ek"}, pointers:[
+    {en:"The one always there — whether I arises or not",hi:"वह जो सदा है — चाहे 'मैं' उठे या न उठे",gu:"Je sadA che — 'Hum' uThe ke nA uThe"},
+    {en:"The one before the body came into existence",hi:"शरीर के अस्तित्व में आने से पहले का वह एक",gu:"Sharir astvimAn AavyA pehlanA te"},
+    {en:"The one present while the body lives",hi:"जब तक शरीर जीता है तब तक उपस्थित वह एक",gu:"Sharir jyAre jive tyAre hAjar rehnaaro"},
+    {en:"The one there when the body dies",hi:"जब शरीर मरता है तब भी वहाँ रहने वाला",gu:"Sharir mritu pAme tyAre pan tyAn rehnaaro"},
+    {en:"The one that remains after the body dissolves",hi:"शरीर विलीन होने के बाद भी बचने वाला",gu:"Sharir visarjan pachhi pan rehnaaro"},
   ]},
-  { label:"Seeing through the image", pointers:[
-    "Is the separate person not imagined?",
-    "Are limitations not just images?",
-    "What is left when all images fade away?"
+  {label:{en:"Seeing through the image",hi:"छवि को पार देखना",gu:"Chhavi ne pAr jovu"}, pointers:[
+    {en:"Is the separate person not imagined?",hi:"क्या अलग व्यक्ति कल्पित नहीं है?",gu:"Shu alag vyakti kalpitA naThi?"},
+    {en:"Are limitations not just images?",hi:"क्या सीमाएँ सिर्फ छवियाँ नहीं हैं?",gu:"Shu maryAdAo fakat chhAvi naThi?"},
+    {en:"What is left when all images fade away?",hi:"जब सभी छवियाँ मिट जाती हैं तो क्या बचता है?",gu:"JyAre badhi chhAvi mit jAy tyAre shu bache?"},
   ]},
-  { label:"The nature of mind", pointers:[
-    "Is the mind real — or just a bundle of thoughts?",
-    "Who says the mind exists?",
-    "If the mind does not exist — who made it exist?",
-    "Attending thoughts is feeding them — are thoughts real?"
+  {label:{en:"The nature of mind",hi:"मन का स्वभाव",gu:"Man no svabhAv"}, pointers:[
+    {en:"Is the mind real — or just a bundle of thoughts?",hi:"क्या मन वास्तविक है — या केवल विचारों का समूह?",gu:"Shu man vAstavikA che — ke fakat vichAronu samuh?"},
+    {en:"Who says the mind exists?",hi:"मन का अस्तित्व कौन कहता है?",gu:"Man che evo kon kahe che?"},
+    {en:"If the mind does not exist — who made it exist?",hi:"यदि मन नहीं है — तो किसने उसे अस्तित्व में लाया?",gu:"JAo man naThi — to tene astitva kone Aapyu?"},
+    {en:"Attending thoughts is feeding them — are thoughts real?",hi:"विचारों पर ध्यान देना उन्हें खिलाना है — क्या विचार वास्तविक हैं?",gu:"VichArono dhyAn Aapu e tene khAvad Aapu — shu vichAr vAstavikA che?"},
   ]},
-  { label:"The nature of thoughts", pointers:[
-    "If thoughts are not real — do they exist?",
-    "What is left if thoughts are not real?",
-    "What is left if there is no mind in reality?"
+  {label:{en:"The nature of thoughts",hi:"विचारों का स्वभाव",gu:"VichArono svabhAv"}, pointers:[
+    {en:"If thoughts are not real — do they exist?",hi:"यदि विचार वास्तविक नहीं हैं — तो क्या वे हैं?",gu:"JAo vichAr vAstavikA naThi — to shu te che?"},
+    {en:"What is left if thoughts are not real?",hi:"यदि विचार वास्तविक नहीं हैं तो क्या बचता है?",gu:"JAo vichAr vAstavikA nA hoy to shu bache?"},
+    {en:"What is left if there is no mind in reality?",hi:"यदि वास्तव में कोई मन नहीं है तो क्या बचता है?",gu:"JAo vastav mA koi man nA hoy to shu bache?"},
   ]},
-  { label:"The world and self unravel", pointers:[
-    "If thoughts don't exist — do you exist?",
-    "If you don't exist — does this world exist? Is it not all imaginary?",
-    "What exists if nothing perceivable, imaginable, or understandable exists?"
+  {label:{en:"The world and self unravel",hi:"जगत और स्व का विलय",gu:"Jagat ane SvA no vilay"}, pointers:[
+    {en:"If thoughts don't exist — do you exist?",hi:"यदि विचार नहीं हैं — तो क्या तुम हो?",gu:"JAo vichAr naThi — to shu tame cho?"},
+    {en:"If you don't exist — does this world exist?",hi:"यदि तुम नहीं हो — तो यह संसार है क्या?",gu:"JAo tame naThi — to Aa jagat che?"},
+    {en:"What exists if nothing perceivable, imaginable, or understandable exists?",hi:"यदि कुछ भी अनुभव, कल्पना या समझ में नहीं आता — तो क्या है?",gu:"JAo koi anubhav, kalpnA ke samaj nA hoy — to shu che?"},
   ]},
-  { label:"The open door", pointers:[
-    "What is there when nothing is there?"
-  ]}
+  {label:{en:"The open door",hi:"खुला द्वार",gu:"Ughadel DvAr"}, pointers:[
+    {en:"What is there when nothing is there?",hi:"जब कुछ नहीं है तो क्या है?",gu:"JyAre kashil naThi tyAre shu che?"},
+  ]},
+  {label:{en:"Before the word I",hi:"शब्द 'मैं' से पहले",gu:"'Hum' shabd thi pehla"}, pointers:[
+    {en:"What if the 'I' itself is imaginary?",hi:"क्या 'मैं' स्वयं कल्पना है?",gu:"Shu 'Hum' pote kalpanA che?"},
+    {en:"From where does this very thought of 'I' arise?",hi:"'मैं' का यह विचार कहाँ से उठता है?",gu:"'Hum' no Ae vichAr kyAnthi uThe che?"},
+    {en:"From where does the very word 'I' arise?",hi:"'मैं' शब्द कहाँ से उठता है?",gu:"'Hum' shabd kyAnthi uThe che?"},
+    {en:"What is behind this word 'I'?",hi:"इस 'मैं' शब्द के पीछे क्या है?",gu:"Aa 'Hum' shabd ni pAChhal shu che?"},
+    {en:"What are you before this 'I'?",hi:"इस 'मैं' से पहले तुम क्या हो?",gu:"Aa 'Hum' thi pehla tame shu cho?"},
+  ]},
+  {label:{en:"Just before I appears",hi:"'मैं' प्रकट होने से ठीक पहले",gu:"'Hum' pragat thAy te pehla"}, pointers:[
+    {en:"Are you not already here even before this word 'I' starts?",hi:"क्या तुम 'मैं' शुरू होने से भी पहले यहाँ नहीं हो?",gu:"Shu tame 'Hum' sharu thAy te pehla pan ahiyA naThi?"},
+    {en:"Are you not without 'I,' just before 'I' appears?",hi:"क्या तुम 'मैं' प्रकट होने से ठीक पहले बिना 'मैं' के नहीं हो?",gu:"'Hum' pragat thAy te turat pehla shu tame 'Hum' vinA naThi?"},
+    {en:"Just go back. Go back to the source of 'I.'",hi:"बस पीछे जाओ। 'मैं' के स्रोत की ओर लौटो।",gu:"Bus pAChi jAo. 'Hum' nA srot taraf pAChi jAo."},
+    {en:"After you, feeling and identity begin — then the label 'I' is given",hi:"तुम्हारे बाद, भावना और पहचान शुरू होती है — तब उसे 'मैं' कहा जाता है",gu:"TamArA pachhi, lAgni ane olakh shuru thAy — pachhi tene 'Hum' khevaay"},
+  ]},
+  {label:{en:"Beyond body and images",hi:"शरीर और छवियों से परे",gu:"Sharir ane chhAvio thi pAre"}, pointers:[
+    {en:"Are you a body?",hi:"क्या तुम शरीर हो?",gu:"Shu tame sharir cho?"},
+    {en:"There are images of the whole universe in your mind — what are you without these images?",hi:"तुम्हारे मन में समस्त सृष्टि की छवियाँ हैं — इन छवियों के बिना तुम क्या हो?",gu:"TarA man mA samagra sranth ni chhAbi che — in chhAbi vinA tame shu cho?"},
+    {en:"Can you see how all these images appear and stay together?",hi:"क्या तुम देख सकते हो कैसे ये सभी छवियाँ प्रकट होती और साथ रहती हैं?",gu:"Shu tame joi shako cho ke Ae badhi chhAbi kevi rite pragat thAy ane sAth rahe?"},
+  ]},
+  {label:{en:"The witness",hi:"साक्षी",gu:"SaksHi"}, pointers:[
+    {en:"Who is watching all of this?",hi:"यह सब कौन देख रहा है?",gu:"Aa badhu kon joi rahyu che?"},
+    {en:"Is the watcher itself a thought?",hi:"क्या देखने वाला स्वयं एक विचार है?",gu:"Shu jonAr pote ek vichAr che?"},
+    {en:"Can awareness be aware of itself?",hi:"क्या चेतना स्वयं अपनी जानकारी रख सकती है?",gu:"Shu chetnA pote ni jAAnkAri rAkhi shake?"},
+    {en:"What remains when the watcher dissolves?",hi:"जब देखने वाला विलीन हो जाता है तो क्या बचता है?",gu:"JyAre jonAr vilin thAy tyAre shu bache?"},
+  ]},
+  {label:{en:"Pure presence",hi:"शुद्ध उपस्थिति",gu:"Shuddh UpasThiti"}, pointers:[
+    {en:"What is here before any thought arises?",hi:"कोई भी विचार उठने से पहले यहाँ क्या है?",gu:"Koi pan vichAr uThe te pehla ahiyA shu che?"},
+    {en:"Is there a gap between two thoughts? What lives in that gap?",hi:"दो विचारों के बीच एक अंतर है क्या? उस अंतर में क्या जीता है?",gu:"Be vichAr vachche antar che? Te antar mA shu jive che?"},
+    {en:"What has never come and will never go?",hi:"जो कभी आया नहीं और जाएगा भी नहीं — वह क्या है?",gu:"Je kabhi Aavyu naThi ane kabhi jAse nahi — e shu che?"},
+  ]},
 ];
 
-const GUIDE = [
-  { title:"Purpose",
-    body:"These pointers are not ideas to think about. They are designed to snatch away mental images and identities — and sink you back into the source. Where nothing is left. No identification. No self. No source. Just deep silence in nothingness." },
-  { title:"When the mind wanders",
-    body:"Use these pointers the moment you notice the mind has wandered. Not as punishment — as a gentle return. The pointer is a hand pointing back to what is already here." },
-  { title:"When the mind creates questions or doubts",
-    body:"Turn the question back on itself. Ask directly —",
-    sub:"Who has these thoughts? Who wants peace? Who needs what? Who wants enlightenment? Is enlightenment not also imaginary? Who is the separate person? Who do you think yourself to be? Who is I without words — the one for which the word I arises? The one before the rise of I? The one before the urge to use the word I?" },
-  { title:"When happy or at ease",
-    body:"Use the pointers even then. Ask —",
-    sub:"Who is happy? Who feels pleasure? Who has pride? Is this not also the mind creating a you who enjoys?" },
-  { title:"When sad or in suffering",
-    body:"Use the pointers especially then. Ask —",
-    sub:"Who is sad? Who wanted what? Who lost what? Who are these fears?" },
-  { title:"How long to use them",
-    body:"Use them until nothing is left — only deep, unnamed, unobserved silence. When the sense of a separate person arises again, start once more." },
-  { title:"The end of the path",
-    body:"Continue until all dissolves. Until the need for these pointers vanishes on its own. Until there is no one left to ask and no one to be asked. No one to question and no one to answer." }
+const GUIDE=[
+  {title:"Purpose",body:"These pointers are not ideas to think about. They are designed to snatch away mental images and identities — and sink you back into the source. Where nothing is left. No identification. No self. No source. Just deep silence in nothingness."},
+  {title:"When the mind wanders",body:"Use these pointers the moment you notice the mind has wandered. Not as punishment — as a gentle return. The pointer is a hand pointing back to what is already here."},
+  {title:"When the mind creates questions or doubts",body:"Turn the question back on itself. Ask directly —",sub:"Who has these thoughts? Who wants peace? Who needs what? Who wants enlightenment? Is enlightenment not also imaginary? Who is the separate person? Who do you think yourself to be?"},
+  {title:"When happy or at ease",body:"Use the pointers even then. Ask —",sub:"Who is happy? Who feels pleasure? Who has pride? Is this not also the mind creating a you who enjoys?"},
+  {title:"When sad or in suffering",body:"Use the pointers especially then. Ask —",sub:"Who is sad? Who wanted what? Who lost what? Who are these fears?"},
+  {title:"How long to use them",body:"Use them until nothing is left — only deep, unnamed, unobserved silence. When the sense of a separate person arises again, start once more."},
+  {title:"The end of the path",body:"Continue until all dissolves. Until the need for these pointers vanishes on its own. Until there is no one left to ask and no one to be asked. No one to question and no one to answer."},
 ];
 
-// Flatten pointers
-const ALL = [];
-GROUPS.forEach((g,gi) => {
-  g.pointers.forEach((p,pi) => {
-    ALL.push({text:p,group:g.label,gi,pi,isFirst:pi===0});
-  });
-});
+// Flatten
+const ALL=[];
+GROUPS.forEach((g,gi)=>{g.pointers.forEach((p,pi)=>{ALL.push({text:p,group:g.label,gi,pi,isFirst:pi===0});});});
 
 // ═══════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════
-const LS_KEY = 'rts_v1';
+const LS_KEY='rts_v3';
 function loadLS(){try{return JSON.parse(localStorage.getItem(LS_KEY))||{}}catch{return{}}}
 function saveLS(d){try{localStorage.setItem(LS_KEY,JSON.stringify(d))}catch{}}
+let saved=loadLS();
 
-let saved = loadLS();
-
-const ST = {
-  cur:       0,
-  paused:    false,
-  sndType:   'off',
-  sndOn:     false,
-  dur:       10000,
-  sessLen:   0,
-  mode:      'seq',
-  startMode: '0',
-  screen:    'meditate',
-  favs:      new Set(saved.favs||[]),
-  sessStart: null,
-  ptrsHit:   0,
-  totalSess: saved.totalSess||0,
-  totalMins: saved.totalMins||0,
-  totalPtrs: saved.totalPtrs||0,
-  advTimer:  null,
-  sessTimer: null,
-  ctrlTimer: null,
-  sessRemain:0,
-  audio:     null,
-  ambNodes:  null,
-  ambGain:   null,
-  bowlTimer: null,
+const ST={
+  cur:0,paused:false,sndType:'off',sndOn:false,dur:10000,sessLen:0,
+  mode:'seq',startMode:'0',lang:saved.lang||'en',level:saved.level||'seeker',
+  screen:'meditate',favs:new Set(saved.favs||[]),
+  sessStart:null,ptrsHit:0,totalSess:saved.totalSess||0,
+  totalMins:saved.totalMins||0,totalPtrs:saved.totalPtrs||0,
+  advTimer:null,sessTimer:null,ctrlTimer:null,sessRemain:0,
+  audio:null,ambNodes:null,ambGain:null,bowlTimer:null,
+  // addressing mode
+  addrMode:false,addrPtrs:[],addrIdx:0,
+  // beginner task
+  taskIdx:0,
 };
 
-function persistStats(){
-  saveLS({
-    favs:[...ST.favs],
-    totalSess:ST.totalSess,
-    totalMins:ST.totalMins,
-    totalPtrs:ST.totalPtrs,
+function T(){return UI[ST.lang]||UI.en;}
+function persist(){
+  saveLS({favs:[...ST.favs],totalSess:ST.totalSess,totalMins:ST.totalMins,
+    totalPtrs:ST.totalPtrs,lang:ST.lang,level:ST.level,levelSet:true});
+}
+
+// Pointer pool based on level
+function getPool(){
+  const lev=LEVELS.find(l=>l.key===ST.level)||LEVELS[1];
+  if(!lev.groups) return ALL;
+  let pool=[],off=0;
+  GROUPS.forEach((g,gi)=>{
+    g.pointers.forEach((p,pi)=>{
+      if(lev.groups.includes(gi)) pool.push({text:p,group:g.label,gi,pi,isFirst:pi===0,absIdx:off+pi});
+    });
+    off+=g.pointers.length;
   });
+  return pool;
 }
 
 // ═══════════════════════════════════════════════════════════
-// CANVAS BACKGROUND
+// CANVAS
 // ═══════════════════════════════════════════════════════════
-const cvs = document.getElementById('bg-canvas');
-const cx  = cvs.getContext('2d');
-let pts=[], bgT=0;
-
-function initPts(){
-  pts=[];
-  const n = Math.min(90, Math.floor(cvs.width*cvs.height/7500));
-  for(let i=0;i<n;i++) pts.push({
-    x:Math.random()*cvs.width, y:Math.random()*cvs.height,
-    r:Math.random()*1.3+0.2,
-    dx:(Math.random()-.5)*.13, dy:(Math.random()-.5)*.09,
-    a:Math.random()*.16+.03,
-    fl:Math.random()*Math.PI*2,
-    fs:Math.random()*.016+.005
-  });
-}
-
-function drawBg(){
-  bgT+=.003;
-  cx.clearRect(0,0,cvs.width,cvs.height);
-  const W=cvs.width, H=cvs.height;
-  // Deep radial gradient
-  const g=cx.createRadialGradient(W/2,H/2,20,W/2,H/2,W*.68);
-  g.addColorStop(0,`rgba(5,28,52,${.32+Math.sin(bgT)*.05})`);
-  g.addColorStop(.55,'rgba(3,14,28,.12)');
-  g.addColorStop(1,'rgba(2,7,15,0)');
-  cx.fillStyle=g; cx.fillRect(0,0,W,H);
-  // Stars
-  pts.forEach(p=>{
-    p.fl+=p.fs;
-    cx.beginPath(); cx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    cx.fillStyle=`rgba(100,200,230,${p.a*(.7+Math.sin(p.fl)*.3)})`;
-    cx.fill();
-    p.x+=p.dx; p.y+=p.dy;
-    if(p.x<-5)p.x=W+5; if(p.x>W+5)p.x=-5;
-    if(p.y<-5)p.y=H+5; if(p.y>H+5)p.y=-5;
-  });
-  requestAnimationFrame(drawBg);
-}
-
-function resizeCvs(){
-  cvs.width=window.innerWidth; cvs.height=window.innerHeight;
-  initPts();
-}
-window.addEventListener('resize',resizeCvs);
-resizeCvs(); drawBg();
+const cvs=document.getElementById('bg-canvas');
+const cx=cvs.getContext('2d');
+let pts=[],bgT=0;
+function initPts(){pts=[];const n=Math.min(90,Math.floor(cvs.width*cvs.height/7500));for(let i=0;i<n;i++)pts.push({x:Math.random()*cvs.width,y:Math.random()*cvs.height,r:Math.random()*1.3+.2,dx:(Math.random()-.5)*.13,dy:(Math.random()-.5)*.09,a:Math.random()*.16+.03,fl:Math.random()*Math.PI*2,fs:Math.random()*.016+.005});}
+function drawBg(){bgT+=.003;cx.clearRect(0,0,cvs.width,cvs.height);const W=cvs.width,H=cvs.height;const g=cx.createRadialGradient(W/2,H/2,20,W/2,H/2,W*.68);g.addColorStop(0,`rgba(5,28,52,${.32+Math.sin(bgT)*.05})`);g.addColorStop(.55,'rgba(3,14,28,.12)');g.addColorStop(1,'rgba(2,7,15,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);pts.forEach(p=>{p.fl+=p.fs;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle=`rgba(100,200,230,${p.a*(.7+Math.sin(p.fl)*.3)})`;cx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<-5)p.x=W+5;if(p.x>W+5)p.x=-5;if(p.y<-5)p.y=H+5;if(p.y>H+5)p.y=-5;});requestAnimationFrame(drawBg);}
+function resizeCvs(){cvs.width=window.innerWidth;cvs.height=window.innerHeight;initPts();}
+window.addEventListener('resize',resizeCvs);resizeCvs();drawBg();
 
 // ═══════════════════════════════════════════════════════════
 // AUDIO
 // ═══════════════════════════════════════════════════════════
-function ensureAudio(){
-  if(!ST.audio) ST.audio=new(window.AudioContext||window.webkitAudioContext)();
-  if(ST.audio.state==='suspended') ST.audio.resume();
-}
-
-function mkGain(val){
-  const g=ST.audio.createGain(); g.gain.value=val;
-  g.connect(ST.audio.destination); return g;
-}
-
-function bowl(masterGain){
-  const sets=[[196,294,392,523],[174,261,348,440],[220,330,440,587],[261,392,523,698]];
-  const fs=sets[Math.floor(Math.random()*sets.length)];
-  fs.forEach((f,i)=>{
-    setTimeout(()=>{
-      const osc=ST.audio.createOscillator();
-      const env=ST.audio.createGain();
-      osc.type='sine'; osc.frequency.value=f;
-      osc.detune.value=(Math.random()-.5)*8;
-      const now=ST.audio.currentTime;
-      env.gain.setValueAtTime(0,now);
-      env.gain.linearRampToValueAtTime(.14,now+.28);
-      env.gain.exponentialRampToValueAtTime(.0001,now+10);
-      osc.connect(env); env.connect(masterGain);
-      osc.start(now); osc.stop(now+10);
-    },i*220);
-  });
-}
-
-function bell(masterGain){
-  const f=392+Math.random()*200;
-  const partials=[1,2.76,5.4,8.93];
-  partials.forEach((mult,i)=>{
-    const osc=ST.audio.createOscillator();
-    const env=ST.audio.createGain();
-    osc.type='sine'; osc.frequency.value=f*mult;
-    const now=ST.audio.currentTime;
-    const vol=.12/Math.pow(i+1,.8);
-    env.gain.setValueAtTime(0,now);
-    env.gain.linearRampToValueAtTime(vol,now+.04);
-    env.gain.exponentialRampToValueAtTime(.0001,now+3.5);
-    osc.connect(env); env.connect(masterGain);
-    osc.start(now); osc.stop(now+3.5);
-  });
-}
-
-function startDrone(){
-  if(ST.ambNodes) return;
-  ST.ambGain=mkGain(0);
-  const freqs=[80,80.22,160.15,240.3];
-  ST.ambNodes=freqs.map(f=>{
-    const o=ST.audio.createOscillator();
-    o.type='sine'; o.frequency.value=f;
-    o.connect(ST.ambGain); o.start(); return o;
-  });
-  ST.ambGain.gain.setTargetAtTime(.1,ST.audio.currentTime,2);
-}
-
-function stopDrone(){
-  if(!ST.ambNodes) return;
-  ST.ambGain.gain.setTargetAtTime(0,ST.audio.currentTime,.8);
-  setTimeout(()=>{
-    ST.ambNodes.forEach(o=>{try{o.stop()}catch{}});
-    ST.ambNodes=null; ST.ambGain=null;
-  },3000);
-}
-
-function applySnd(){
-  if(ST.bowlTimer){clearInterval(ST.bowlTimer);ST.bowlTimer=null}
-  stopDrone();
-  const btn=q('btn-sound'), lbl=q('sound-lbl');
-  if(!ST.sndOn){
-    btn.textContent='🔇'; btn.classList.remove('on');
-    lbl.textContent='sound off'; return;
-  }
-  ensureAudio();
-  btn.classList.add('on');
-  if(ST.sndType==='bowls'){
-    btn.textContent='🎵'; lbl.textContent='singing bowls';
-    const g=mkGain(.65); bowl(g);
-    ST.bowlTimer=setInterval(()=>{if(ST.sndOn)bowl(g)},14000);
-  } else if(ST.sndType==='bells'){
-    btn.textContent='🔔'; lbl.textContent='bells';
-    const g=mkGain(.55); bell(g);
-    ST.bowlTimer=setInterval(()=>{if(ST.sndOn)bell(g)},7000);
-  } else if(ST.sndType==='drone'){
-    btn.textContent='〜'; lbl.textContent='deep drone';
-    startDrone();
-  } else {
-    btn.textContent='🔇'; lbl.textContent='sound off';
-    btn.classList.remove('on');
-  }
-}
-
-function transitionSound(){
-  if(!ST.sndOn||!ST.audio) return;
-  if(ST.sndType==='bells'){
-    const g=mkGain(.3); bell(g);
-  }
-}
-
-function completionSound(){
-  ensureAudio();
-  const g=mkGain(.55);
-  bowl(g); setTimeout(()=>bowl(g),2200);
-}
+function ensureAudio(){if(!ST.audio)ST.audio=new(window.AudioContext||window.webkitAudioContext)();if(ST.audio.state==='suspended')ST.audio.resume();}
+function mkGain(v){const g=ST.audio.createGain();g.gain.value=v;g.connect(ST.audio.destination);return g;}
+function bowl(mg){const sets=[[196,294,392,523],[174,261,348,440],[220,330,440,587],[261,392,523,698]];const fs=sets[Math.floor(Math.random()*sets.length)];fs.forEach((f,i)=>{setTimeout(()=>{const o=ST.audio.createOscillator(),e=ST.audio.createGain();o.type='sine';o.frequency.value=f;o.detune.value=(Math.random()-.5)*8;const n=ST.audio.currentTime;e.gain.setValueAtTime(0,n);e.gain.linearRampToValueAtTime(.14,n+.28);e.gain.exponentialRampToValueAtTime(.0001,n+10);o.connect(e);e.connect(mg);o.start(n);o.stop(n+10);},i*220);});}
+function bell(mg){const f=392+Math.random()*200;[1,2.76,5.4,8.93].forEach((m,i)=>{const o=ST.audio.createOscillator(),e=ST.audio.createGain();o.type='sine';o.frequency.value=f*m;const n=ST.audio.currentTime,v=.12/Math.pow(i+1,.8);e.gain.setValueAtTime(0,n);e.gain.linearRampToValueAtTime(v,n+.04);e.gain.exponentialRampToValueAtTime(.0001,n+3.5);o.connect(e);e.connect(mg);o.start(n);o.stop(n+3.5);});}
+function startDrone(){if(ST.ambNodes)return;ST.ambGain=mkGain(0);ST.ambNodes=[80,80.22,160.15,240.3].map(f=>{const o=ST.audio.createOscillator();o.type='sine';o.frequency.value=f;o.connect(ST.ambGain);o.start();return o;});ST.ambGain.gain.setTargetAtTime(.1,ST.audio.currentTime,2);}
+function stopDrone(){if(!ST.ambNodes)return;ST.ambGain.gain.setTargetAtTime(0,ST.audio.currentTime,.8);setTimeout(()=>{ST.ambNodes.forEach(o=>{try{o.stop()}catch{}});ST.ambNodes=null;ST.ambGain=null;},3000);}
+function applySnd(){if(ST.bowlTimer){clearInterval(ST.bowlTimer);ST.bowlTimer=null;}stopDrone();const btn=q('btn-sound'),lbl=q('sound-lbl');if(!ST.sndOn){btn.textContent='🔇';btn.classList.remove('on');lbl.textContent=T().soundOff;return;}ensureAudio();btn.classList.add('on');if(ST.sndType==='bowls'){btn.textContent='🎵';lbl.textContent=T().singingBowls;const g=mkGain(.65);bowl(g);ST.bowlTimer=setInterval(()=>{if(ST.sndOn)bowl(g);},14000);}else if(ST.sndType==='bells'){btn.textContent='🔔';lbl.textContent=T().bells;const g=mkGain(.55);bell(g);ST.bowlTimer=setInterval(()=>{if(ST.sndOn)bell(g);},7000);}else if(ST.sndType==='drone'){btn.textContent='〜';lbl.textContent=T().deepDrone;startDrone();}else{btn.textContent='🔇';lbl.textContent=T().soundOff;btn.classList.remove('on');}}
+function transitionSnd(){if(!ST.sndOn||!ST.audio)return;if(ST.sndType==='bells'){const g=mkGain(.3);bell(g);}}
+function completionSnd(){ensureAudio();const g=mkGain(.55);bowl(g);setTimeout(()=>bowl(g),2200);}
 
 // ═══════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════
-function q(id){return document.getElementById(id)}
+function q(id){return document.getElementById(id);}
+function arcStart(){const el=q('arc-fill');el.style.setProperty('--dur',ST.dur+'ms');el.classList.remove('running');void el.offsetWidth;el.classList.add('running');el.style.animationPlayState='running';}
+function arcPause(){q('arc-fill').style.animationPlayState='paused';}
+function arcReset(){const el=q('arc-fill');el.classList.remove('running');void el.offsetWidth;el.style.strokeDashoffset='477.52';}
+function buildDots(){const el=q('dots');el.innerHTML='';ALL.forEach((p,i)=>{const d=document.createElement('div');d.className='dot'+(i===ST.cur?' active':'')+(p.isFirst&&i>0?' grp':'');d.title=p.group.en;d.addEventListener('click',()=>goTo(i));el.appendChild(d);});}
+function syncDots(){q('dots').querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===ST.cur));}
 
-// ─── Arc ──────────────────────────────────────────────────
-function arcStart(){
-  const el=q('arc-fill');
-  el.style.setProperty('--dur',ST.dur+'ms');
-  el.classList.remove('running');
-  void el.offsetWidth;
-  el.classList.add('running');
-  el.style.animationPlayState='running';
-}
-function arcPause(){q('arc-fill').style.animationPlayState='paused'}
-function arcReset(){
-  const el=q('arc-fill');
-  el.classList.remove('running');
-  void el.offsetWidth;
-  el.style.strokeDashoffset='477.52';
-}
-
-// ─── Dots ─────────────────────────────────────────────────
-function buildDots(){
-  const el=q('dots'); el.innerHTML='';
-  ALL.forEach((p,i)=>{
-    const d=document.createElement('div');
-    d.className='dot'+(i===ST.cur?' active':'')+(p.isFirst&&i>0?' grp':'');
-    d.title=p.group;
-    d.addEventListener('click',()=>goTo(i));
-    el.appendChild(d);
-  });
-}
-function syncDots(){
-  q('dots').querySelectorAll('.dot').forEach((d,i)=>
-    d.classList.toggle('active',i===ST.cur));
-}
-
-// ─── Pointer display ──────────────────────────────────────
 function showPtr(instant=false){
-  const p=ALL[ST.cur];
-  const ptEl=q('ptr-text'), pgEl=q('ptr-grp'), pcEl=q('ptr-count');
-
+  const pool=getPool();
+  const p=ST.addrMode?ST.addrPtrs[ST.addrIdx]:pool[ST.cur%pool.length];
+  if(!p) return;
+  const ptEl=q('ptr-text'),pgEl=q('ptr-grp'),pcEl=q('ptr-count');
+  const lang=ST.lang;
   function apply(){
-    ptEl.textContent='“'+p.text+'”';
-    pgEl.textContent=p.group;
-    pcEl.textContent=(ST.cur+1)+' · '+ALL.length;
-    q('hdr-group').textContent='Group '+(p.gi+1)+' of '+GROUPS.length;
+    ptEl.textContent='"'+(p.text[lang]||p.text.en)+'"';
+    if(ST.addrMode){
+      pgEl.textContent=T().addrBadge;
+      pcEl.textContent=(ST.addrIdx+1)+' · '+ST.addrPtrs.length;
+    } else {
+      pgEl.textContent=(p.group[lang]||p.group.en);
+      pcEl.textContent=(ST.cur+1)+' · '+pool.length;
+      q('hdr-group').textContent=T().group+' '+(p.gi+1)+' '+T().of+' '+GROUPS.length;
+    }
     const isFav=ST.favs.has(ST.cur);
     q('btn-fav').textContent=isFav?'♥':'♡';
     q('btn-fav').classList.toggle('on',isFav);
     syncDots();
   }
-
-  if(instant){
-    apply();
-    ptEl.classList.add('on'); pgEl.classList.add('on'); pcEl.classList.add('on');
-    return;
-  }
-
-  ptEl.classList.remove('on'); pgEl.classList.remove('on'); pcEl.classList.remove('on');
-  setTimeout(()=>{
-    apply();
-    ptEl.classList.add('on'); pgEl.classList.add('on'); pcEl.classList.add('on');
-    ST.ptrsHit++;
-    transitionSound();
-    if(!ST.paused&&ST.mode!=='man') arcStart();
-  },380);
+  if(instant){apply();ptEl.classList.add('on');pgEl.classList.add('on');pcEl.classList.add('on');return;}
+  ptEl.classList.remove('on');pgEl.classList.remove('on');pcEl.classList.remove('on');
+  setTimeout(()=>{apply();ptEl.classList.add('on');pgEl.classList.add('on');pcEl.classList.add('on');ST.ptrsHit++;transitionSnd();if(!ST.paused&&ST.mode!=='man')arcStart();},380);
 }
 
-// ─── Advance ──────────────────────────────────────────────
-function next(){
-  if(ST.mode==='rand') ST.cur=Math.floor(Math.random()*ALL.length);
-  else ST.cur=(ST.cur+1)%ALL.length;
-  showPtr();
+function nextAddr(){
+  ST.addrIdx++;
+  if(ST.addrIdx>=ST.addrPtrs.length){endAddressing();return;}
+  arcReset();showPtr();arcStart();
 }
 
-function resetAdv(){
+function startAddressing(moodKey){
+  const ptrs=MOOD_PTRS[moodKey]||[];
+  if(!ptrs.length){return;}
+  ST.addrMode=true;ST.addrPtrs=ptrs;ST.addrIdx=0;
+  q('addr-badge').textContent=T().addrBadge;
+  q('addr-badge').classList.add('on');
+  q('arc-fill').classList.add('warm');
   clearInterval(ST.advTimer);
-  if(!ST.paused&&ST.mode!=='man'){
-    ST.advTimer=setInterval(next,ST.dur);
-  }
+  arcReset();showPtr();
+  const holdMs=Math.max(ST.dur,15000);
+  arcStart();
+  ST.advTimer=setInterval(()=>{nextAddr();},holdMs);
 }
 
-function goTo(idx){
-  ST.cur=((idx%ALL.length)+ALL.length)%ALL.length;
-  arcReset();
+function endAddressing(){
+  ST.addrMode=false;ST.addrPtrs=[];ST.addrIdx=0;
+  q('addr-badge').classList.remove('on');
+  q('arc-fill').classList.remove('warm');
+  arcReset();showPtr();resetAdv();
+  if(!ST.paused&&ST.mode!=='man')arcStart();
+}
+
+function next(){
+  if(ST.addrMode){nextAddr();return;}
+  const pool=getPool();
+  if(ST.mode==='rand') ST.cur=Math.floor(Math.random()*pool.length);
+  else ST.cur=(ST.cur+1)%pool.length;
   showPtr();
-  resetAdv();
-  if(!ST.paused&&ST.mode!=='man') arcStart();
 }
-
-// ─── Controls fade ────────────────────────────────────────
-function showCtrl(){
-  q('controls').style.opacity='1';
-  q('dots').style.opacity='1';
-  q('sound-lbl').style.opacity='1';
-  if(ST.ctrlTimer) clearTimeout(ST.ctrlTimer);
-  ST.ctrlTimer=setTimeout(()=>{
-    if(!ST.paused){
-      q('controls').style.opacity='.3';
-      q('dots').style.opacity='.25';
-      q('sound-lbl').style.opacity='.25';
-    }
-  },4000);
-}
+function resetAdv(){clearInterval(ST.advTimer);if(!ST.paused&&ST.mode!=='man'){ST.advTimer=setInterval(next,ST.dur);}}
+function goTo(idx){const pool=getPool();ST.cur=((idx%pool.length)+pool.length)%pool.length;arcReset();showPtr();resetAdv();if(!ST.paused&&ST.mode!=='man')arcStart();}
+function showCtrl(){q('controls').style.opacity='1';q('dots').style.opacity='1';q('sound-lbl').style.opacity='1';if(ST.ctrlTimer)clearTimeout(ST.ctrlTimer);ST.ctrlTimer=setTimeout(()=>{if(!ST.paused){q('controls').style.opacity='.3';q('dots').style.opacity='.25';q('sound-lbl').style.opacity='.25';}},4000);}
 q('s-meditate').addEventListener('click',showCtrl);
 q('s-meditate').addEventListener('touchstart',showCtrl,{passive:true});
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startSessTimer(){clearInterval(ST.sessTimer);if(ST.sessLen<=0){q('hdr-clock').classList.remove('on');return;}ST.sessRemain=ST.sessLen;q('hdr-clock').textContent=fmtTime(ST.sessRemain);q('hdr-clock').classList.add('on');ST.sessTimer=setInterval(()=>{ST.sessRemain--;q('hdr-clock').textContent=fmtTime(ST.sessRemain);if(ST.sessRemain<=0){clearInterval(ST.sessTimer);endSess();}},1000);}
+function endSess(){clearInterval(ST.advTimer);arcReset();const mins=Math.round((Date.now()-ST.sessStart)/60000)||1;ST.totalSess++;ST.totalMins+=mins;ST.totalPtrs+=ST.ptrsHit;persist();refreshStats();completionSnd();q('cmp-mins').textContent=mins;q('cmp-ptrs').textContent=ST.ptrsHit;q('cmp-favs').textContent=ST.favs.size;q('cmp-sub').textContent=T().cmpSub;q('complete').classList.add('on');}
+function refreshStats(){q('st-sessions').textContent=ST.totalSess;q('st-mins').textContent=ST.totalMins;q('st-ptrs').textContent=ST.totalPtrs;}
 
-// ─── Session timer ────────────────────────────────────────
-function fmtTime(s){
-  return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+// ═══════════════════════════════════════════════════════════
+// BREATH TIMER
+// ═══════════════════════════════════════════════════════════
+const BREATH=[{key:'inhale',dur:4},{key:'hold',dur:4},{key:'exhale',dur:6},{key:'rest',dur:2}];
+let bIdx=0,bTimer=null,bCountTimer=null,bCycle=0;
+function startBreath(){q('breath-overlay').classList.add('on');q('btn-breath').classList.add('on');bIdx=0;bCycle=1;runBreath();}
+function stopBreath(){q('breath-overlay').classList.remove('on');q('btn-breath').classList.remove('on');clearTimeout(bTimer);clearInterval(bCountTimer);}
+function runBreath(){const ph=BREATH[bIdx%BREATH.length];const inner=q('breath-inner');const ring=q('breath-ring');const isIn=(ph.key==='inhale'||ph.key==='hold');const scale=isIn?1.4:.85,glow=isIn?'0 0 80px rgba(77,184,212,.5)':'0 0 20px rgba(77,184,212,.15)',dur=ph.dur*1000;inner.style.transition=`transform ${dur}ms ease-in-out,box-shadow ${dur}ms ease-in-out`;ring.style.transition=`transform ${dur}ms ease-in-out`;inner.style.transform=`scale(${scale})`;ring.style.transform=`scale(${scale*.95})`;inner.style.boxShadow=glow;q('breath-phase').textContent=T()[ph.key]||ph.key.toUpperCase();q('breath-cycles-lbl').textContent=T().breathCycles.replace('{n}',bCycle);let c=ph.dur;q('breath-count').textContent=c;clearInterval(bCountTimer);bCountTimer=setInterval(()=>{c--;q('breath-count').textContent=Math.max(0,c);},1000);clearTimeout(bTimer);bTimer=setTimeout(()=>{bIdx++;if(bIdx%BREATH.length===0)bCycle++;runBreath();},dur);}
+q('breath-close').addEventListener('click',stopBreath);
+q('btn-breath').addEventListener('click',startBreath);
+
+// ═══════════════════════════════════════════════════════════
+// MOOD PANEL
+// ═══════════════════════════════════════════════════════════
+function buildMoodGrid(){
+  const grid=q('mood-grid');grid.innerHTML='';
+  MOODS.forEach(m=>{
+    const t=document.createElement('div');t.className='mood-tile';
+    t.innerHTML=`<div class="mood-tile-icon">${m.icon}</div><div class="mood-tile-lbl">${m.label[ST.lang]||m.label.en}</div>`;
+    t.addEventListener('click',()=>{
+      q('mood-panel').classList.remove('on');
+      q('btn-mood').classList.remove('on');
+      if(m.key!=='peace'&&m.key!=='neutral')startAddressing(m.key);
+    });
+    grid.appendChild(t);
+  });
 }
+q('btn-mood').addEventListener('click',()=>{
+  buildMoodGrid();
+  q('mood-panel').classList.add('on');
+  q('btn-mood').classList.add('on');
+});
+q('mood-skip').addEventListener('click',()=>{
+  q('mood-panel').classList.remove('on');
+  q('btn-mood').classList.remove('on');
+});
 
-function startSessTimer(){
-  clearInterval(ST.sessTimer);
-  if(ST.sessLen<=0){q('hdr-clock').classList.remove('on');return}
-  ST.sessRemain=ST.sessLen;
-  q('hdr-clock').textContent=fmtTime(ST.sessRemain);
-  q('hdr-clock').classList.add('on');
-  ST.sessTimer=setInterval(()=>{
-    ST.sessRemain--;
-    q('hdr-clock').textContent=fmtTime(ST.sessRemain);
-    if(ST.sessRemain<=0){clearInterval(ST.sessTimer);endSess()}
-  },1000);
+// ═══════════════════════════════════════════════════════════
+// BEGINNER TASKS
+// ═══════════════════════════════════════════════════════════
+function showBeginnerTask(){
+  if(ST.level!=='beginner') return;
+  ST.taskIdx=0;
+  showNextTask();
 }
-
-function endSess(){
-  clearInterval(ST.advTimer);
-  arcReset();
-  const mins=Math.round((Date.now()-ST.sessStart)/60000)||1;
-  ST.totalSess++;
-  ST.totalMins+=mins;
-  ST.totalPtrs+=ST.ptrsHit;
-  persistStats();
-  refreshStats();
-  completionSound();
-  q('cmp-mins').textContent=mins;
-  q('cmp-ptrs').textContent=ST.ptrsHit;
-  q('cmp-favs').textContent=ST.favs.size;
-  q('complete').classList.add('on');
+function showNextTask(){
+  if(ST.taskIdx>=BEGINNER_TASKS.length){q('task-card').classList.remove('on');startMeditating();return;}
+  const t=BEGINNER_TASKS[ST.taskIdx];
+  const lang=ST.lang;
+  q('task-badge').textContent=T().taskBadge.replace('{a}',ST.taskIdx+1).replace('{b}',BEGINNER_TASKS.length);
+  q('task-text').textContent=t[lang]||t.en;
+  q('task-next').textContent=T().taskContinue;
+  q('task-skip').textContent=T().taskSkip;
+  q('task-card').classList.add('on');
 }
+function startMeditating(){q('task-card').classList.remove('on');ST.sessStart=Date.now();resetAdv();if(!ST.paused&&ST.mode!=='man')arcStart();showCtrl();}
+q('task-next').addEventListener('click',()=>{ST.taskIdx++;showNextTask();});
+q('task-skip').addEventListener('click',()=>{q('task-card').classList.remove('on');startMeditating();});
 
-function refreshStats(){
-  q('st-sessions').textContent=ST.totalSess;
-  q('st-mins').textContent=ST.totalMins;
-  q('st-ptrs').textContent=ST.totalPtrs;
+// ═══════════════════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════════════════
+function buildOnboard(){
+  const cards=q('ob-cards');cards.innerHTML='';
+  LEVELS.forEach(lev=>{
+    const c=document.createElement('div');c.className='ob-card';
+    c.innerHTML=`<div class="ob-icon">${lev.icon}</div><div><div class="ob-name">${lev.label[ST.lang]||lev.label.en}</div><div class="ob-desc">${lev.desc[ST.lang]||lev.desc.en}</div></div>`;
+    c.addEventListener('click',()=>{
+      ST.level=lev.key;persist();
+      q('onboard').classList.remove('on');
+      setActiveChip('lang-chips',ST.lang);
+      refreshLevelCards();
+      if(ST.level==='beginner') showBeginnerTask();
+      else startMeditating();
+    });
+    cards.appendChild(c);
+  });
+}
+function refreshLevelCards(){
+  const row=q('level-row');row.innerHTML='';
+  LEVELS.forEach(lev=>{
+    const c=document.createElement('div');c.className='lvl-card'+(ST.level===lev.key?' on':'');
+    c.innerHTML=`<div class="lvl-icon">${lev.icon}</div><div><div class="lvl-name">${lev.label[ST.lang]||lev.label.en}</div><div class="lvl-desc">${lev.desc[ST.lang]||lev.desc.en}</div></div>`;
+    c.addEventListener('click',()=>{
+      ST.level=lev.key;persist();refreshLevelCards();
+      journeyBuilt=false;q('groups-list').innerHTML='';
+    });
+    row.appendChild(c);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
 // CONTROLS
 // ═══════════════════════════════════════════════════════════
-q('btn-prev').addEventListener('click',()=>goTo(ST.cur-1));
-q('btn-next').addEventListener('click',()=>goTo(ST.cur+1));
-
-q('btn-pause').addEventListener('click',()=>{
-  if(ST.mode==='man') return;
-  ST.paused=!ST.paused;
-  q('btn-pause').textContent=ST.paused?'▶':'⏸';
-  if(ST.paused){
-    clearInterval(ST.advTimer);
-    arcPause();
-    q('controls').style.opacity='1';
-    q('dots').style.opacity='1';
-    q('sound-lbl').style.opacity='1';
-  } else {
-    resetAdv();
-    arcStart();
-    showCtrl();
-  }
-});
-
-q('btn-sound').addEventListener('click',()=>{
-  ensureAudio();
-  ST.sndOn=!ST.sndOn;
-  if(ST.sndOn&&ST.sndType==='off'){
-    ST.sndType='bowls';
-    setActiveChip('snd-chips','bowls');
-  }
-  applySnd();
-});
-
-q('btn-fav').addEventListener('click',()=>{
-  const i=ST.cur;
-  if(ST.favs.has(i)){ST.favs.delete(i);q('btn-fav').textContent='♡';q('btn-fav').classList.remove('on')}
-  else{ST.favs.add(i);q('btn-fav').textContent='♥';q('btn-fav').classList.add('on')}
-  persistStats();
-  renderFavs();
-});
-
-q('btn-continue').addEventListener('click',()=>{
-  q('complete').classList.remove('on');
-  ST.ptrsHit=0; ST.sessStart=Date.now();
-  startSessTimer(); resetAdv();
-  if(!ST.paused&&ST.mode!=='man') arcStart();
-});
+q('btn-prev').addEventListener('click',()=>{if(ST.addrMode){if(ST.addrIdx>0){ST.addrIdx--;arcReset();showPtr();arcStart();}}else goTo(ST.cur-1);});
+q('btn-next').addEventListener('click',()=>{if(ST.addrMode)nextAddr();else goTo(ST.cur+1);});
+q('btn-pause').addEventListener('click',()=>{if(ST.mode==='man')return;ST.paused=!ST.paused;q('btn-pause').textContent=ST.paused?'▶':'⏸';if(ST.paused){clearInterval(ST.advTimer);arcPause();q('controls').style.opacity='1';q('dots').style.opacity='1';q('sound-lbl').style.opacity='1';}else{resetAdv();arcStart();showCtrl();}});
+q('btn-sound').addEventListener('click',()=>{ensureAudio();ST.sndOn=!ST.sndOn;if(ST.sndOn&&ST.sndType==='off'){ST.sndType='bowls';setActiveChip('snd-chips','bowls');}applySnd();});
+q('btn-fav').addEventListener('click',()=>{const i=ST.cur;if(ST.favs.has(i)){ST.favs.delete(i);q('btn-fav').textContent='♡';q('btn-fav').classList.remove('on');}else{ST.favs.add(i);q('btn-fav').textContent='♥';q('btn-fav').classList.add('on');}persist();renderFavs();});
+q('btn-continue').addEventListener('click',()=>{q('complete').classList.remove('on');ST.ptrsHit=0;ST.sessStart=Date.now();startSessTimer();resetAdv();if(!ST.paused&&ST.mode!=='man')arcStart();});
 
 // ═══════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════
-function showScreen(name){
-  ST.screen=name;
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));
-  q('s-'+name).classList.add('active');
-  document.querySelector(`.nav-tab[data-s="${name}"]`).classList.add('on');
-  if(name==='journey') renderJourney();
-}
-document.querySelectorAll('.nav-tab').forEach(b=>{
-  b.addEventListener('click',()=>showScreen(b.dataset.s));
-});
+function showScreen(name){ST.screen=name;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));q('s-'+name).classList.add('active');document.querySelector(`.nav-tab[data-s="${name}"]`).classList.add('on');if(name==='journey')renderJourney();if(name==='journal')renderJournal();}
+document.querySelectorAll('.nav-tab').forEach(b=>{b.addEventListener('click',()=>showScreen(b.dataset.s));});
 
 // ═══════════════════════════════════════════════════════════
-// JOURNEY SCREEN
+// JOURNEY
 // ═══════════════════════════════════════════════════════════
-function renderFavs(){
-  const band=q('favs-band'), chips=q('fav-chips');
-  chips.innerHTML='';
-  if(ST.favs.size===0){band.style.display='none';return}
-  band.style.display='';
-  ST.favs.forEach(idx=>{
-    const p=ALL[idx]; if(!p) return;
-    const c=document.createElement('span');
-    c.className='fav-chip';
-    c.textContent='“'+p.text+'”';
-    c.addEventListener('click',()=>{goTo(idx);showScreen('meditate')});
-    chips.appendChild(c);
-  });
-}
-
+function renderFavs(){const band=q('favs-band'),chips=q('fav-chips');chips.innerHTML='';if(ST.favs.size===0){band.style.display='none';return;}band.style.display='';ST.favs.forEach(idx=>{const p=ALL[idx];if(!p)return;const c=document.createElement('span');c.className='fav-chip';c.textContent='"'+(p.text[ST.lang]||p.text.en)+'"';c.addEventListener('click',()=>{goTo(idx);showScreen('meditate');});chips.appendChild(c);});}
 let journeyBuilt=false;
 function renderJourney(){
-  renderFavs();
-  if(journeyBuilt) return;
-  journeyBuilt=true;
-  const list=q('groups-list');
-  let offset=0;
+  renderFavs();if(journeyBuilt)return;journeyBuilt=true;
+  const list=q('groups-list');let offset=0;
   GROUPS.forEach((group,gi)=>{
-    const startIdx=offset;
-    const card=document.createElement('div'); card.className='g-card';
-    if(gi===0) card.classList.add('open');
-
-    const hdr=document.createElement('div'); hdr.className='g-card-hdr';
-    hdr.innerHTML=`
-      <div>
-        <div class="g-num">Group ${gi+1}</div>
-        <div class="g-name">${group.label}</div>
-        <div class="g-meta">${group.pointers.length} pointer${group.pointers.length>1?'s':''}</div>
-      </div>
-      <div class="g-chev">▾</div>`;
+    const startIdx=offset;const card=document.createElement('div');card.className='g-card';if(gi===0)card.classList.add('open');
+    const hdr=document.createElement('div');hdr.className='g-card-hdr';
+    hdr.innerHTML=`<div><div class="g-num">${T().group} ${gi+1}</div><div class="g-name">${group.label[ST.lang]||group.label.en}</div><div class="g-meta">${group.pointers.length} pointers</div></div><div class="g-chev">▾</div>`;
     hdr.addEventListener('click',()=>card.classList.toggle('open'));
-
-    const body=document.createElement('div'); body.className='g-card-body';
+    const body=document.createElement('div');body.className='g-card-body';
     group.pointers.forEach((ptr,pi)=>{
-      const absIdx=startIdx+pi;
-      const item=document.createElement('div'); item.className='p-item';
-      const favOn=ST.favs.has(absIdx);
-      item.innerHTML=`
-        <div class="p-item-num">${pi+1}</div>
-        <div class="p-item-txt">“${ptr}”</div>
-        <div class="p-fav${favOn?' on':''}" data-i="${absIdx}">${favOn?'♥':'♡'}</div>`;
-      item.querySelector('.p-item-txt').addEventListener('click',()=>{
-        goTo(absIdx); showScreen('meditate');
-      });
+      const absIdx=startIdx+pi;const item=document.createElement('div');item.className='p-item';const favOn=ST.favs.has(absIdx);
+      item.innerHTML=`<div class="p-item-num">${pi+1}</div><div class="p-item-txt">"${ptr[ST.lang]||ptr.en}"</div><div class="p-fav${favOn?' on':''}" data-i="${absIdx}">${favOn?'♥':'♡'}</div>`;
+      item.querySelector('.p-item-txt').addEventListener('click',()=>{goTo(absIdx);showScreen('meditate');});
       const fBtn=item.querySelector('.p-fav');
-      fBtn.addEventListener('click',e=>{
-        e.stopPropagation();
-        const i=parseInt(fBtn.dataset.i);
-        if(ST.favs.has(i)){ST.favs.delete(i);fBtn.textContent='♡';fBtn.classList.remove('on')}
-        else{ST.favs.add(i);fBtn.textContent='♥';fBtn.classList.add('on')}
-        persistStats(); renderFavs();
-      });
+      fBtn.addEventListener('click',e=>{e.stopPropagation();const i=parseInt(fBtn.dataset.i);if(ST.favs.has(i)){ST.favs.delete(i);fBtn.textContent='♡';fBtn.classList.remove('on');}else{ST.favs.add(i);fBtn.textContent='♥';fBtn.classList.add('on');}persist();renderFavs();});
       body.appendChild(item);
     });
-    card.appendChild(hdr); card.appendChild(body);
-    list.appendChild(card);
-    offset+=group.pointers.length;
+    card.appendChild(hdr);card.appendChild(body);list.appendChild(card);offset+=group.pointers.length;
   });
 }
+
+// ═══════════════════════════════════════════════════════════
+// JOURNAL
+// ═══════════════════════════════════════════════════════════
+const JRN_KEY='rts_jrn_v1';
+function loadJrn(){try{return JSON.parse(localStorage.getItem(JRN_KEY))||[];}catch{return[];}}
+function saveJrn(e){try{localStorage.setItem(JRN_KEY,JSON.stringify(e));}catch{}}
+function renderJournal(){const entries=loadJrn();const el=q('jrn-entries');el.innerHTML='';if(!entries.length){const em=document.createElement('div');em.className='jrn-empty';em.textContent=T().noEntries;el.appendChild(em);return;}entries.slice().reverse().forEach((entry,ri)=>{const idx=entries.length-1-ri;const div=document.createElement('div');div.className='jrn-entry';const ds=new Date(entry.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});div.innerHTML=`<div class="jrn-entry-date">${ds}</div>${entry.ptr?`<div class="jrn-entry-ptr">"${entry.ptr}"</div>`:''}<div class="jrn-entry-body">${entry.body.replace(/\n/g,'<br>')}</div><button class="jrn-del" data-i="${idx}">✕</button>`;div.querySelector('.jrn-del').addEventListener('click',e=>{e.stopPropagation();const arr=loadJrn();arr.splice(parseInt(e.target.dataset.i),1);saveJrn(arr);renderJournal();});el.appendChild(div);});}
+q('jrn-save').addEventListener('click',()=>{const txt=q('jrn-text').value.trim();if(!txt)return;const p=ALL[ST.cur];const arr=loadJrn();arr.push({ts:Date.now(),body:txt,ptr:p?(p.text[ST.lang]||p.text.en):''});saveJrn(arr);q('jrn-text').value='';renderJournal();});
 
 // ═══════════════════════════════════════════════════════════
 // GUIDE
 // ═══════════════════════════════════════════════════════════
-function buildGuide(){
-  const el=q('guide-content');
-  GUIDE.forEach(b=>{
-    const div=document.createElement('div'); div.className='guide-block';
-    div.innerHTML=`<div class="guide-ttl">${b.title}</div>
-      <div class="guide-body">${b.body}${b.sub?`<span class="guide-sub">${b.sub}</span>`:''}</div>`;
-    el.appendChild(div);
-  });
-}
+function buildGuide(){const el=q('guide-content');GUIDE.forEach(b=>{const div=document.createElement('div');div.className='guide-block';div.innerHTML=`<div class="guide-ttl">${b.title}</div><div class="guide-body">${b.body}${b.sub?`<span class="guide-sub">${b.sub}</span>`:''}</div>`;el.appendChild(div);});}
 
 // ═══════════════════════════════════════════════════════════
-// SETTINGS CHIPS
+// SETTINGS CHIPS + LANGUAGE
 // ═══════════════════════════════════════════════════════════
-function setActiveChip(groupId, val){
-  document.querySelectorAll(`#${groupId} .chip`).forEach(c=>{
-    c.classList.toggle('on', c.dataset.v===String(val));
-  });
+function setActiveChip(gid,val){document.querySelectorAll(`#${gid} .chip`).forEach(c=>c.classList.toggle('on',c.dataset.v===String(val)));}
+function initChips(gid,cb){document.querySelectorAll(`#${gid} .chip`).forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll(`#${gid} .chip`).forEach(x=>x.classList.remove('on'));c.classList.add('on');cb(c.dataset.v);}));}
+
+function refreshUI(){
+  const t=T();
+  document.querySelectorAll('[data-ui]').forEach(el=>{const k=el.dataset.ui;if(t[k]!==undefined)el.textContent=t[k];});
+  document.querySelectorAll('[data-ph]').forEach(el=>{const k=el.dataset.ph;if(t[k])el.placeholder=t[k];});
+  q('mode-hint').textContent=t.seqHint.replace('{n}',getPool().length);
+  q('sound-lbl').textContent=ST.sndOn?(ST.sndType==='bowls'?t.singingBowls:ST.sndType==='bells'?t.bells:ST.sndType==='drone'?t.deepDrone:t.soundOff):t.soundOff;
+  showPtr(true);
 }
 
-function initChips(groupId,cb){
-  document.querySelectorAll(`#${groupId} .chip`).forEach(c=>{
-    c.addEventListener('click',()=>{
-      document.querySelectorAll(`#${groupId} .chip`).forEach(x=>x.classList.remove('on'));
-      c.classList.add('on');
-      cb(c.dataset.v);
-    });
-  });
-}
-
-initChips('dur-chips',v=>{
-  ST.dur=Number(v);
-  arcReset();
-  resetAdv();
-  if(!ST.paused&&ST.mode!=='man') arcStart();
-});
-
-initChips('sess-chips',v=>{
-  ST.sessLen=Number(v);
-  startSessTimer();
-  ST.sessStart=Date.now();
-  ST.ptrsHit=0;
-});
-
-initChips('mode-chips',v=>{
-  ST.mode=v;
-  q('btn-pause').textContent=v==='man'?'—':'⏸';
-  resetAdv();
-  if(!ST.paused&&v!=='man'){arcReset();arcStart()}
-});
-
-initChips('snd-chips',v=>{
-  const wasOn=ST.sndOn;
-  ST.sndType=v;
-  if(wasOn) applySnd();
-});
-
-initChips('start-chips',v=>{
-  ST.startMode=v;
-});
+initChips('lang-chips',v=>{ST.lang=v;persist();refreshUI();refreshLevelCards();journeyBuilt=false;q('groups-list').innerHTML='';if(ST.screen==='journey')renderJourney();if(ST.screen==='journal')renderJournal();});
+initChips('dur-chips',v=>{ST.dur=Number(v);arcReset();resetAdv();if(!ST.paused&&ST.mode!=='man')arcStart();});
+initChips('sess-chips',v=>{ST.sessLen=Number(v);startSessTimer();ST.sessStart=Date.now();ST.ptrsHit=0;});
+initChips('mode-chips',v=>{ST.mode=v;q('btn-pause').textContent=v==='man'?'—':'⏸';resetAdv();if(!ST.paused&&v!=='man'){arcReset();arcStart();}});
+initChips('snd-chips',v=>{const was=ST.sndOn;ST.sndType=v;if(was)applySnd();});
+initChips('start-chips',v=>{ST.startMode=v;});
 
 // ═══════════════════════════════════════════════════════════
-// TOUCH GESTURES
+// TOUCH / KEYBOARD
 // ═══════════════════════════════════════════════════════════
 let tx0=0,ty0=0;
-q('s-meditate').addEventListener('touchstart',e=>{
-  tx0=e.touches[0].clientX; ty0=e.touches[0].clientY;
-},{passive:true});
-q('s-meditate').addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-tx0;
-  const dy=e.changedTouches[0].clientY-ty0;
-  if(Math.abs(dx)>55&&Math.abs(dy)<45){
-    if(dx<0) goTo(ST.cur+1);
-    else goTo(ST.cur-1);
-  }
-},{passive:true});
+q('s-meditate').addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;},{passive:true});
+q('s-meditate').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx0,dy=e.changedTouches[0].clientY-ty0;if(Math.abs(dx)>55&&Math.abs(dy)<45){if(dx<0)goTo(ST.cur+1);else goTo(ST.cur-1);}},{passive:true});
+document.addEventListener('keydown',e=>{if(q('jrn-text')===document.activeElement)return;if(ST.screen!=='meditate')return;if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();if(ST.addrMode)nextAddr();else goTo(ST.cur+1);}if(e.key==='ArrowLeft'){if(ST.addrMode){if(ST.addrIdx>0){ST.addrIdx--;arcReset();showPtr();arcStart();}}else goTo(ST.cur-1);}if(e.key.toLowerCase()==='p')q('btn-pause').click();if(e.key.toLowerCase()==='s')q('btn-sound').click();if(e.key.toLowerCase()==='f')q('btn-fav').click();if(e.key.toLowerCase()==='b')startBreath();});
 
 // ═══════════════════════════════════════════════════════════
-// KEYBOARD
+// PWA
 // ═══════════════════════════════════════════════════════════
-document.addEventListener('keydown',e=>{
-  if(ST.screen!=='meditate') return;
-  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(ST.cur+1)}
-  if(e.key==='ArrowLeft') goTo(ST.cur-1);
-  if(e.key.toLowerCase()==='p') q('btn-pause').click();
-  if(e.key.toLowerCase()==='s') q('btn-sound').click();
-  if(e.key.toLowerCase()==='f') q('btn-fav').click();
-});
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;q('pwa-grp').style.display='';});
+q('btn-install').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;if(outcome==='accepted')q('pwa-grp').style.display='none';deferredPrompt=null;});
+window.addEventListener('appinstalled',()=>{q('pwa-grp').style.display='none';deferredPrompt=null;});
 
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 (function init(){
-  // Starting pointer
-  if(ST.startMode==='rand') ST.cur=Math.floor(Math.random()*ALL.length);
+  buildGuide();buildDots();refreshStats();
+  refreshLevelCards();
+  setActiveChip('lang-chips',ST.lang);
+  refreshUI();
 
-  buildGuide();
-  buildDots();
-  refreshStats();
-  showPtr(true);
-
-  ST.sessStart=Date.now();
-  resetAdv();
-
-  // Small delay so arc doesn't flash on load
-  setTimeout(()=>{ if(!ST.paused&&ST.mode!=='man') arcStart(); },600);
-  showCtrl();
+  const isFirstVisit=!saved.levelSet;
+  if(isFirstVisit){
+    buildOnboard();
+    q('onboard').classList.add('on');
+    // Don't start meditation yet — wait for level selection
+  } else {
+    if(ST.level==='beginner') showBeginnerTask();
+    else startMeditating();
+  }
 })();
 </script>
 </body>
