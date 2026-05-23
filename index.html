@@ -127,6 +127,12 @@ button{border:none;cursor:pointer;font-family:inherit}
 .guide-body{font-family:var(--serif);font-size:.97rem;font-style:italic;font-weight:300;color:rgba(180,220,235,.76);line-height:1.88}
 .guide-sub{color:rgba(120,175,200,.55);font-size:.9rem;display:block;margin-top:.5rem}
 
+/* ── Tribute block ── */
+.tribute-block{margin-bottom:2rem;padding:1.2rem 1.3rem;background:rgba(212,169,106,.06);border:.5px solid rgba(212,169,106,.25);border-radius:14px;text-align:center;}
+.tribute-label{font-size:.56rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;opacity:.8}
+.tribute-body{font-family:var(--serif);font-size:.92rem;font-style:italic;color:rgba(212,195,155,.82);line-height:1.9}
+.tribute-name{font-weight:700;font-style:normal;color:var(--gold);background:rgba(212,169,106,.13);border-radius:5px;padding:.05rem .35rem;letter-spacing:.03em;}
+
 /* ── Settings ── */
 .set-grp{margin-bottom:1.8rem}
 .set-grp-ttl{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--txt3);margin-bottom:.75rem;padding-bottom:.45rem;border-bottom:.5px solid var(--border);}
@@ -315,7 +321,9 @@ button{border:none;cursor:pointer;font-family:inherit}
       <div class="chip-row" id="lang-chips">
         <button class="chip on" data-v="en">English</button>
         <button class="chip" data-v="hi">हिन्दी</button>
-        <button class="chip" data-v="gu">ગુજરાતી</button>
+        <button class="chip" data-v="zh">中文</button>
+        <button class="chip" data-v="es">Español</button>
+        <button class="chip" data-v="sd">سنڌي</button>
       </div>
     </div>
     <div class="set-grp">
@@ -485,28 +493,74 @@ const UI = {
     taskBadge:"तैयारी · कार्य {a} / {b}",
     taskContinue:"आगे",taskSkip:"ध्यान पर जाएँ",
   },
-  gu:{
-    meditate:"ધ્યાન",journey:"યાત્રા",journal:"ડાયRi",guide:"માHrg",settings:"seTing",
-    allPointers:"Badha sanket",saved:"Sahelaaya",
-    soundOff:"Band",singingBowls:"GaAyan KaTora",bells:"GhaNTi",deepDrone:"GaHro Svar",
-    group:"Samuh",of:"Mathi",sessionComplete:"Satr Purn",
-    minutes:"MiniT",pointers:"Sanket",returnBtn:"PaChi",
-    breathe:"☽",moodBtn:"Man kaevun che?",
-    inhale:"Shvaas lo",hold:"Roko",exhale:"Chodo",rest:"ViRAm",
-    journalPlaceholder:"Aaj na dhyAn ma shu jagyu…",
-    saveEntry:"Sahejvo",noEntries:"Koi pravishTi naThi.\nBethak pachhi lakho.",
-    sessions:"Satr",minutesSat:"BeThelA miniT",ptrsMet:"Sanket maLyA",
-    levelTitle:"Sadhak Star",language:"BhAshA",pointerHold:"Sanket samay",
-    sessionLength:"Satr avadhi",advanceMode:"Agrim mode",sound:"Dhvani",
-    startingPointer:"ShurU bindu",sequential:"Kramik",random:"YadruChhik",manual:"Manual",
-    fromBeginning:"ShurUatThi",randomEach:"Har vaar yadruChhik",
-    appInstall:"App",installApp:"+ Home screen par umer",
-    seqHint:"Kramik badha samUha ma jAye. YadruChhik {n} ma thi le.",
-    cmpSub:"MaUn sadA ahiyA haTu.\nTe rahe che.",
-    breathCycles:"ChakrA {n}",
-    addrBadge:"Sambodhan",
-    taskBadge:"TaiyAri · KArya {a} / {b}",
-    taskContinue:"Age",taskSkip:"DhyAn par jAo",
+  zh:{
+    meditate:"冥想",journey:"旅程",journal:"日记",guide:"指引",settings:"设置",
+    allPointers:"所有指引",saved:"已保存",
+    soundOff:"关闭",singingBowls:"颂鉢",bells:"铃声",deepDrone:"深沉嗡鸣",
+    group:"组",of:"/",sessionComplete:"会话完成",
+    minutes:"分钟",pointers:"指引",returnBtn:"返回",
+    breathe:"☽",moodBtn:"你的心境如何？",
+    inhale:"吸气",hold:"屏息",exhale:"呼气",rest:"休息",
+    journalPlaceholder:"今日静坐中升起了什么…",
+    saveEntry:"保存记录",noEntries:"尚无记录。\n静坐后再写。",
+    sessions:"次数",minutesSat:"静坐分钟",ptrsMet:"遇见的指引",
+    levelTitle:"修行层次",language:"语言",pointerHold:"指引停留时间",
+    sessionLength:"会话时长",advanceMode:"前进模式",sound:"声音",
+    startingPointer:"起始指引",sequential:"顺序",random:"随机",manual:"手动",
+    fromBeginning:"从头开始",randomEach:"每次随机",
+    appInstall:"应用",installApp:"+ 添加到主屏幕",
+    seqHint:"顺序模式按顺序遍历所有组。随机模式从全部{n}个中抽取。手动模式仅在您点击下一步时前进。",
+    cmpSub:"寂静一直在此。\n它依然存在。",
+    breathCycles:"第{n}轮",
+    addrBadge:"探询中",
+    taskBadge:"准备 · 第{a}项，共{b}项",
+    taskContinue:"继续",taskSkip:"直接进入冥想",
+  },
+  es:{
+    meditate:"Meditar",journey:"Viaje",journal:"Diario",guide:"Guía",settings:"Ajustes",
+    allPointers:"Todos los señalamientos",saved:"Guardados",
+    soundOff:"Apagado",singingBowls:"Cuencos tibetanos",bells:"Campanas",deepDrone:"Drone profundo",
+    group:"Grupo",of:"de",sessionComplete:"Sesión completa",
+    minutes:"Minutos",pointers:"Señalamientos",returnBtn:"Volver",
+    breathe:"☽",moodBtn:"¿Cómo está la mente?",
+    inhale:"INHALA",hold:"RETÉN",exhale:"EXHALA",rest:"REPOSA",
+    journalPlaceholder:"¿Qué surgió en tu práctica hoy…",
+    saveEntry:"Guardar entrada",noEntries:"Aún no hay entradas.\nEscribe después de una práctica.",
+    sessions:"Sesiones",minutesSat:"Minutos sentado",ptrsMet:"Señalamientos encontrados",
+    levelTitle:"Nivel del buscador",language:"Idioma",pointerHold:"Tiempo por señalamiento",
+    sessionLength:"Duración de la sesión",advanceMode:"Modo de avance",sound:"Sonido",
+    startingPointer:"Señalamiento inicial",sequential:"Secuencial",random:"Aleatorio",manual:"Manual",
+    fromBeginning:"Desde el principio",randomEach:"Aleatorio cada vez",
+    appInstall:"App",installApp:"+ Añadir a pantalla de inicio",
+    seqHint:"Secuencial recorre todos los grupos en orden. Aleatorio toma de los {n} totales. Manual avanza solo cuando pulsas siguiente.",
+    cmpSub:"El silencio siempre estuvo aquí.\nPermanece.",
+    breathCycles:"Ciclo {n}",
+    addrBadge:"Explorando",
+    taskBadge:"Preparación · Tarea {a} de {b}",
+    taskContinue:"Continuar",taskSkip:"Ir directamente a meditar",
+  },
+  sd:{
+    meditate:"ڌيان",journey:"سفر",journal:"ڊائري",guide:"رهنمائي",settings:"سيٽنگ",
+    allPointers:"سڀ اشارا",saved:"محفوظ",
+    soundOff:"بند",singingBowls:"ڳائيندڙ پياليون",bells:"گهنٽيون",deepDrone:"گهرو سُر",
+    group:"گروپ",of:"مان",sessionComplete:"سيشن مڪمل",
+    minutes:"منٽ",pointers:"اشارا",returnBtn:"واپس",
+    breathe:"☽",moodBtn:"من ڪيئن آهي؟",
+    inhale:"ساهه وٺو",hold:"روڪيو",exhale:"ڇڏيو",rest:"آرام",
+    journalPlaceholder:"اڄ جي ڌيان ۾ ڇا اڀريو…",
+    saveEntry:"محفوظ ڪيو",noEntries:"اڃا ڪا داخلا ناهي.\nويهڻ کانپوءِ لکو.",
+    sessions:"سيشن",minutesSat:"ويٺل منٽ",ptrsMet:"ملندڙ اشارا",
+    levelTitle:"سالڪ درجو",language:"ٻولي",pointerHold:"اشاري جو وقت",
+    sessionLength:"سيشن جي مدت",advanceMode:"اڳتي وڌڻ جو طريقو",sound:"آواز",
+    startingPointer:"شروعاتي اشارو",sequential:"ترتيبوار",random:"بي ترتيب",manual:"دستي",
+    fromBeginning:"شروعات کان",randomEach:"هر دفعي بي ترتيب",
+    appInstall:"ائپ",installApp:"+ هوم اسڪرين تي شامل ڪيو",
+    seqHint:"ترتيبوار سڀني گروپن مان گذري ٿو. بي ترتيب {n} مان وٺي ٿو. دستي صرف تڏهن اڳتي وڌي ٿو جڏهن توهان ٻيهر دٻايو.",
+    cmpSub:"خاموشي هميشه هتي هئي.\nاها باقي آهي.",
+    breathCycles:"چڪر {n}",
+    addrBadge:"خطاب",
+    taskBadge:"تياري · ڪم {a} / {b}",
+    taskContinue:"اڳتي",taskSkip:"ڌيان ڏانهن وڃو",
   }
 };
 
@@ -515,25 +569,31 @@ const UI = {
 // ═══════════════════════════════════════════════════════════
 const LEVELS = [
   { key:'beginner', icon:'🌱',
-    label:{en:'Beginner',hi:'शुरुआती',gu:'ShuruvAti'},
+    label:{en:'Beginner',hi:'शुरुआती',zh:'初学者',es:'Principiante',sd:'شروعاتي'},
     desc:{en:'Gentle concentration tasks & basic questions. First steps on the path.',
           hi:'सौम्य एकाग्रता कार्य और मूल प्रश्न। पथ पर पहले कदम।',
-          gu:'Komal dhyAn kAryo ane mulabhUt prashno. Path par pahelA pag.'},
-    groups:[0,1,2,3,4], // first 5 groups only
+          zh:'温和的专注练习与基本问题。踏上道路的第一步。',
+          es:'Ejercicios de concentración suaves y preguntas básicas. Los primeros pasos en el camino.',
+          sd:'نرم ڌيان جا ڪم ۽ بنيادي سوال. رستي تي پهريان قدم.'},
+    groups:[0,1,2,3,4],
   },
   { key:'seeker', icon:'🔍',
-    label:{en:'Seeker',hi:'साधक',gu:'Sadhak'},
+    label:{en:'Seeker',hi:'साधक',zh:'探寻者',es:'Buscador',sd:'سالڪ'},
     desc:{en:'All pointers. The inquiry deepens across all 12 groups.',
           hi:'सभी संकेत। सभी 12 समूहों में अन्वेषण गहरा होता है।',
-          gu:'Badha sanket. Badha 12 samUhoma anweshanA gahri thAy.'},
-    groups:null, // all
+          zh:'所有指引。在全部12组中深化探究。',
+          es:'Todos los señalamientos. La indagación se profundiza en los 12 grupos.',
+          sd:'سڀ اشارا. سڀني 12 گروپن ۾ تحقيق گهري ٿئي.'},
+    groups:null,
   },
   { key:'advanced', icon:'✦',
-    label:{en:'Advanced',hi:'उन्नत',gu:'UnnAt'},
+    label:{en:'Advanced',hi:'उन्नत',zh:'深修者',es:'Avanzado',sd:'اعليٰ'},
     desc:{en:'Direct, uncompromising pointing. For those ready to fully dissolve.',
           hi:'सीधे, अटल संकेत। उनके लिए जो पूर्णतः विलीन होने के लिए तैयार हैं।',
-          gu:'Seedhaa, makkam pointing. Temana maaTe je pUrna vilin thavA taiyAr che.'},
-    groups:null, // all + extra
+          zh:'直接、毫不妥协的指引。为准备彻底消融者而设。',
+          es:'Señalamiento directo e inflexíble. Para quienes están listos para disolverse completamente.',
+          sd:'سڌو، بي سمجهوتو اشارو. انهن لاءِ جيڪي مڪمل طور تي ختم ٿيڻ لاءِ تيار آهن.'},
+    groups:null,
   },
 ];
 
@@ -541,45 +601,45 @@ const LEVELS = [
 // MOODS
 // ═══════════════════════════════════════════════════════════
 const MOODS = [
-  {key:'peace',   icon:'🌙', label:{en:'At peace',hi:'शांत',gu:'ShAnt'}},
-  {key:'neutral', icon:'·',  label:{en:'Neutral',  hi:'तटस्थ',gu:'TaTasth'}},
-  {key:'scattered',icon:'〰',label:{en:'Scattered',hi:'विचलित',gu:'Vichlit'}},
-  {key:'sad',     icon:'☁', label:{en:'Sad',       hi:'दुखी',gu:'Dukhi'}},
-  {key:'worried', icon:'〜', label:{en:'Worried',   hi:'चिंतित',gu:'Chintit'}},
-  {key:'upset',   icon:'⊙', label:{en:'Upset',     hi:'परेशान',gu:'PareshAn'}},
+  {key:'peace',   icon:'🌙', label:{en:'At peace',hi:'शांत',zh:'平静',es:'En paz',sd:'سڪون ۾'}},
+  {key:'neutral', icon:'·',  label:{en:'Neutral',  hi:'तटस्थ',zh:'中性',es:'Neutral',sd:'غير جانبدار'}},
+  {key:'scattered',icon:'〰',label:{en:'Scattered',hi:'विचलित',zh:'散乱',es:'Disperso',sd:'ويڇڙيل'}},
+  {key:'sad',     icon:'☁', label:{en:'Sad',       hi:'दुखी',zh:'悲伤',es:'Triste',sd:'اُداس'}},
+  {key:'worried', icon:'〜', label:{en:'Worried',   hi:'चिंतित',zh:'忧虑',es:'Preocupado',sd:'فڪرمند'}},
+  {key:'upset',   icon:'⊙', label:{en:'Upset',     hi:'परेशान',zh:'烦扰',es:'Perturbado',sd:'بيچين'}},
 ];
 
 const MOOD_PTRS = {
   scattered:[
-    {en:"Is the mind scattered right now?",              hi:"क्या अभी मन विचलित है?",                         gu:"Shu abhi man vichlit che?"},
-    {en:"Who notices the scattered mind?",               hi:"विचलित मन को कौन देखता है?",                     gu:"Vichlit man ne kon jue che?"},
-    {en:"Who is trying to gather the mind?",             hi:"मन को इकट्ठा करने की कोशिश कौन कर रहा है?",     gu:"Man ne gather karva kone koshish kare che?"},
-    {en:"The one who wants stillness — who is that?",    hi:"जो शांति चाहता है — वह कौन है?",                 gu:"Je shAnti iChhe che — te kon che?"},
-    {en:"Can you find the one who is restless?",         hi:"क्या तुम बेचैन वाले को खोज सकते हो?",           gu:"Shu tame bechaain ne dhundhi shako cho?"},
+    {en:"Is the mind scattered right now?",              hi:"क्या अभी मन विचलित है?",                         zh:"此刻心是否散乱？",es:"¿Está la mente dispersa ahora mismo?",                sd:"ڇا هن وقت من ويڇڙيل آهي؟"},
+    {en:"Who notices the scattered mind?",               hi:"विचलित मन को कौन देखता है?",                     zh:"谁在觉知这散乱的心？",es:"¿Quién nota la mente dispersa?",               sd:"ويڇڙيل من کي ڪير ڏسي ٿو؟"},
+    {en:"Who is trying to gather the mind?",             hi:"मन को इकट्ठा करने की कोशिश कौन कर रहा है?",     zh:"谁在试图收拢这心？",es:"¿Quién intenta recoger la mente?", sd:"من کي گڏ ڪرڻ جي ڪوشش ڪير ڪري ٿو؟"},
+    {en:"The one who wants stillness — who is that?",    hi:"जो शांति चाहता है — वह कौन है?",                 zh:"那个想要宁静的是谁？",es:"El que quiere quietud — ¿quién es ese?",         sd:"جيڪو سڪون چاهي ٿو — اهو ڪير آهي؟"},
+    {en:"Can you find the one who is restless?",         hi:"क्या तुम बेचैन वाले को खोज सकते हो?",           zh:"你能找到那个不安的吗？",es:"¿Puedes encontrar al que está inquieto?",   sd:"ڇا توهان بيچين واري کي ڳولي سگهو ٿا؟"},
   ],
   sad:[
-    {en:"Are you sad?",                                  hi:"क्या तुम दुखी हो?",                               gu:"Shu tame dukhi cho?"},
-    {en:"Who is sad?",                                   hi:"कौन दुखी है?",                                     gu:"Kon dukhi che?"},
-    {en:"Who lost what? Who needed what that is now gone?",hi:"किसने क्या खोया? किसे क्या चाहिए था जो अब नहीं है?",gu:"Kone shu gumAvyu? Kone shu joitu hatu je hve naThi?"},
-    {en:"Who needs things to be different?",             hi:"कौन चाहता है कि चीज़ें बदल जाएँ?",               gu:"Kon iChhe che ke vatu badlAy?"},
-    {en:"Can you find the one who is sad? Look directly.",hi:"दुखी वाले को खोजो। सीधे देखो।",                 gu:"Dukhi ne shodho. Seedho juo."},
+    {en:"Are you sad?",                                  hi:"क्या तुम दुखी हो?",                               zh:"你悲伤吗？",es:"¿Estás triste?",                       sd:"ڇا توهان اُداس آهيو؟"},
+    {en:"Who is sad?",                                   hi:"कौन दुखी है?",                                     zh:"谁在悲伤？",es:"¿Quién está triste?",                            sd:"ڪير اُداس آهي؟"},
+    {en:"Who lost what? Who needed what that is now gone?",hi:"किसने क्या खोया? किसे क्या चाहिए था जो अब नहीं है?",zh:"谁失去了什么？谁需要已经消失的东西？",es:"¿Quién perdió qué? ¿Quién necesitaba algo que ya no está?", sd:"ڪنهن ڇا وڃايو؟ ڪنهن کي ڇا گهرجي ها جيڪو هاڻي ناهي؟"},
+    {en:"Who needs things to be different?",             hi:"कौन चाहता है कि चीज़ें बदल जाएँ?",               zh:"谁需要事情有所不同？",es:"¿Quién necesita que las cosas sean diferentes?",             sd:"ڪير چاهي ٿو ته حالتون بدلجن؟"},
+    {en:"Can you find the one who is sad? Look directly.",hi:"दुखी वाले को खोजो। सीधे देखो।",                 zh:"你能找到那个悲伤的吗？直接看。",es:"¿Puedes encontrar al que está triste? Mira directamente.",              sd:"اُداس واري کي ڳولو. سڌو ڏسو."},
   ],
   worried:[
-    {en:"Are you worried?",                              hi:"क्या तुम चिंतित हो?",                             gu:"Shu tame chintit cho?"},
-    {en:"Who is worried?",                               hi:"कौन चिंतित है?",                                   gu:"Kon chintit che?"},
-    {en:"What does this worry want?",                    hi:"यह चिंता क्या चाहती है?",                         gu:"Aa chintA shu iChhe che?"},
-    {en:"Are you resisting what might happen?",          hi:"जो हो सकता है उसका विरोध कौन कर रहा है?",        gu:"Je Thai shake te no virodh kon kare che?"},
-    {en:"Who is the one that needs things to be safe?",  hi:"सुरक्षित रहने की ज़रूरत किसे है?",                gu:"Surakshit rehvAnu jarur enu kone che?"},
-    {en:"Can you find the one who is worried? Look.",    hi:"चिंतित वाले को खोजो। देखो।",                     gu:"Chintit ne dhundho. Juo."},
+    {en:"Are you worried?",                              hi:"क्या तुम चिंतित हो?",                             zh:"你忧虑吗？",es:"¿Estás preocupado?",                     sd:"ڇا توهان فڪرمند آهيو؟"},
+    {en:"Who is worried?",                               hi:"कौन चिंतित है?",                                   zh:"谁在忧虑？",es:"¿Quién está preocupado?",                          sd:"ڪير فڪرمند آهي؟"},
+    {en:"What does this worry want?",                    hi:"यह चिंता क्या चाहती है?",                         zh:"这忧虑想要什么？",es:"¿Qué quiere esta preocupación?",                  sd:"هي فڪر ڇا چاهي ٿو؟"},
+    {en:"Are you resisting what might happen?",          hi:"जो हो सकता है उसका विरोध कौन कर रहा है?",        zh:"你在抗拒可能发生的事吗？",es:"¿Estás resistiendo lo que podría ocurrir?",  sd:"ڇا توهان ان کي روڪي رهيا آهيو جيڪو ٿي سگهي ٿو؟"},
+    {en:"Who is the one that needs things to be safe?",  hi:"सुरक्षित रहने की ज़रूरत किसे है?",                zh:"谁需要事情是安全的？",es:"¿Quién necesita que las cosas estén seguras?",     sd:"ڪنهن کي محفوظ رهڻ جي ضرورت آهي؟"},
+    {en:"Can you find the one who is worried? Look.",    hi:"चिंतित वाले को खोजो। देखो।",                     zh:"你能找到那个忧虑的吗？看。",es:"¿Puedes encontrar al que está preocupado? Mira.",                  sd:"فڪرمند واري کي ڳولو. ڏسو."},
   ],
   upset:[
-    {en:"Are you upset?",                                hi:"क्या तुम परेशान हो?",                             gu:"Shu tame pareshAn cho?"},
-    {en:"Who is upset?",                                 hi:"कौन परेशान है?",                                   gu:"Kon pareshAn che?"},
-    {en:"Are you resisting — trying not to feel this way?",hi:"क्या तुम विरोध कर रहे हो — इस तरह न महसूस करने की कोशिश?",gu:"Shu tame virodh karo cho — A rite na anubhavvAni koshish?"},
-    {en:"Are you feeling the urge to change your feelings?",hi:"क्या तुम अपनी भावनाओं को बदलने की इच्छा महसूस कर रहे हो?",gu:"Shu tame tamari laagnio badlavAni ichHa anubhavo cho?"},
-    {en:"Who is fighting to change these feelings?",     hi:"इन भावनाओं को बदलने के लिए कौन लड़ रहा है?",     gu:"Aa laagnio ne badlavA kaun lade che?"},
-    {en:"Who is scared? Find out who is getting upset.", hi:"कौन डरा हुआ है? कौन परेशान हो रहा है — उसे खोजो।",gu:"Kon darAlo che? Kon pareshAn Thay che — tene dhundho."},
-    {en:"Who resists? Who wants to change? Look at that one.",hi:"कौन विरोध करता है? कौन बदलना चाहता है? उसे देखो।",gu:"Kon virodh kare? Kon badlaavu iChhe? Te ne juo."},
+    {en:"Are you upset?",                                hi:"क्या तुम परेशान हो?",                             zh:"你烦扰吗？",es:"¿Estás perturbado?",                    sd:"ڇا توهان بيچين آهيو؟"},
+    {en:"Who is upset?",                                 hi:"कौन परेशान है?",                                   zh:"谁在烦扰？",es:"¿Quién está perturbado?",                         sd:"ڪير بيچين آهي؟"},
+    {en:"Are you resisting — trying not to feel this way?",hi:"क्या तुम विरोध कर रहे हो — इस तरह न महसूस करने की कोशिश?",zh:"你在抗拒——试图不这样感受吗？",es:"¿Estás resistiendo — intentando no sentirte así?", sd:"ڇا توهان مزاحمت ڪري رهيا آهيو — هن طرح محسوس نه ڪرڻ جي ڪوشش؟"},
+    {en:"Are you feeling the urge to change your feelings?",hi:"क्या तुम अपनी भावनाओं को बदलने की इच्छा महसूस कर रहे हो?",zh:"你是否感到想要改变感受的冲动？",es:"¿Sientes el impulso de cambiar tus sentimientos?", sd:"ڇا توهان پنهنجي جذبن کي بدلائڻ جي خواهش محسوس ڪري رهيا آهيو؟"},
+    {en:"Who is fighting to change these feelings?",     hi:"इन भावनाओं को बदलने के लिए कौन लड़ रहा है?",     zh:"谁在为改变这些感受而挨扎？",es:"¿Quién lucha por cambiar estos sentimientos?",      sd:"انهن جذبن کي بدلائڻ لاءِ ڪير وڙهي رهيو آهي؟"},
+    {en:"Who is scared? Find out who is getting upset.", hi:"कौन डरा हुआ है? कौन परेशान हो रहा है — उसे खोजो।",zh:"谁在害怕？找出谁在烦扰。",es:"¿Quién tiene miedo? Descubre quién se está perturbando.", sd:"ڪير ڊڄيل آهي؟ ڳولو ته ڪير بيچين ٿي رهيو آهي."},
+    {en:"Who resists? Who wants to change? Look at that one.",hi:"कौन विरोध करता है? कौन बदलना चाहता है? उसे देखो।",zh:"谁在抗拒？谁想要改变？看那个。",es:"¿Quién resiste? ¿Quién quiere cambiar? Mira a ese.", sd:"ڪير مزاحمت ڪري ٿو؟ ڪير بدلائڻ چاهي ٿو؟ ان کي ڏسو."},
   ],
   peace:[],
   neutral:[],
@@ -591,90 +651,95 @@ const MOOD_PTRS = {
 const BEGINNER_TASKS = [
   {en:"Close your eyes. Take three slow breaths. Simply feel that you are here — before any thought.",
    hi:"आँखें बंद करो। तीन धीमी साँसें लो। बस महसूस करो कि तुम यहाँ हो — किसी भी विचार से पहले।",
-   gu:"Aankh band karo. Tran dheemi svaas lo. Bas anubhavo ke tame ahiyA cho — koi pan vichar thi pehla."},
+   zh:"闭上眼睛。缓慢呼吸三次。只是感受你在这里——在任何念头升起之前。",es:"Cierra los ojos. Respira lento tres veces. Simplemente siente que estás aquí — antes de cualquier pensamiento.",
+   sd:"اکيون بند ڪريو. ٽي آهستي ساهه وٺو. بس محسوس ڪريو ته توهان هتي آهيو — ڪنهن به خيال کان اڳ."},
   {en:"Feel the weight of your body. Where does it touch the surface beneath you? Stay with that feeling.",
    hi:"अपने शरीर का वज़न महसूस करो। यह नीचे की सतह को कहाँ छू रहा है? उस अनुभव के साथ रहो।",
-   gu:"Tara shrir no bhojar anubhavo. Te nicheni satah ne kyaA sparsh kare che? Te anubhav sAthe raho."},
+   zh:"感受你身体的重量。它在哪里触碰到你下方的表面？停留在那个感受中。",es:"Siente el peso de tu cuerpo. ¿Dónde toca la superficie debajo de ti? Permanece con esa sensación.",
+   sd:"پنهنجي جسم جو بار محسوس ڪريو. اهو هيٺين سطح کي ڪٿي ڇهي ٿو؟ ان احساس سان رهو."},
   {en:"Listen to any sound near you — without naming it. Just hear the sound. Who is hearing?",
    hi:"अपने पास किसी भी ध्वनि को सुनो — बिना नाम दिए। बस उस ध्वनि को सुनो। सुनने वाला कौन है?",
-   gu:"Tari pAse ni koi pan dhvani sano — nAm AapyA vinA. Fakt e dhvani sano. Sananaar kon che?"},
+   zh:"聆听你周围的任何声音——不要命名它。只是听那声音。谁在听？",es:"Escucha cualquier sonido cercano — sin nombrarlo. Solo escucha el sonido. ¿Quién escucha?",
+   sd:"پنهنجي ويجهو ڪنهن به آواز کي ٻڌو — بنا نالو ڏيڻ جي. بس اهو آواز ٻڌو. ٻڌندڙ ڪير آهي؟"},
   {en:"Notice: before you think 'I am here' — are you already here? Check for yourself.",
    hi:"ध्यान दो: 'मैं यहाँ हूँ' सोचने से पहले — क्या तुम पहले से यहाँ नहीं हो? खुद जाँचो।",
-   gu:"Dhyaan aap: 'hum ahiyA chhu' vichArvA thi pehla — shu tame pahela thi ahiyA naThi? Jaat tapAso."},
+   zh:"注意：在你想“我在这里”之前——你是否已经在这里？自己检验。",es:"Nota: antes de pensar 'estoy aquí' — ¿ya estás aquí? Compuébalo tú mismo.",
+   sd:"ڌيان ڏيو: 'مان هتي آهيان' سوچڻ کان اڳ — ڇا توهان اڳ ۾ ئي هتي ناهيو؟ پاڻ جاچيو."},
   {en:"Ask yourself gently: Who is reading these words? Look for that one — without using the word 'I.'",
    hi:"खुद से धीरे से पूछो: इन शब्दों को कौन पढ़ रहा है? उसे खोजो — 'मैं' शब्द के बिना।",
-   gu:"Pote ne dhime dhime puChho: Aa shbdo kon vAanche che? Tene dhundho — 'Hum' shbad vinA."},
+   zh:"温柔地问自己：谁在读这些文字？找到那个——不要使用“我”这个字。",es:"Pregúntate suavemente: ¿Quién está leyendo estas palabras? Búscalo — sin usar la palabra 'yo'.",
+   sd:"پاڻ کي آهستي پڇو: هي لفظ ڪير پڙهي رهيو آهي؟ ان کي ڳولو — 'مان' لفظ کان سواءِ."},
 ];
 
 // ═══════════════════════════════════════════════════════════
 // POINTER DATA
 // ═══════════════════════════════════════════════════════════
 const GROUPS = [
-  {label:{en:"Turning toward the I",hi:"'मैं' की ओर",gu:"'Hum' taraf"}, pointers:[
-    {en:"Watch I without words",hi:"शब्दों के बिना 'मैं' को देखो",gu:"Shabdo vinA 'Hum' ne juo"},
-    {en:"Who is behind this I?",hi:"इस 'मैं' के पीछे कौन है?",gu:"Aa 'Hum' ni pAChhal kon che?"},
-    {en:"Who is that for which the word I arises?",hi:"वह कौन है जिसके लिए 'मैं' शब्द उठता है?",gu:"'Hum' shabd jeni mAaTe uThe che te kon che?"},
-    {en:"The source from which I arises",hi:"'मैं' जहाँ से उठता है — वह स्रोत",gu:"'Hum' jyAnthi uThe — te srot"},
+  {label:{en:"Turning toward the I",hi:"'मैं' की ओर",zh:"'转向我'",es:"Volviéndose hacia el yo",sd:"'مان' ڏانهن رخ ڪرڻ"}, pointers:[
+    {en:"Watch I without words",hi:"शब्दों के बिना 'मैं' को देखो",zh:"不用语言，观察「我」",es:"Observa el «yo» sin palabras",sd:"لفظن کان سواءِ 'مان' کي ڏسو"},
+    {en:"Who is behind this I?",hi:"इस 'मैं' के पीछे कौन है?",zh:"这个「我」背后是谁？",es:"¿Quién está detrás de este «yo»?",sd:"هن 'مان' جي پٺيان ڪير آهي؟"},
+    {en:"Who is that for which the word I arises?",hi:"वह कौन है जिसके लिए 'मैं' शब्द उठता है?",zh:"「我」这个字为谁而升起？",es:"¿Quién es aquel para quien surge la palabra «yo»?",sd:"اهو ڪير آهي جنهن لاءِ 'مان' لفظ اڀري ٿو؟"},
+    {en:"The source from which I arises",hi:"'मैं' जहाँ से उठता है — वह स्रोत",zh:"「我」升起之处——那个源头",es:"La fuente de donde surge el «yo»",sd:"'مان' جتان اڀري ٿو — اهو سرچشمو"},
   ]},
-  {label:{en:"The timeless one",hi:"कालातीत एक",gu:"KAlAtit Ek"}, pointers:[
-    {en:"The one always there — whether I arises or not",hi:"वह जो सदा है — चाहे 'मैं' उठे या न उठे",gu:"Je sadA che — 'Hum' uThe ke nA uThe"},
-    {en:"The one before the body came into existence",hi:"शरीर के अस्तित्व में आने से पहले का वह एक",gu:"Sharir astvimAn AavyA pehlanA te"},
-    {en:"The one present while the body lives",hi:"जब तक शरीर जीता है तब तक उपस्थित वह एक",gu:"Sharir jyAre jive tyAre hAjar rehnaaro"},
-    {en:"The one there when the body dies",hi:"जब शरीर मरता है तब भी वहाँ रहने वाला",gu:"Sharir mritu pAme tyAre pan tyAn rehnaaro"},
-    {en:"The one that remains after the body dissolves",hi:"शरीर विलीन होने के बाद भी बचने वाला",gu:"Sharir visarjan pachhi pan rehnaaro"},
+  {label:{en:"The timeless one",hi:"कालातीत एक",zh:"永恒的存在",es:"El ser eterno",sd:"بي وقت هستي"}, pointers:[
+    {en:"The one always there — whether I arises or not",hi:"वह जो सदा है — चाहे 'मैं' उठे या न उठे",zh:"那个永远在的——无论「我」升起与否",es:"El que siempre está — surja o no el «yo»",sd:"اهو جيڪو هميشه آهي — ڀل 'مان' اڀري يا نه"},
+    {en:"The one before the body came into existence",hi:"शरीर के अस्तित्व में आने से पहले का वह एक",zh:"身体存在之前的那一个",es:"El que existía antes de que el cuerpo existiera",sd:"جسم جي وجود ۾ اچڻ کان اڳ وارو اهو هڪ"},
+    {en:"The one present while the body lives",hi:"जब तक शरीर जीता है तब तक उपस्थित वह एक",zh:"身体活着时始终在场的那一个",es:"El presente mientras el cuerpo vive",sd:"جڏهن تائين جسم جيئرو آهي تڏهن تائين موجود اهو هڪ"},
+    {en:"The one there when the body dies",hi:"जब शरीर मरता है तब भी वहाँ रहने वाला",zh:"身体死去时仍在那里的",es:"El que está cuando el cuerpo muere",sd:"جڏهن جسم مري ٿو تڏهن به اتي رهندڙ"},
+    {en:"The one that remains after the body dissolves",hi:"शरीर विलीन होने के बाद भी बचने वाला",zh:"身体消融后依然留存的",es:"El que permanece después de que el cuerpo se disuelve",sd:"جسم ختم ٿيڻ کانپوءِ به باقي رهندڙ"},
   ]},
-  {label:{en:"Seeing through the image",hi:"छवि को पार देखना",gu:"Chhavi ne pAr jovu"}, pointers:[
-    {en:"Is the separate person not imagined?",hi:"क्या अलग व्यक्ति कल्पित नहीं है?",gu:"Shu alag vyakti kalpitA naThi?"},
-    {en:"Are limitations not just images?",hi:"क्या सीमाएँ सिर्फ छवियाँ नहीं हैं?",gu:"Shu maryAdAo fakat chhAvi naThi?"},
-    {en:"What is left when all images fade away?",hi:"जब सभी छवियाँ मिट जाती हैं तो क्या बचता है?",gu:"JyAre badhi chhAvi mit jAy tyAre shu bache?"},
+  {label:{en:"Seeing through the image",hi:"छवि को पार देखना",zh:"看穿表象",es:"Ver más allá de la imagen",sd:"تصوير مان پار ڏسڻ"}, pointers:[
+    {en:"Is the separate person not imagined?",hi:"क्या अलग व्यक्ति कल्पित नहीं है?",zh:"那个分离的人不是被想象出来的吗？",es:"¿No es imaginada la persona separada?",sd:"ڇا الڳ شخص خيالي ناهي؟"},
+    {en:"Are limitations not just images?",hi:"क्या सीमाएँ सिर्फ छवियाँ नहीं हैं?",zh:"局限难道不只是影像吗？",es:"¿No son las limitaciones solo imágenes?",sd:"ڇا حدون صرف تصويرون ناهن؟"},
+    {en:"What is left when all images fade away?",hi:"जब सभी छवियाँ मिट जाती हैं तो क्या बचता है?",zh:"当所有影像消逃，剩下什么？",es:"¿Qué queda cuando todas las imágenes se desvanecen?",sd:"جڏهن سڀ تصويرون غائب ٿين ته ڇا بچي ٿو؟"},
   ]},
-  {label:{en:"The nature of mind",hi:"मन का स्वभाव",gu:"Man no svabhAv"}, pointers:[
-    {en:"Is the mind real — or just a bundle of thoughts?",hi:"क्या मन वास्तविक है — या केवल विचारों का समूह?",gu:"Shu man vAstavikA che — ke fakat vichAronu samuh?"},
-    {en:"Who says the mind exists?",hi:"मन का अस्तित्व कौन कहता है?",gu:"Man che evo kon kahe che?"},
-    {en:"If the mind does not exist — who made it exist?",hi:"यदि मन नहीं है — तो किसने उसे अस्तित्व में लाया?",gu:"JAo man naThi — to tene astitva kone Aapyu?"},
-    {en:"Attending thoughts is feeding them — are thoughts real?",hi:"विचारों पर ध्यान देना उन्हें खिलाना है — क्या विचार वास्तविक हैं?",gu:"VichArono dhyAn Aapu e tene khAvad Aapu — shu vichAr vAstavikA che?"},
+  {label:{en:"The nature of mind",hi:"मन का स्वभाव",zh:"心的本性",es:"La naturaleza de la mente",sd:"من جي فطرت"}, pointers:[
+    {en:"Is the mind real — or just a bundle of thoughts?",hi:"क्या मन वास्तविक है — या केवल विचारों का समूह?",zh:"心是真实的——还是只是念头的集合？",es:"¿Es la mente real — o solo un conjunto de pensamientos?",sd:"ڇا من حقيقي آهي — يا صرف خيالن جو ڍير؟"},
+    {en:"Who says the mind exists?",hi:"मन का अस्तित्व कौन कहता है?",zh:"谁说心存在？",es:"¿Quién dice que la mente existe?",sd:"من جي وجود کي ڪير چوي ٿو؟"},
+    {en:"If the mind does not exist — who made it exist?",hi:"यदि मन नहीं है — तो किसने उसे अस्तित्व में लाया?",zh:"如果心不存在——是谁让它存在的？",es:"Si la mente no existe — ¿quién la hizo existir?",sd:"جيڪڏهن من ناهي — ته ان کي وجود ڪنهن ڏنو؟"},
+    {en:"Attending thoughts is feeding them — are thoughts real?",hi:"विचारों पर ध्यान देना उन्हें खिलाना है — क्या विचार वास्तविक हैं?",zh:"关注念头就是喜养它们——念头是真实的吗？",es:"Atender los pensamientos es alimentarlos — ¿son reales los pensamientos?",sd:"خيالن تي ڌيان ڏيڻ انهن کي کارائڻ آهي — ڇا خيال حقيقي آهن؟"},
   ]},
-  {label:{en:"The nature of thoughts",hi:"विचारों का स्वभाव",gu:"VichArono svabhAv"}, pointers:[
-    {en:"If thoughts are not real — do they exist?",hi:"यदि विचार वास्तविक नहीं हैं — तो क्या वे हैं?",gu:"JAo vichAr vAstavikA naThi — to shu te che?"},
-    {en:"What is left if thoughts are not real?",hi:"यदि विचार वास्तविक नहीं हैं तो क्या बचता है?",gu:"JAo vichAr vAstavikA nA hoy to shu bache?"},
-    {en:"What is left if there is no mind in reality?",hi:"यदि वास्तव में कोई मन नहीं है तो क्या बचता है?",gu:"JAo vastav mA koi man nA hoy to shu bache?"},
+  {label:{en:"The nature of thoughts",hi:"विचारों का स्वभाव",zh:"思想的本性",es:"La naturaleza de los pensamientos",sd:"خيالن جي فطرت"}, pointers:[
+    {en:"If thoughts are not real — do they exist?",hi:"यदि विचार वास्तविक नहीं हैं — तो क्या वे हैं?",zh:"如果念头不是真实的——它们存在吗？",es:"Si los pensamientos no son reales — ¿existen?",sd:"جيڪڏهن خيال حقيقي ناهن — ته ڇا اهي آهن؟"},
+    {en:"What is left if thoughts are not real?",hi:"यदि विचार वास्तविक नहीं हैं तो क्या बचता है?",zh:"如果念头不是真实的，剩下什么？",es:"¿Qué queda si los pensamientos no son reales?",sd:"جيڪڏهن خيال حقيقي ناهن ته ڇا بچي ٿو؟"},
+    {en:"What is left if there is no mind in reality?",hi:"यदि वास्तव में कोई मन नहीं है तो क्या बचता है?",zh:"如果现实中没有心，剩下什么？",es:"¿Qué queda si en realidad no hay mente?",sd:"جيڪڏهن حقيقت ۾ ڪو من ناهي ته ڇا بچي ٿو؟"},
   ]},
-  {label:{en:"The world and self unravel",hi:"जगत और स्व का विलय",gu:"Jagat ane SvA no vilay"}, pointers:[
-    {en:"If thoughts don't exist — do you exist?",hi:"यदि विचार नहीं हैं — तो क्या तुम हो?",gu:"JAo vichAr naThi — to shu tame cho?"},
-    {en:"If you don't exist — does this world exist?",hi:"यदि तुम नहीं हो — तो यह संसार है क्या?",gu:"JAo tame naThi — to Aa jagat che?"},
-    {en:"What exists if nothing perceivable, imaginable, or understandable exists?",hi:"यदि कुछ भी अनुभव, कल्पना या समझ में नहीं आता — तो क्या है?",gu:"JAo koi anubhav, kalpnA ke samaj nA hoy — to shu che?"},
+  {label:{en:"The world and self unravel",hi:"जगत और स्व का विलय",zh:"世界与自我的消融",es:"El mundo y el yo se disuelven",sd:"جڳ ۽ ذات جو خاتمو"}, pointers:[
+    {en:"If thoughts don't exist — do you exist?",hi:"यदि विचार नहीं हैं — तो क्या तुम हो?",zh:"如果念头不存在——你存在吗？",es:"Si los pensamientos no existen — ¿existes tú?",sd:"جيڪڏهن خيال ناهن — ته ڇا توهان آهيو؟"},
+    {en:"If you don't exist — does this world exist?",hi:"यदि तुम नहीं हो — तो यह संसार है क्या?",zh:"如果你不存在——这个世界存在吗？",es:"Si tú no existes — ¿existe este mundo?",sd:"جيڪڏهن توهان ناهيو — ته هي دنيا آهي ڇا؟"},
+    {en:"What exists if nothing perceivable, imaginable, or understandable exists?",hi:"यदि कुछ भी अनुभव, कल्पना या समझ में नहीं आता — तो क्या है?",zh:"如果没有任何可感知、可想象或可理解的东西存在——有什么？",es:"¿Qué existe si no existe nada perceptible, imaginable o comprensible?",sd:"جيڪڏهن ڪجهه به محسوس، تصور يا سمجهه ۾ نه اچي — ته ڇا آهي؟"},
   ]},
-  {label:{en:"The open door",hi:"खुला द्वार",gu:"Ughadel DvAr"}, pointers:[
-    {en:"What is there when nothing is there?",hi:"जब कुछ नहीं है तो क्या है?",gu:"JyAre kashil naThi tyAre shu che?"},
+  {label:{en:"The open door",hi:"खुला द्वार",zh:"敞开的门",es:"La puerta abierta",sd:"کليل دروازو"}, pointers:[
+    {en:"What is there when nothing is there?",hi:"जब कुछ नहीं है तो क्या है?",zh:"什么都没有时，有什么？",es:"¿Qué hay cuando no hay nada?",sd:"جڏهن ڪجهه به ناهي تڏهن ڇا آهي؟"},
   ]},
-  {label:{en:"Before the word I",hi:"शब्द 'मैं' से पहले",gu:"'Hum' shabd thi pehla"}, pointers:[
-    {en:"What if the 'I' itself is imaginary?",hi:"क्या 'मैं' स्वयं कल्पना है?",gu:"Shu 'Hum' pote kalpanA che?"},
-    {en:"From where does this very thought of 'I' arise?",hi:"'मैं' का यह विचार कहाँ से उठता है?",gu:"'Hum' no Ae vichAr kyAnthi uThe che?"},
-    {en:"From where does the very word 'I' arise?",hi:"'मैं' शब्द कहाँ से उठता है?",gu:"'Hum' shabd kyAnthi uThe che?"},
-    {en:"What is behind this word 'I'?",hi:"इस 'मैं' शब्द के पीछे क्या है?",gu:"Aa 'Hum' shabd ni pAChhal shu che?"},
-    {en:"What are you before this 'I'?",hi:"इस 'मैं' से पहले तुम क्या हो?",gu:"Aa 'Hum' thi pehla tame shu cho?"},
+  {label:{en:"Before the word I",hi:"शब्द 'मैं' से पहले",zh:"'我'这个词之前",es:"Antes de la palabra yo",sd:"لفظ 'مان' کان اڳ"}, pointers:[
+    {en:"What if the 'I' itself is imaginary?",hi:"क्या 'मैं' स्वयं कल्पना है?",zh:"如果「我」本身是想象出来的呢？",es:"¿Y si el «yo» mismo es imaginario?",sd:"جيڪڏهن 'مان' پاڻ خيالي آهي؟"},
+    {en:"From where does this very thought of 'I' arise?",hi:"'मैं' का यह विचार कहाँ से उठता है?",zh:"「我」这个念头从哪里升起？",es:"¿De dónde surge este pensamiento del «yo»?",sd:"'مان' جو هي خيال ڪٿان اڀري ٿو؟"},
+    {en:"From where does the very word 'I' arise?",hi:"'मैं' शब्द कहाँ से उठता है?",zh:"「我」这个字从哪里升起？",es:"¿De dónde surge la palabra «yo»?",sd:"'مان' لفظ ڪٿان اڀري ٿو؟"},
+    {en:"What is behind this word 'I'?",hi:"इस 'मैं' शब्द के पीछे क्या है?",zh:"这个「我」字背后是什么？",es:"¿Qué hay detrás de esta palabra «yo»?",sd:"هن 'مان' لفظ جي پٺيان ڇا آهي؟"},
+    {en:"What are you before this 'I'?",hi:"इस 'मैं' से पहले तुम क्या हो?",zh:"在这个「我」之前你是什么？",es:"¿Qué eres antes de este «yo»?",sd:"هن 'مان' کان اڳ توهان ڇا آهيو؟"},
   ]},
-  {label:{en:"Just before I appears",hi:"'मैं' प्रकट होने से ठीक पहले",gu:"'Hum' pragat thAy te pehla"}, pointers:[
-    {en:"Are you not already here even before this word 'I' starts?",hi:"क्या तुम 'मैं' शुरू होने से भी पहले यहाँ नहीं हो?",gu:"Shu tame 'Hum' sharu thAy te pehla pan ahiyA naThi?"},
-    {en:"Are you not without 'I,' just before 'I' appears?",hi:"क्या तुम 'मैं' प्रकट होने से ठीक पहले बिना 'मैं' के नहीं हो?",gu:"'Hum' pragat thAy te turat pehla shu tame 'Hum' vinA naThi?"},
-    {en:"Just go back. Go back to the source of 'I.'",hi:"बस पीछे जाओ। 'मैं' के स्रोत की ओर लौटो।",gu:"Bus pAChi jAo. 'Hum' nA srot taraf pAChi jAo."},
-    {en:"After you, feeling and identity begin — then the label 'I' is given",hi:"तुम्हारे बाद, भावना और पहचान शुरू होती है — तब उसे 'मैं' कहा जाता है",gu:"TamArA pachhi, lAgni ane olakh shuru thAy — pachhi tene 'Hum' khevaay"},
+  {label:{en:"Just before I appears",hi:"'मैं' प्रकट होने से ठीक पहले",zh:"'我'出现之前",es:"Justo antes de que aparezca el yo",sd:"'مان' ظاهر ٿيڻ کان ٺيڪ اڳ"}, pointers:[
+    {en:"Are you not already here even before this word 'I' starts?",hi:"क्या तुम 'मैं' शुरू होने से भी पहले यहाँ नहीं हो?",zh:"在这个「我」开始之前，你不已经在这里了吗？",es:"¿No estás ya aquí incluso antes de que empiece este «yo»?",sd:"ڇا توهان هن 'مان' شروع ٿيڻ کان به اڳ هتي ناهيو؟"},
+    {en:"Are you not without 'I,' just before 'I' appears?",hi:"क्या तुम 'मैं' प्रकट होने से ठीक पहले बिना 'मैं' के नहीं हो?",zh:"就在「我」出现之前，你不是没有「我」的吗？",es:"¿No estás sin «yo», justo antes de que el «yo» aparezca?",sd:"ڇا توهان 'مان' ظاهر ٿيڻ کان ٺيڪ اڳ بغير 'مان' جي ناهيو؟"},
+    {en:"Just go back. Go back to the source of 'I.'",hi:"बस पीछे जाओ। 'मैं' के स्रोत की ओर लौटो।",zh:"只是回去。回到「我」的源头。",es:"Solo regresa. Regresa a la fuente del «yo».",sd:"بس پوئتي وڃو. 'مان' جي سرچشمي ڏانهن واپس وڃو."},
+    {en:"After you, feeling and identity begin — then the label 'I' is given",hi:"तुम्हारे बाद, भावना और पहचान शुरू होती है — तब उसे 'मैं' कहा जाता है",zh:"在你之后，感受与身份开始——然后被贴上「我」的标签",es:"Después de ti, el sentimiento y la identidad comienzan — luego se les da la etiqueta «yo»",sd:"توهان کانپوءِ، احساس ۽ سڃاڻپ شروع ٿئي — پوءِ ان کي 'مان' چيو وڃي ٿو"},
   ]},
-  {label:{en:"Beyond body and images",hi:"शरीर और छवियों से परे",gu:"Sharir ane chhAvio thi pAre"}, pointers:[
-    {en:"Are you a body?",hi:"क्या तुम शरीर हो?",gu:"Shu tame sharir cho?"},
-    {en:"There are images of the whole universe in your mind — what are you without these images?",hi:"तुम्हारे मन में समस्त सृष्टि की छवियाँ हैं — इन छवियों के बिना तुम क्या हो?",gu:"TarA man mA samagra sranth ni chhAbi che — in chhAbi vinA tame shu cho?"},
-    {en:"Can you see how all these images appear and stay together?",hi:"क्या तुम देख सकते हो कैसे ये सभी छवियाँ प्रकट होती और साथ रहती हैं?",gu:"Shu tame joi shako cho ke Ae badhi chhAbi kevi rite pragat thAy ane sAth rahe?"},
+  {label:{en:"Beyond body and images",hi:"शरीर और छवियों से परे",zh:"超越身体与形象",es:"Más allá del cuerpo y las imágenes",sd:"جسم ۽ تصويرن کان پري"}, pointers:[
+    {en:"Are you a body?",hi:"क्या तुम शरीर हो?",zh:"你是身体吗？",es:"¿Eres un cuerpo?",sd:"ڇا توهان جسم آهيو؟"},
+    {en:"There are images of the whole universe in your mind — what are you without these images?",hi:"तुम्हारे मन में समस्त सृष्टि की छवियाँ हैं — इन छवियों के बिना तुम क्या हो?",zh:"你的心中有整个宇宙的影像——没有这些影像你是什么？",es:"Hay imágenes de todo el universo en tu mente — ¿qué eres sin estas imágenes?",sd:"توهان جي من ۾ سڄي ڪائنات جون تصويرون آهن — انهن تصويرن کان سواءِ توهان ڇا آهيو؟"},
+    {en:"Can you see how all these images appear and stay together?",hi:"क्या तुम देख सकते हो कैसे ये सभी छवियाँ प्रकट होती और साथ रहती हैं?",zh:"你能看到所有这些影像如何出现并聚合在一起吗？",es:"¿Puedes ver cómo todas estas imágenes aparecen y permanecen juntas?",sd:"ڇا توهان ڏسي سگهو ٿا ته هي سڀ تصويرون ڪيئن ظاهر ٿين ۽ گڏ رهن؟"},
   ]},
-  {label:{en:"The witness",hi:"साक्षी",gu:"SaksHi"}, pointers:[
-    {en:"Who is watching all of this?",hi:"यह सब कौन देख रहा है?",gu:"Aa badhu kon joi rahyu che?"},
-    {en:"Is the watcher itself a thought?",hi:"क्या देखने वाला स्वयं एक विचार है?",gu:"Shu jonAr pote ek vichAr che?"},
-    {en:"Can awareness be aware of itself?",hi:"क्या चेतना स्वयं अपनी जानकारी रख सकती है?",gu:"Shu chetnA pote ni jAAnkAri rAkhi shake?"},
-    {en:"What remains when the watcher dissolves?",hi:"जब देखने वाला विलीन हो जाता है तो क्या बचता है?",gu:"JyAre jonAr vilin thAy tyAre shu bache?"},
+  {label:{en:"The witness",hi:"साक्षी",zh:"见证者",es:"El testigo",sd:"گواهه"}, pointers:[
+    {en:"Who is watching all of this?",hi:"यह सब कौन देख रहा है?",zh:"谁在观看这一切？",es:"¿Quién está observando todo esto?",sd:"هي سڀ ڪير ڏسي رهيو آهي؟"},
+    {en:"Is the watcher itself a thought?",hi:"क्या देखने वाला स्वयं एक विचार है?",zh:"那个观看者本身是一个念头吗？",es:"¿El observador mismo es un pensamiento?",sd:"ڇا ڏسندڙ پاڻ هڪ خيال آهي؟"},
+    {en:"Can awareness be aware of itself?",hi:"क्या चेतना स्वयं अपनी जानकारी रख सकती है?",zh:"觉知能觉知自身吗？",es:"¿Puede la conciencia ser consciente de sí misma?",sd:"ڇا شعور پاڻ جي خبر رکي سگهي ٿو؟"},
+    {en:"What remains when the watcher dissolves?",hi:"जब देखने वाला विलीन हो जाता है तो क्या बचता है?",zh:"当观看者消融，剩下什么？",es:"¿Qué permanece cuando el observador se disuelve?",sd:"جڏهن ڏسندڙ ختم ٿئي ته ڇا بچي ٿو؟"},
   ]},
-  {label:{en:"Pure presence",hi:"शुद्ध उपस्थिति",gu:"Shuddh UpasThiti"}, pointers:[
-    {en:"What is here before any thought arises?",hi:"कोई भी विचार उठने से पहले यहाँ क्या है?",gu:"Koi pan vichAr uThe te pehla ahiyA shu che?"},
-    {en:"Is there a gap between two thoughts? What lives in that gap?",hi:"दो विचारों के बीच एक अंतर है क्या? उस अंतर में क्या जीता है?",gu:"Be vichAr vachche antar che? Te antar mA shu jive che?"},
-    {en:"What has never come and will never go?",hi:"जो कभी आया नहीं और जाएगा भी नहीं — वह क्या है?",gu:"Je kabhi Aavyu naThi ane kabhi jAse nahi — e shu che?"},
+  {label:{en:"Pure presence",hi:"शुद्ध उपस्थिति",zh:"纯粹的临在",es:"Presencia pura",sd:"خالص حضوري"}, pointers:[
+    {en:"What is here before any thought arises?",hi:"कोई भी विचार उठने से पहले यहाँ क्या है?",zh:"在任何念头升起之前，这里有什么？",es:"¿Qué hay aquí antes de que surja cualquier pensamiento?",sd:"ڪنهن به خيال کان اڳ هتي ڇا آهي؟"},
+    {en:"Is there a gap between two thoughts? What lives in that gap?",hi:"दो विचारों के बीच एक अंतर है क्या? उस अंतर में क्या जीता है?",zh:"两个念头之间有间隙吗？那间隙中活着什么？",es:"¿Hay una pausa entre dos pensamientos? ¿Qué vive en esa pausa?",sd:"ڇا ٻن خيالن جي وچ ۾ هڪ وقفو آهي؟ ان وقفي ۾ ڇا جيئي ٿو؟"},
+    {en:"What has never come and will never go?",hi:"जो कभी आया नहीं और जाएगा भी नहीं — वह क्या है?",zh:"什么从未来过，也永远不会离去？",es:"¿Qué nunca ha venido y nunca se irá?",sd:"جيڪو ڪڏهن نه آيو ۽ ڪڏهن نه ويندو — اهو ڇا آهي؟"},
   ]},
 ];
 
@@ -989,7 +1054,15 @@ q('jrn-save').addEventListener('click',()=>{const txt=q('jrn-text').value.trim()
 // ═══════════════════════════════════════════════════════════
 // GUIDE
 // ═══════════════════════════════════════════════════════════
-function buildGuide(){const el=q('guide-content');GUIDE.forEach(b=>{const div=document.createElement('div');div.className='guide-block';div.innerHTML=`<div class="guide-ttl">${b.title}</div><div class="guide-body">${b.body}${b.sub?`<span class="guide-sub">${b.sub}</span>`:''}</div>`;el.appendChild(div);});}
+function buildGuide(){
+  const el=q('guide-content');
+  // Tribute block
+  const tr=document.createElement('div');tr.className='tribute-block';
+  tr.innerHTML=`<div class="tribute-label">With deep gratitude</div><div class="tribute-body">Rooted in the direct teachings of<br><span class="tribute-name">Bhagavan Sri Ramana Maharshi</span><br>and<br><span class="tribute-name">Sri Nisargadatta Maharaj</span><br><br>Offered here not as philosophy,<br>but as a living inquiry — pointing to what you have always already been.</div>`;
+  el.appendChild(tr);
+  // Guide blocks
+  GUIDE.forEach(b=>{const div=document.createElement('div');div.className='guide-block';div.innerHTML=`<div class="guide-ttl">${b.title}</div><div class="guide-body">${b.body}${b.sub?`<span class="guide-sub">${b.sub}</span>`:''}</div>`;el.appendChild(div);});
+}
 
 // ═══════════════════════════════════════════════════════════
 // SETTINGS CHIPS + LANGUAGE
@@ -999,6 +1072,8 @@ function initChips(gid,cb){document.querySelectorAll(`#${gid} .chip`).forEach(c=
 
 function refreshUI(){
   const t=T();
+  // RTL for Sindhi
+  document.documentElement.dir=ST.lang==='sd'?'rtl':'ltr';
   document.querySelectorAll('[data-ui]').forEach(el=>{const k=el.dataset.ui;if(t[k]!==undefined)el.textContent=t[k];});
   document.querySelectorAll('[data-ph]').forEach(el=>{const k=el.dataset.ph;if(t[k])el.placeholder=t[k];});
   q('mode-hint').textContent=t.seqHint.replace('{n}',getPool().length);
