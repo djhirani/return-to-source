@@ -233,16 +233,26 @@ a{color:var(--accent);text-decoration:none}
   font-weight:300;color:rgba(180,220,235,.78);line-height:1.9}
 .guide-sub{color:rgba(120,175,200,.58);font-size:.9rem;display:block;
   margin-top:.5rem}
-.tribute-block{margin-bottom:2rem;padding:1.25rem 1.35rem;
+.tribute-block{margin-bottom:2rem;padding:1.4rem 1.5rem 1.5rem;
   background:rgba(212,169,106,.06);border:.5px solid rgba(212,169,106,.26);
   border-radius:var(--radius);text-align:center}
 .tribute-label{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:.78rem;opacity:.8}
+  color:var(--gold);margin-bottom:.88rem;opacity:.8}
 .tribute-body{font-family:var(--serif);font-size:.93rem;font-style:italic;
   color:rgba(212,195,155,.84);line-height:1.9}
 .tribute-name{font-weight:700;font-style:normal;color:var(--gold);
   background:rgba(212,169,106,.14);border-radius:5px;
   padding:.05rem .35rem;letter-spacing:.03em}
+.tribute-divider{width:38px;height:1px;background:rgba(212,169,106,.28);
+  margin:1.2rem auto;border:none}
+.tribute-personal{font-family:var(--serif);font-size:.88rem;font-style:italic;
+  color:rgba(212,195,155,.78);line-height:1.85;text-align:left;
+  border-left:2px solid rgba(212,169,106,.3);padding-left:.95rem;margin-top:1.1rem}
+.tribute-personal + .tribute-personal{margin-top:.9rem}
+.tribute-person{font-weight:700;font-style:normal;color:var(--gold);letter-spacing:.02em}
+.tribute-note{font-family:var(--serif);font-size:.8rem;font-style:italic;
+  color:rgba(212,195,155,.5);line-height:1.8;margin-top:1.2rem;
+  padding-top:1rem;border-top:.5px solid rgba(212,169,106,.15);text-align:left}
 
 /* ── Settings ── */
 .set-grp{margin-bottom:1.8rem}
@@ -2821,12 +2831,43 @@ function buildGuide() {
   // Tribute
   const tr = document.createElement('div');
   tr.className = 'tribute-block';
-  tr.innerHTML = `<div class="tribute-label">With deep gratitude</div>
-    <div class="tribute-body">Rooted in the direct teachings of<br>
-    <span class="tribute-name">Sri Ramana Maharshi</span><br>and<br>
-    <span class="tribute-name">Sri Nisargadatta Maharaj</span><br><br>
-    Offered here not as philosophy,<br>
-    but as a living inquiry — pointing to what you have always already been.</div>`;
+  tr.innerHTML = `
+    <div class="tribute-label">With Deep Gratitude</div>
+
+    <!-- Block 1: Root teachers -->
+    <div class="tribute-body">
+      Rooted in the direct teachings of<br>
+      <span class="tribute-name">Sri Ramana Maharshi</span><br>
+      <span style="font-size:.78rem;opacity:.6;letter-spacing:.08em">and</span><br>
+      <span class="tribute-name">Sri Nisargadatta Maharaj</span>
+    </div>
+
+    <hr class="tribute-divider">
+
+    <!-- Block 2: Personal lineage -->
+    <div class="tribute-personal">
+      With heartfelt gratitude to <span class="tribute-person">John Wheeler</span> —
+      whose extraordinary clarity, kindness, and direct guidance through personal emails
+      and Skype conversations helped dissolve many layers of conceptual confusion.
+      His book <em>Awakening to the Natural State</em> was a turning point.
+    </div>
+    <div class="tribute-personal">
+      With deep reverence to <span class="tribute-person">Ramakant Maharaj</span> —
+      from whom the mantra <em>Aham Brahmasmi</em> was received, further deepening
+      the inward turning toward the source beyond mind, identity, and personhood.
+    </div>
+
+    <hr class="tribute-divider">
+
+    <!-- Block 3: Author's note -->
+    <div class="tribute-note">
+      These pointers are not offered as philosophy, belief, or any claim of spiritual
+      attainment. They arise from direct contemplative observation — from repeatedly
+      watching false identities, mental images, and the sense of separation dissolve
+      into silence, presence, and the unknown.<br><br>
+      No claim is made of enlightenment. Only gratitude for the clarity that emerges
+      when the false is seen as false — and attention returns to its natural state.
+    </div>`;
   el.appendChild(tr);
 
   // Guide blocks
