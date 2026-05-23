@@ -278,6 +278,39 @@ a{color:var(--accent);text-decoration:none}
   background:rgba(77,184,212,.35);flex:1;min-width:0;
   transition:height .4s var(--ease-calm)}
 
+/* ── Voice narration ── */
+.voice-dot{width:7px;height:7px;border-radius:50%;
+  background:var(--accent);opacity:0;flex-shrink:0;margin-top:.15rem;
+  transition:opacity .4s}
+.voice-dot.on{opacity:1;animation:voice-pulse 1.4s ease-in-out infinite}
+@keyframes voice-pulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.7);opacity:1}}
+.voice-select-wrap{position:relative;margin-top:.55rem}
+.voice-select{width:100%;padding:.48rem .9rem;
+  background:rgba(77,184,212,.04);border:.5px solid rgba(77,184,212,.2);
+  border-radius:10px;color:var(--txt2);font-family:var(--sans);
+  font-size:.82rem;appearance:none;-webkit-appearance:none;
+  outline:none;cursor:pointer;transition:border-color .2s}
+.voice-select:focus{border-color:rgba(77,184,212,.44)}
+.voice-select option{background:#071828;color:var(--txt)}
+.voice-select-arrow{position:absolute;right:.8rem;top:50%;
+  transform:translateY(-50%);color:var(--txt3);font-size:.65rem;
+  pointer-events:none}
+.voice-test-btn{margin-top:.55rem;padding:.5rem 1.3rem;
+  background:rgba(77,184,212,.07);border:.5px solid rgba(77,184,212,.22);
+  border-radius:20px;color:var(--txt2);font-size:.76rem;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.voice-test-btn:hover{background:rgba(77,184,212,.16);color:var(--accent)}
+.voice-test-btn .vt-dot{width:5px;height:5px;border-radius:50%;
+  background:var(--accent);opacity:0;transition:opacity .3s}
+.voice-test-btn.testing .vt-dot{opacity:1;animation:voice-pulse 1s ease-in-out infinite}
+.voice-compat-note{font-size:.68rem;color:var(--txt3);font-family:var(--serif);
+  font-style:italic;margin-top:.6rem;line-height:1.6;
+  padding:.55rem .8rem;background:rgba(77,184,212,.03);
+  border-left:2px solid rgba(77,184,212,.2);border-radius:0 6px 6px 0}
+.voice-compat-note.warn{border-left-color:rgba(212,169,106,.4);
+  color:rgba(212,195,155,.7)}
+
 /* ── Level cards ── */
 .level-row{display:flex;flex-direction:column;gap:.5rem}
 .lvl-card{display:flex;align-items:center;gap:.9rem;padding:.85rem 1rem;
@@ -475,7 +508,10 @@ a{color:var(--accent);text-decoration:none}
       <div class="orb-core"></div>
     </div>
     <div class="ptr-wrap" role="region" aria-label="Inquiry pointer" aria-live="polite">
-      <div class="ptr-grp" id="ptr-grp"></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:.5rem">
+        <div class="ptr-grp" id="ptr-grp"></div>
+        <div class="voice-dot" id="voice-dot" aria-hidden="true" title="Speaking"></div>
+      </div>
       <p class="ptr-text" id="ptr-text"></p>
       <div class="ptr-count" id="ptr-count"></div>
     </div>
@@ -599,6 +635,26 @@ a{color:var(--accent);text-decoration:none}
         <button class="chip" data-v="bowls" data-ui="singingBowls">Singing Bowls</button>
         <button class="chip" data-v="bells" data-ui="bells">Bells</button>
         <button class="chip" data-v="drone" data-ui="deepDrone">Deep Drone</button>
+      </div>
+    </div>
+    <div class="set-grp" id="voice-grp">
+      <div class="set-grp-ttl" data-ui="voiceTitle">Voice Narration</div>
+      <div class="chip-row" id="narr-chips">
+        <button class="chip on" data-v="off"  data-ui="narrOff">Off</button>
+        <button class="chip"    data-v="gentle" data-ui="narrGentle">Gentle</button>
+        <button class="chip"    data-v="deep"   data-ui="narrDeep">Deep</button>
+        <button class="chip"    data-v="slow"   data-ui="narrSlow">Very Slow</button>
+      </div>
+      <div id="voice-controls" style="display:none;margin-top:.75rem">
+        <div class="voice-select-wrap">
+          <select class="voice-select" id="voice-select" aria-label="Choose narration voice"></select>
+          <div class="voice-select-arrow" aria-hidden="true">▾</div>
+        </div>
+        <button class="voice-test-btn" id="voice-test" aria-label="Test selected voice">
+          <span class="vt-dot" aria-hidden="true"></span>
+          <span data-ui="voiceTest">Test Voice</span>
+        </button>
+        <div class="voice-compat-note" id="voice-compat-note"></div>
       </div>
     </div>
     <div class="set-grp">
@@ -743,6 +799,14 @@ const UI = {
     lvlSection_seeker:"Seeker Path",
     lvlSection_advanced:"Advanced Path",
     lvlSection_sahaja:"The Natural State",
+    voiceTitle:"Voice Narration",
+    narrOff:"Off",narrGentle:"Gentle",narrDeep:"Deep",narrSlow:"Very Slow",
+    voiceTest:"Test Voice",
+    voiceNoSupport:"Voice narration is not supported in this browser. Try Chrome or Safari.",
+    voiceNoVoices:"No voices found. Check your device's text-to-speech settings.",
+    voiceIosNote:"On iPhone: tap a mode, then tap Test Voice first to unlock audio.",
+    voiceAndroidNote:"On Android: voices load in the background — wait a moment if the list is empty.",
+    voiceSelectLabel:"Choose voice",
   },
   hi:{
     meditate:"ध्यान",journey:"यात्रा",journal:"डायरी",guide:"मार्ग",settings:"सेटिंग",
@@ -772,6 +836,12 @@ const UI = {
     progNoData:"पहला सत्र दर्ज करें",
     lvlSection_beginner:"शुरुआती पथ",lvlSection_seeker:"साधक पथ",
     lvlSection_advanced:"उन्नत पथ",lvlSection_sahaja:"सहज अवस्था",
+    voiceTitle:"वाणी नारायण",narrOff:"बंद",narrGentle:"सौम्य",narrDeep:"गहरा",narrSlow:"बहुत धीमा",
+    voiceTest:"आवाज़ परखें",voiceNoSupport:"यह ब्राउज़र वाणी का समर्थन नहीं करता।",
+    voiceNoVoices:"कोई आवाज़ नहीं मिली। डिवाइस सेटिंग जाँचें।",
+    voiceIosNote:"iPhone पर: पहले एक मोड चुनें, फिर 'आवाज़ परखें' दबाएं।",
+    voiceAndroidNote:"Android पर: आवाज़ें पृष्ठभूमि में लोड होती हैं — थोड़ा प्रतीक्षा करें।",
+    voiceSelectLabel:"आवाज़ चुनें",
   },
   zh:{
     meditate:"冥想",journey:"旅程",journal:"日记",guide:"指引",settings:"设置",
@@ -801,6 +871,12 @@ const UI = {
     progNoData:"记录第一次会话以查看趋势",
     lvlSection_beginner:"初学者之路",lvlSection_seeker:"探寻者之路",
     lvlSection_advanced:"深修之路",lvlSection_sahaja:"自然状态",
+    voiceTitle:"语音朗读",narrOff:"关闭",narrGentle:"轻柔",narrDeep:"深沉",narrSlow:"极慢",
+    voiceTest:"测试语音",voiceNoSupport:"此浏览器不支持语音功能。请使用Chrome或Safari。",
+    voiceNoVoices:"未找到语音。请检查设备的文字转语音设置。",
+    voiceIosNote:"iPhone上：先选择模式，然后点击「测试语音」以解锁音频。",
+    voiceAndroidNote:"Android上：语音在后台加载，如列表为空请稍候。",
+    voiceSelectLabel:"选择语音",
   },
   es:{
     meditate:"Meditar",journey:"Viaje",journal:"Diario",guide:"Guía",settings:"Ajustes",
@@ -830,6 +906,12 @@ const UI = {
     progNoData:"Registra tu primera sesión para ver tendencias",
     lvlSection_beginner:"Camino del principiante",lvlSection_seeker:"Camino del buscador",
     lvlSection_advanced:"Camino avanzado",lvlSection_sahaja:"El Estado Natural",
+    voiceTitle:"Narración de voz",narrOff:"Apagado",narrGentle:"Suave",narrDeep:"Profundo",narrSlow:"Muy lento",
+    voiceTest:"Probar voz",voiceNoSupport:"Este navegador no soporta narración. Usa Chrome o Safari.",
+    voiceNoVoices:"No se encontraron voces. Revisa la configuración de texto a voz.",
+    voiceIosNote:"En iPhone: elige un modo y luego toca 'Probar voz' para activar el audio.",
+    voiceAndroidNote:"En Android: las voces cargan en segundo plano — espera un momento.",
+    voiceSelectLabel:"Elige voz",
   }
 };
 
@@ -1555,6 +1637,289 @@ function transitionSnd() { if (!ST.sndOn || !ST.audio) return; if (ST.sndType ==
 function completionSnd() { ensureAudio(); const g = mkGain(0.55); bowl(g); setTimeout(() => bowl(g), 2200); }
 
 // ═══════════════════════════════════════════════════════════════
+// VOICE NARRATION ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+// Ordered preference list — first match found on device wins
+const VOICE_PREFS = [
+  'Google UK English Female',
+  'Google UK English Male',
+  'Google US English',
+  'Microsoft Sonia Online (Natural) - English (United Kingdom)',
+  'Microsoft Aria Online (Natural) - English (United States)',
+  'Microsoft Jenny Online (Natural) - English (United States)',
+  'Microsoft Zira - English (United States)',
+  'Microsoft David - English (United States)',
+  'Samantha',          // Apple macOS / iOS
+  'Daniel',            // Apple UK English
+  'Serena',            // Apple UK English (enhanced)
+  'Karen',             // Apple Australian
+  'Moira',             // Apple Irish
+  'Tessa',             // Apple South African
+];
+
+// Mode parameter presets
+const NARR_MODES = {
+  off:    null,
+  gentle: { rate: 0.78, pitch: 0.92, volume: 0.85 },
+  deep:   { rate: 0.70, pitch: 0.76, volume: 0.90 },
+  slow:   { rate: 0.60, pitch: 0.88, volume: 0.90 },
+};
+
+const VN = {
+  supported: typeof window !== 'undefined' && 'speechSynthesis' in window,
+  mode:      'off',          // 'off' | 'gentle' | 'deep' | 'slow'
+  voices:    [],             // available SpeechSynthesisVoice[]
+  voice:     null,           // chosen SpeechSynthesisVoice
+  voiceName: '',             // saved by name (voice objects don't persist)
+  speaking:  false,
+  pauseTimer: null,          // pre-speech delay handle
+};
+
+// ── Load / rank available voices ────────────────────────────────
+function vnLoadVoices() {
+  if (!VN.supported) return;
+  try {
+    const all = speechSynthesis.getVoices();
+    if (!all.length) return;                 // not ready yet
+    // Keep only voices with a usable lang, deduplicate by name
+    const seen = new Set();
+    VN.voices = all.filter(v => {
+      if (seen.has(v.name)) return false;
+      seen.add(v.name);
+      return true;
+    });
+    vnPickBestVoice();
+    vnPopulateSelect();
+  } catch (e) { /* silently ignore */ }
+}
+
+function vnPickBestVoice() {
+  if (!VN.voices.length) return;
+
+  // 1. Restore user-saved preference
+  if (VN.voiceName) {
+    const match = VN.voices.find(v => v.name === VN.voiceName);
+    if (match) { VN.voice = match; return; }
+  }
+
+  // 2. Try preferred list in order
+  for (const pref of VOICE_PREFS) {
+    const match = VN.voices.find(v => v.name.toLowerCase().includes(pref.toLowerCase()));
+    if (match) { VN.voice = match; return; }
+  }
+
+  // 3. Prefer any enhanced/natural English voice
+  const enhanced = VN.voices.find(v =>
+    v.lang.startsWith('en') && (v.name.includes('(Natural)') || v.name.includes('Enhanced') || v.localService === false)
+  );
+  if (enhanced) { VN.voice = enhanced; return; }
+
+  // 4. Fallback: any English voice
+  const anyEn = VN.voices.find(v => v.lang.startsWith('en'));
+  if (anyEn) { VN.voice = anyEn; return; }
+
+  // 5. Last resort: first available voice
+  VN.voice = VN.voices[0] || null;
+}
+
+// ── Populate the <select> in Settings ───────────────────────────
+function vnPopulateSelect() {
+  const sel = document.getElementById('voice-select');
+  if (!sel) return;
+  sel.innerHTML = '';
+  if (!VN.voices.length) {
+    const opt = document.createElement('option');
+    opt.textContent = T().voiceNoVoices;
+    sel.appendChild(opt);
+    return;
+  }
+  VN.voices.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v.name;
+    // Readable label: "Samantha (en-US) ★" if it's in preference list
+    const isPref = VOICE_PREFS.some(p => v.name.toLowerCase().includes(p.toLowerCase()));
+    opt.textContent = v.name + ' (' + v.lang + ')' + (isPref ? ' ★' : '');
+    if (VN.voice && v.name === VN.voice.name) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+// ── Stop any current speech immediately ─────────────────────────
+function vnStop() {
+  clearTimeout(VN.pauseTimer);
+  VN.pauseTimer = null;
+  if (!VN.supported) return;
+  try { speechSynthesis.cancel(); } catch {}
+  VN.speaking = false;
+  vnSetDot(false);
+}
+
+// ── Speak a text string ─────────────────────────────────────────
+function vnSpeak(text, preDelay = 1200) {
+  if (VN.mode === 'off' || !VN.supported || !VN.voice) return;
+  vnStop();   // cancel anything playing
+  const params = NARR_MODES[VN.mode];
+  if (!params) return;
+
+  VN.pauseTimer = setTimeout(() => {
+    VN.pauseTimer = null;
+    try {
+      // iOS Safari fix: resume context first
+      if (speechSynthesis.paused) speechSynthesis.resume();
+
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.voice  = VN.voice;
+      utt.rate   = params.rate;
+      utt.pitch  = params.pitch;
+      utt.volume = params.volume;
+      utt.lang   = VN.voice.lang || 'en-US';
+
+      utt.onstart = () => { VN.speaking = true; vnSetDot(true); };
+      utt.onend   = () => { VN.speaking = false; vnSetDot(false); };
+      utt.onerror = () => { VN.speaking = false; vnSetDot(false); };
+
+      speechSynthesis.speak(utt);
+
+      // Chrome desktop bug: speech sometimes silently stops after ~15 s
+      // Keep alive by re-checking every 10 s
+      vnKeepAlive(utt);
+    } catch (e) { VN.speaking = false; vnSetDot(false); }
+  }, preDelay);
+}
+
+// Chrome keep-alive patch (required for long pointers / slow modes)
+function vnKeepAlive(utt) {
+  const interval = setInterval(() => {
+    if (!VN.speaking) { clearInterval(interval); return; }
+    try {
+      speechSynthesis.pause();
+      speechSynthesis.resume();
+    } catch {}
+  }, 10000);
+  utt.onend = () => { VN.speaking = false; vnSetDot(false); clearInterval(interval); };
+  utt.onerror = () => { VN.speaking = false; vnSetDot(false); clearInterval(interval); };
+}
+
+function vnSetDot(on) {
+  const dot = document.getElementById('voice-dot');
+  if (dot) dot.classList.toggle('on', on);
+}
+
+// ── Build compat note for current platform ──────────────────────
+function vnUpdateCompatNote() {
+  const note = document.getElementById('voice-compat-note');
+  if (!note) return;
+  if (!VN.supported) {
+    note.textContent = T().voiceNoSupport;
+    note.className = 'voice-compat-note warn';
+    return;
+  }
+  if (!VN.voices.length) {
+    note.textContent = T().voiceAndroidNote;
+    note.className = 'voice-compat-note';
+    return;
+  }
+  // Detect iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) {
+    note.textContent = T().voiceIosNote;
+    note.className = 'voice-compat-note';
+  } else {
+    note.textContent = '';
+    note.className = 'voice-compat-note';
+  }
+}
+
+// ── Initialise narration system ──────────────────────────────────
+function vnInit() {
+  if (!VN.supported) {
+    // Grey out mode chips
+    document.querySelectorAll('#narr-chips .chip:not([data-v="off"])').forEach(c => {
+      c.style.opacity = '.35'; c.style.pointerEvents = 'none';
+    });
+    return;
+  }
+
+  // Restore saved state
+  const s = loadLS();
+  if (s.narrMode) VN.mode = s.narrMode;
+  if (s.voiceName) VN.voiceName = s.voiceName;
+
+  // Sync chip UI
+  setActiveChip('narr-chips', VN.mode);
+  toggleVoiceControls(VN.mode !== 'off');
+
+  // Load voices — may be async on Chrome
+  vnLoadVoices();
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = () => {
+      vnLoadVoices();
+      vnUpdateCompatNote();
+    };
+  }
+
+  // Chip handler
+  document.querySelectorAll('#narr-chips .chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('#narr-chips .chip').forEach(x => x.classList.remove('on'));
+      c.classList.add('on');
+      VN.mode = c.dataset.v;
+      vnStop();
+      toggleVoiceControls(VN.mode !== 'off');
+      vnUpdateCompatNote();
+      const s2 = loadLS(); s2.narrMode = VN.mode; saveLS(s2);
+    });
+  });
+
+  // Voice select handler
+  const sel = document.getElementById('voice-select');
+  if (sel) {
+    sel.addEventListener('change', () => {
+      const chosen = VN.voices.find(v => v.name === sel.value);
+      if (chosen) {
+        VN.voice = chosen;
+        VN.voiceName = chosen.name;
+        const s2 = loadLS(); s2.voiceName = VN.voiceName; saveLS(s2);
+        vnStop();
+      }
+    });
+  }
+
+  // Test voice button
+  const testBtn = document.getElementById('voice-test');
+  if (testBtn) {
+    testBtn.addEventListener('click', () => {
+      // iOS requires speech to start inside a user gesture — this IS one
+      if (!VN.voice) vnPickBestVoice();
+      if (!VN.voice) return;
+      const sample = 'Who is here, before the word I arises?';
+      vnStop();
+      testBtn.classList.add('testing');
+      const utt = new SpeechSynthesisUtterance(sample);
+      const params = NARR_MODES[VN.mode] || NARR_MODES.gentle;
+      utt.voice = VN.voice; utt.rate = params.rate;
+      utt.pitch = params.pitch; utt.volume = params.volume;
+      utt.onend = () => testBtn.classList.remove('testing');
+      utt.onerror = () => testBtn.classList.remove('testing');
+      try { speechSynthesis.cancel(); speechSynthesis.speak(utt); } catch {}
+    });
+  }
+
+  // Page visibility — stop speech when user backgrounds the app
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) vnStop();
+  });
+
+  vnUpdateCompatNote();
+}
+
+function toggleVoiceControls(show) {
+  const vc = document.getElementById('voice-controls');
+  if (vc) vc.style.display = show ? '' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
 function q(id) { return document.getElementById(id); }
@@ -1603,7 +1968,7 @@ function showPtr(instant = false) {
   function apply() {
     // MOOD_PTRS use direct p[lang]; regular pointers use p.text[lang]
     const txt = ST.addrMode ? (p[lang] || p.en) : (p.text[lang] || p.text.en);
-    ptEl.textContent = '“' + txt + '”';
+    ptEl.textContent = '”' + txt + '”';
 
     if (ST.addrMode) {
       pgEl.textContent = T().addrBadge;
@@ -1625,6 +1990,7 @@ function showPtr(instant = false) {
     q('btn-fav').classList.toggle('on', isFav);
     q('btn-fav').setAttribute('aria-label', isFav ? 'Remove from saved' : 'Save pointer');
     syncDots();
+    vnSpeak(txt);  // speak after text is set
   }
 
   if (instant) {
@@ -2024,7 +2390,7 @@ q('btn-pause').addEventListener('click', () => {
   q('btn-pause').textContent = ST.paused ? '▶' : '⏸';
   q('btn-pause').setAttribute('aria-label', ST.paused ? 'Resume session' : 'Pause session');
   if (ST.paused) {
-    clearInterval(ST.advTimer); arcPause();
+    clearInterval(ST.advTimer); arcPause(); vnStop();
     q('controls').style.opacity = '1'; q('dots').style.opacity = '1'; q('sound-lbl').style.opacity = '1';
   } else { resetAdv(); arcStart(); showCtrl(); }
 });
@@ -2061,6 +2427,7 @@ q('btn-continue').addEventListener('click', () => {
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════════
 function showScreen(name) {
+  vnStop();  // stop narration on any tab/screen change
   ST.screen = name;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => {
@@ -2370,6 +2737,7 @@ window.addEventListener('appinstalled', () => {
   renderProgressDisplay();
   setActiveChip('lang-chips', ST.lang);
   refreshUI();
+  vnInit();  // initialise voice narration engine
 
   const isFirstVisit = !saved.levelSet;
   if (isFirstVisit) {
