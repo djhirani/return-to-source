@@ -125,8 +125,17 @@ a{color:var(--accent);text-decoration:none}
 .cbtn.sm{width:44px;height:44px;font-size:1.05rem}
 .cbtn.lg{width:62px;height:62px;font-size:1.4rem}
 .sound-lbl{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--txt3);text-align:center;padding-bottom:.3rem;
+  color:var(--txt3);text-align:center;padding-bottom:.1rem;
   transition:opacity .4s;flex-shrink:0}
+
+/* ── Voice mini chips (meditate screen) ── */
+.voice-mini-row{display:flex;gap:.38rem;justify-content:center;align-items:center;
+  padding:.18rem 0 .55rem;flex-shrink:0;transition:opacity .4s}
+.vmini{background:none;border:.5px solid rgba(77,184,212,.18);border-radius:12px;
+  padding:.18rem .52rem;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--txt3);transition:all .2s var(--ease-calm)}
+.vmini.on{background:rgba(77,184,212,.12);border-color:rgba(77,184,212,.55);color:var(--accent)}
+.vmini:hover{border-color:rgba(77,184,212,.38);color:var(--txt2)}
 
 /* ── Journey ── */
 .scr-inner{flex:1;overflow-y:auto;padding:1.4rem 1.1rem 1rem;-webkit-overflow-scrolling:touch}
@@ -525,6 +534,12 @@ a{color:var(--accent);text-decoration:none}
     <button class="cbtn sm" id="btn-next" aria-label="Next pointer">&#8250;</button>
   </div>
   <div class="sound-lbl" id="sound-lbl" aria-live="polite"></div>
+  <div class="voice-mini-row" id="voice-mini-row" aria-label="Voice narration mode" role="group">
+    <button class="vmini on" data-vm="off">Off</button>
+    <button class="vmini" data-vm="gentle">Gentle</button>
+    <button class="vmini" data-vm="deep">Deep</button>
+    <button class="vmini" data-vm="slow">Very Slow</button>
+  </div>
 </div>
 
 <!-- ── JOURNEY ── -->
@@ -921,6 +936,13 @@ const UI = {
 const LEVEL_RANK = { beginner:0, seeker:1, advanced:2, sahaja:3 };
 
 const LEVELS = [
+  { key:'all', icon:'∞',
+    label:{en:'All Levels',hi:'सभी स्तर',zh:'所有层次',es:'Todos los niveles'},
+    desc:{en:'All pointers from every level, flowing together — Beginner through to the Natural State.',
+          hi:'सभी स्तरों के संकेत, एक साथ — शुरुआती से सहज अवस्था तक।',
+          zh:'来自每个层次的所有引导，汇流在一起——从初学者到自然状态。',
+          es:'Todos los señalamientos de cada nivel, fluyendo juntos — desde Principiante hasta el Estado Natural.'}
+  },
   { key:'beginner', icon:'🌱',
     label:{en:'Beginner',hi:'शुरुआती',zh:'初学者',es:'Principiante'},
     desc:{en:'Gentle concentration and grounding practices. First steps on the inward path.',
@@ -1556,7 +1578,7 @@ const ST = {
   cur: 0, paused: false, sndType: 'off', sndOn: false,
   dur: 10000, sessLen: 0, mode: 'seq', startMode: '0',
   lang: _savedLang,
-  level: saved.level || 'seeker',
+  level: saved.level || 'all',
   screen: 'meditate',
   favs: new Set(saved.favs || []),
   sessStart: null, ptrsHit: 0,
@@ -1585,8 +1607,9 @@ function persist() {
 
 // ─── Pool filtering by level rank ───────────────────────────────
 function getPool() {
+  if (ST.level === 'all') return ALL;  // all levels in natural order
   const rank = LEVEL_RANK[ST.level] ?? 1;
-  return ALL.filter(p => (LEVEL_RANK[p.minLevel] ?? 0) <= rank);
+  return ALL.filter(p => (LEVEL_RANK[p.minLevel] ?? 0) === rank);  // exact level only
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1923,6 +1946,20 @@ function vnUpdateCompatNote() {
   }
 }
 
+// ── Shared mode setter — keeps both chip sets in sync ───────────
+function vnSetMode(mode) {
+  VN.mode = mode;
+  vnStop();
+  toggleVoiceControls(mode !== 'off');
+  vnUpdateCompatNote();
+  // Sync settings chips
+  document.querySelectorAll('#narr-chips .chip').forEach(c => c.classList.toggle('on', c.dataset.v === mode));
+  // Sync mini chips on meditate screen
+  document.querySelectorAll('#voice-mini-row .vmini').forEach(c => c.classList.toggle('on', c.dataset.vm === mode));
+  // Persist
+  const s2 = loadLS(); s2.narrMode = mode; saveLS(s2);
+}
+
 // ── Initialise narration system ──────────────────────────────────
 function vnInit() {
   if (!VN.supported) {
@@ -1938,8 +1975,9 @@ function vnInit() {
   if (s.narrMode) VN.mode = s.narrMode;
   if (s.voiceName) VN.voiceName = s.voiceName;
 
-  // Sync chip UI
-  setActiveChip('narr-chips', VN.mode);
+  // Sync both chip sets to restored mode
+  document.querySelectorAll('#narr-chips .chip').forEach(c => c.classList.toggle('on', c.dataset.v === VN.mode));
+  document.querySelectorAll('#voice-mini-row .vmini').forEach(c => c.classList.toggle('on', c.dataset.vm === VN.mode));
   toggleVoiceControls(VN.mode !== 'off');
 
   // Load voices — may be async on Chrome
@@ -1951,17 +1989,14 @@ function vnInit() {
     };
   }
 
-  // Chip handler
+  // Settings chip handler
   document.querySelectorAll('#narr-chips .chip').forEach(c => {
-    c.addEventListener('click', () => {
-      document.querySelectorAll('#narr-chips .chip').forEach(x => x.classList.remove('on'));
-      c.classList.add('on');
-      VN.mode = c.dataset.v;
-      vnStop();
-      toggleVoiceControls(VN.mode !== 'off');
-      vnUpdateCompatNote();
-      const s2 = loadLS(); s2.narrMode = VN.mode; saveLS(s2);
-    });
+    c.addEventListener('click', () => vnSetMode(c.dataset.v));
+  });
+
+  // Mini chip handler (meditate screen)
+  document.querySelectorAll('#voice-mini-row .vmini').forEach(c => {
+    c.addEventListener('click', () => vnSetMode(c.dataset.vm));
   });
 
   // Voice select handler
