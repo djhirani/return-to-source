@@ -1,3 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Return to Source">
+<meta name="theme-color" content="#030c18">
+<meta name="description" content="A self-inquiry meditation app rooted in the direct teachings of Sri Ramana Maharshi and Sri Nisargadatta Maharaj.">
+<meta property="og:title" content="Return to Source — Self-Inquiry">
+<meta property="og:description" content="Silent inward-pointing practice. Guided self-inquiry for the direct path.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Return to Source — Self-Inquiry</title>
+<style>
+/* ── Design tokens ── */
+:root {
+  --bg:#030c18; --surface:#071828; --card:#0b2235;
+  --border:rgba(77,184,212,0.13); --accent:#4db8d4; --accent2:#2a8aaa;
+  --glow:rgba(77,184,212,0.18); --txt:#d8eff7; --txt2:#7aadbe; --txt3:#3d6f84;
+  --quote:#eaf5fb; --gold:#d4a96a; --warm:rgba(212,169,106,0.22);
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --nav:68px; --safe:env(safe-area-inset-bottom,0px);
+  --circ:477.52; --radius:14px;
+  --ease-calm:cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
+body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sans);overflow:hidden;
+  user-select:none;-webkit-user-select:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+a{color:var(--accent);text-decoration:none}
+::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:rgba(77,184,212,0.2);border-radius:2px}
 
 /* ── Layout ── */
@@ -91,6 +127,19 @@
 .sound-lbl{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
   color:var(--txt3);text-align:center;padding-bottom:.1rem;
   transition:opacity .4s;flex-shrink:0}
+
+/* ── Level strip (meditate screen) ── */
+.lvl-strip{display:flex;gap:.4rem;overflow-x:auto;padding:.1rem 1.2rem .3rem;
+  flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:center}
+.lvl-strip::-webkit-scrollbar{display:none}
+.lvl-pill{flex-shrink:0;display:flex;align-items:center;gap:.28rem;
+  background:rgba(255,255,255,.03);border:.5px solid rgba(77,184,212,.16);
+  border-radius:20px;padding:.22rem .65rem;font-size:.54rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--txt3);cursor:pointer;
+  transition:all .22s var(--ease-calm);user-select:none}
+.lvl-pill .lp-icon{font-size:.72rem;line-height:1}
+.lvl-pill.on{background:rgba(77,184,212,.14);border-color:rgba(77,184,212,.52);color:var(--accent)}
+.lvl-pill:active{transform:scale(.96)}
 
 /* ── Voice mini chips (meditate screen) ── */
 .voice-mini-row{display:flex;gap:.38rem;justify-content:center;align-items:center;
@@ -489,6 +538,7 @@
       <div class="ptr-count" id="ptr-count"></div>
     </div>
   </div>
+  <div class="lvl-strip" id="lvl-strip" role="group" aria-label="Seeker level"></div>
   <div class="dots-wrap" id="dots" role="navigation" aria-label="Pointer position"></div>
   <div class="controls" id="controls" role="toolbar" aria-label="Session controls">
     <button class="cbtn sm" id="btn-prev" aria-label="Previous pointer">&#8249;</button>
@@ -1740,9 +1790,9 @@ const VOICE_PREFS = [
 // Mode parameter presets
 const NARR_MODES = {
   off:    null,
-  gentle: { rate: 0.78, pitch: 0.92, volume: 0.85 },
-  deep:   { rate: 0.70, pitch: 0.76, volume: 0.90 },
-  slow:   { rate: 0.60, pitch: 0.88, volume: 0.90 },
+  gentle: { rate: 0.72, pitch: 0.90, volume: 0.88 },
+  deep:   { rate: 0.63, pitch: 0.74, volume: 0.92 },
+  slow:   { rate: 0.50, pitch: 0.84, volume: 0.92 },
 };
 
 const VN = {
@@ -1861,22 +1911,28 @@ function vnSpeak(text, preDelay = 1200) {
       speechSynthesis.speak(utt);
 
       // Chrome desktop bug: speech sometimes silently stops after ~15 s
-      // Keep alive by re-checking every 10 s
-      vnKeepAlive(utt);
+      // Keep alive by re-checking every 10 s; when done, drive auto-advance
+      vnKeepAlive(utt, () => {
+        // Narration-driven advance: 2.2s pause after speech, then next pointer
+        if (VN.mode !== 'off' && !ST.paused && ST.mode !== 'man' && !ST.addrMode) {
+          clearTimeout(ST.advTimer); clearInterval(ST.advTimer);
+          ST.advTimer = setTimeout(() => { if (!ST.paused && VN.mode !== 'off') next(); }, 2200);
+        }
+      });
     } catch (e) { VN.speaking = false; vnSetDot(false); }
   }, preDelay);
 }
 
-// Chrome keep-alive patch (required for long pointers / slow modes)
-function vnKeepAlive(utt) {
+// Chrome keep-alive patch — accepts optional afterFn for narration-driven advance
+function vnKeepAlive(utt, afterFn) {
   const interval = setInterval(() => {
     if (!VN.speaking) { clearInterval(interval); return; }
-    try {
-      speechSynthesis.pause();
-      speechSynthesis.resume();
-    } catch {}
+    try { speechSynthesis.pause(); speechSynthesis.resume(); } catch {}
   }, 10000);
-  utt.onend = () => { VN.speaking = false; vnSetDot(false); clearInterval(interval); };
+  utt.onend = () => {
+    VN.speaking = false; vnSetDot(false); clearInterval(interval);
+    if (afterFn) afterFn();
+  };
   utt.onerror = () => { VN.speaking = false; vnSetDot(false); clearInterval(interval); };
 }
 
@@ -2032,6 +2088,9 @@ function arcReset() {
 function buildDots() {
   const pool = getPool(), el = q('dots');
   el.innerHTML = '';
+  // Hide dots when pool is too large — counter text already shows position
+  if (pool.length > 18) { el.style.display = 'none'; return; }
+  el.style.display = '';
   pool.forEach((p, i) => {
     const d = document.createElement('div');
     d.className = 'dot' + (i === ST.cur ? ' active' : '') + (p.isFirst && i > 0 ? ' grp' : '');
@@ -2089,22 +2148,28 @@ function showPtr(instant = false) {
     ptEl.classList.add('on'); pgEl.classList.add('on'); pcEl.classList.add('on');
     return;
   }
-  // Fast fade-out so old text is fully gone before new text appears
-  ptEl.style.transition = 'opacity 0.28s ease';
-  pgEl.style.transition = 'opacity 0.28s ease';
-  pcEl.style.transition = 'opacity 0.28s ease';
+  // Fast fade-out; swap content only AFTER fade is fully done (transitionend)
+  ptEl.style.transition = 'opacity 0.25s ease';
+  pgEl.style.transition = 'opacity 0.25s ease';
+  pcEl.style.transition = 'opacity 0.25s ease';
   ptEl.classList.remove('on'); pgEl.classList.remove('on'); pcEl.classList.remove('on');
-  setTimeout(() => {
+
+  let _swapped = false;
+  function _doSwap() {
+    if (_swapped) return; _swapped = true;
+    ptEl.removeEventListener('transitionend', _doSwap);
     apply();
-    // Clear inline override → CSS rule (1.8s) handles the slow fade-in
+    // Restore slow CSS fade-in
     ptEl.style.transition = '';
     pgEl.style.transition = '';
     pcEl.style.transition = '';
     ptEl.classList.add('on'); pgEl.classList.add('on'); pcEl.classList.add('on');
     ST.ptrsHit++;
     transitionSnd();
-    if (!ST.paused && ST.mode !== 'man') arcStart();
-  }, 340);
+    if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') arcStart();
+  }
+  ptEl.addEventListener('transitionend', _doSwap, { once: true });
+  setTimeout(_doSwap, 380); // fallback for browsers that don't fire transitionend
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2148,7 +2213,10 @@ function next() {
 }
 function resetAdv() {
   clearInterval(ST.advTimer);
-  if (!ST.paused && ST.mode !== 'man') ST.advTimer = setInterval(next, ST.dur);
+  clearTimeout(ST.advTimer);
+  if (ST.paused || ST.mode === 'man') return;
+  if (VN.mode !== 'off') return;  // speech onend drives advance when narration is active
+  ST.advTimer = setInterval(next, ST.dur);
 }
 function goTo(idx) {
   const pool = getPool();
@@ -2440,6 +2508,26 @@ function buildOnboard() {
   });
 }
 
+function refreshLevelStrip() {
+  const strip = q('lvl-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  LEVELS.forEach(lev => {
+    const p = document.createElement('button');
+    p.className = 'lvl-pill' + (ST.level === lev.key ? ' on' : '');
+    p.setAttribute('aria-pressed', ST.level === lev.key ? 'true' : 'false');
+    p.innerHTML = `<span class="lp-icon" aria-hidden="true">${lev.icon}</span><span>${lev.label[ST.lang] || lev.label.en}</span>`;
+    p.addEventListener('click', () => {
+      ST.level = lev.key; persist();
+      refreshLevelStrip(); refreshLevelCards();
+      ST.cur = 0; buildDots(); showPtr(true); arcReset();
+      if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') { clearInterval(ST.advTimer); ST.advTimer = setInterval(next, ST.dur); arcStart(); }
+      journeyBuilt = false; q('groups-list').innerHTML = '';
+    });
+    strip.appendChild(p);
+  });
+}
+
 function refreshLevelCards() {
   const row = q('level-row');
   row.innerHTML = '';
@@ -2454,11 +2542,11 @@ function refreshLevelCards() {
     c.addEventListener('click', () => {
       ST.level = lev.key;
       persist();
-      refreshLevelCards();
+      refreshLevelCards(); refreshLevelStrip();
       ST.cur = 0;
       buildDots(); showPtr(true);
       arcReset();
-      if (!ST.paused && ST.mode !== 'man') {
+      if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') {
         clearInterval(ST.advTimer);
         ST.advTimer = setInterval(next, ST.dur);
         arcStart();
@@ -2751,6 +2839,7 @@ function refreshUI() {
     ? (ST.sndType === 'bowls' ? t.singingBowls : ST.sndType === 'bells' ? t.bells : ST.sndType === 'drone' ? t.deepDrone : t.soundOff)
     : t.soundOff;
   buildDots();
+  refreshLevelStrip();
   showPtr(true);
 }
 
@@ -2833,6 +2922,7 @@ window.addEventListener('appinstalled', () => {
   buildDots();
   refreshStats();
   refreshLevelCards();
+  refreshLevelStrip();
   renderProgressDisplay();
   setActiveChip('lang-chips', ST.lang);
   refreshUI();
