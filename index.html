@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Return to Source">
 <meta name="theme-color" content="#030c18">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Return to Source — Self-Inquiry</title>
 <style>
 :root {
@@ -444,6 +446,15 @@ button{border:none;cursor:pointer;font-family:inherit}
 </div><!-- #app -->
 <script>
 // ═══════════════════════════════════════════════════════════
+// SERVICE WORKER REGISTRATION
+// ═══════════════════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
 // UI STRINGS
 // ═══════════════════════════════════════════════════════════
 const UI = {
@@ -840,7 +851,7 @@ function showPtr(instant=false){
   const ptEl=q('ptr-text'),pgEl=q('ptr-grp'),pcEl=q('ptr-count');
   const lang=ST.lang;
   function apply(){
-    ptEl.textContent='"'+(p.text[lang]||p.text.en)+'"';
+    ptEl.textContent='"'+(ST.addrMode?(p[lang]||p.en):(p.text[lang]||p.text.en))+'"';
     if(ST.addrMode){
       pgEl.textContent=T().addrBadge;
       pcEl.textContent=(ST.addrIdx+1)+' · '+ST.addrPtrs.length;
@@ -979,8 +990,7 @@ function buildOnboard(){
       q('onboard').classList.remove('on');
       setActiveChip('lang-chips',ST.lang);
       refreshLevelCards();
-      if(ST.level==='beginner') showBeginnerTask();
-      else startMeditating();
+      startMeditating();
     });
     cards.appendChild(c);
   });
@@ -995,6 +1005,7 @@ function refreshLevelCards(){
       ST.cur=0;buildDots();showPtr(true);
       arcReset();if(!ST.paused&&ST.mode!=='man'){clearInterval(ST.advTimer);ST.advTimer=setInterval(next,ST.dur);arcStart();}
       journeyBuilt=false;q('groups-list').innerHTML='';
+      const pc=q('prep-card');if(pc)pc.style.display=ST.level==='beginner'?'':'none';
     });
     row.appendChild(c);
   });
@@ -1056,6 +1067,12 @@ q('jrn-save').addEventListener('click',()=>{const txt=q('jrn-text').value.trim()
 // ═══════════════════════════════════════════════════════════
 function buildGuide(){
   const el=q('guide-content');
+  // Preparation Practice card (beginner only, shown/hidden dynamically)
+  const prep=document.createElement('div');prep.id='prep-card';
+  prep.className='tribute-block';
+  prep.style.display=ST.level==='beginner'?'':'none';
+  prep.innerHTML=`<div class="tribute-label">🌱 Preparation Practice</div><div class="tribute-body" style="font-size:.85rem;margin-bottom:1rem;">5 short grounding practices to prepare the mind before inquiry. Take a few minutes before you begin sitting.</div><button onclick="showBeginnerTask()" style="padding:.6rem 1.6rem;background:rgba(77,184,212,.1);border:.5px solid rgba(77,184,212,.3);border-radius:20px;color:#4db8d4;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;font-family:inherit;">Begin Preparation →</button>`;
+  el.appendChild(prep);
   // Tribute block
   const tr=document.createElement('div');tr.className='tribute-block';
   tr.innerHTML=`<div class="tribute-label">With deep gratitude</div><div class="tribute-body">Rooted in the direct teachings of<br><span class="tribute-name">Bhagavan Sri Ramana Maharshi</span><br>and<br><span class="tribute-name">Sri Nisargadatta Maharaj</span><br><br>Offered here not as philosophy,<br>but as a living inquiry — pointing to what you have always already been.</div>`;
@@ -1120,8 +1137,7 @@ window.addEventListener('appinstalled',()=>{q('pwa-grp').style.display='none';de
     q('onboard').classList.add('on');
     // Don't start meditation yet — wait for level selection
   } else {
-    if(ST.level==='beginner') showBeginnerTask();
-    else startMeditating();
+    startMeditating();
   }
 })();
 </script>
