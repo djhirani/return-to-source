@@ -128,10 +128,10 @@ a{color:var(--accent);text-decoration:none}
   color:var(--txt3);text-align:center;padding-bottom:.1rem;
   transition:opacity .4s;flex-shrink:0}
 
-/* ── Level strip (meditate screen) ── */
-.lvl-strip{display:flex;gap:.4rem;overflow-x:auto;padding:.1rem 1.2rem .3rem;
-  flex-shrink:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:center}
-.lvl-strip::-webkit-scrollbar{display:none}
+/* ── Level strip (meditate screen) — 2-row layout ── */
+.lvl-strip{display:flex;gap:.4rem .38rem;flex-wrap:wrap;padding:.1rem 1rem .35rem;
+  flex-shrink:0;justify-content:center;align-items:center}
+.lvl-strip-break{width:100%;flex-basis:100%;height:0;display:block}
 .lvl-pill{flex-shrink:0;display:flex;align-items:center;gap:.28rem;
   background:rgba(255,255,255,.03);border:.5px solid rgba(77,184,212,.16);
   border-radius:20px;padding:.22rem .65rem;font-size:.54rem;letter-spacing:.1em;
@@ -1913,10 +1913,17 @@ function vnSpeak(text, preDelay = 1200) {
       // Chrome desktop bug: speech sometimes silently stops after ~15 s
       // Keep alive by re-checking every 10 s; when done, drive auto-advance
       vnKeepAlive(utt, () => {
-        // Narration-driven advance: 2.2s pause after speech, then next pointer
+        // Narration-driven advance with level-aware post-speech pause
         if (VN.mode !== 'off' && !ST.paused && ST.mode !== 'man' && !ST.addrMode) {
           clearTimeout(ST.advTimer); clearInterval(ST.advTimer);
-          ST.advTimer = setTimeout(() => { if (!ST.paused && VN.mode !== 'off') next(); }, 2200);
+          // Determine effective level (for "all" mode, use current pointer's level)
+          const pool = getPool();
+          const curPtr = pool[ST.cur % pool.length];
+          const effectiveLevel = ST.level === 'all' ? (curPtr ? curPtr.minLevel : 'beginner') : ST.level;
+          // Post-speech pause: Beginner ~10s (total ~15-20s), Seeker ~22s (total ~30s), Advanced/Sahaja ~32s (total ~40s)
+          const pauseMs = (effectiveLevel === 'advanced' || effectiveLevel === 'sahaja') ? 32000
+                        : effectiveLevel === 'seeker' ? 22000 : 10000;
+          ST.advTimer = setTimeout(() => { if (!ST.paused && VN.mode !== 'off') next(); }, pauseMs);
         }
       });
     } catch (e) { VN.speaking = false; vnSetDot(false); }
@@ -1966,10 +1973,26 @@ function vnUpdateCompatNote() {
   }
 }
 
+// ── iOS: fire silent utterance inside user gesture to unlock speech synthesis ──
+function vnUnlockIOS() {
+  if (!VN.supported) return;
+  try {
+    const utt = new SpeechSynthesisUtterance('​'); // zero-width space — silent
+    utt.volume = 0.01; utt.rate = 1;
+    if (VN.voice) utt.voice = VN.voice;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utt);
+    VN.iosUnlocked = true;
+  } catch {}
+}
+
 // ── Shared mode setter — keeps both chip sets in sync ───────────
 function vnSetMode(mode) {
   VN.mode = mode;
   vnStop();
+  // iOS requires speech to start inside a user gesture — this tap IS one.
+  // Fire a silent utterance now to unlock the audio context for all future auto-speaks.
+  if (mode !== 'off') vnUnlockIOS();
   toggleVoiceControls(mode !== 'off');
   vnUpdateCompatNote();
   // Sync settings chips
@@ -2149,9 +2172,10 @@ function showPtr(instant = false) {
     return;
   }
   // Fast fade-out; swap content only AFTER fade is fully done (transitionend)
-  ptEl.style.transition = 'opacity 0.25s ease';
-  pgEl.style.transition = 'opacity 0.25s ease';
-  pcEl.style.transition = 'opacity 0.25s ease';
+  // 0.4s is enough even on slow iPhone CPUs
+  ptEl.style.transition = 'opacity 0.4s ease';
+  pgEl.style.transition = 'opacity 0.4s ease';
+  pcEl.style.transition = 'opacity 0.4s ease';
   ptEl.classList.remove('on'); pgEl.classList.remove('on'); pcEl.classList.remove('on');
 
   let _swapped = false;
@@ -2169,7 +2193,7 @@ function showPtr(instant = false) {
     if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') arcStart();
   }
   ptEl.addEventListener('transitionend', _doSwap, { once: true });
-  setTimeout(_doSwap, 380); // fallback for browsers that don't fire transitionend
+  setTimeout(_doSwap, 600); // fallback — 600ms covers slowest iPhones
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2512,7 +2536,14 @@ function refreshLevelStrip() {
   const strip = q('lvl-strip');
   if (!strip) return;
   strip.innerHTML = '';
-  LEVELS.forEach(lev => {
+  // Row 1: All, Beginner, Seeker (indices 0-2)  Row 2: Advanced, Natural State (indices 3-4)
+  LEVELS.forEach((lev, i) => {
+    // Insert line-break element after 3rd pill → forces Row 2 to new line
+    if (i === 3) {
+      const br = document.createElement('div');
+      br.className = 'lvl-strip-break';
+      strip.appendChild(br);
+    }
     const p = document.createElement('button');
     p.className = 'lvl-pill' + (ST.level === lev.key ? ' on' : '');
     p.setAttribute('aria-pressed', ST.level === lev.key ? 'true' : 'false');
