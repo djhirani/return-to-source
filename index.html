@@ -2012,9 +2012,25 @@ function vnUnlockIOS() {
 function vnSetMode(mode) {
   VN.mode = mode;
   vnStop();
-  // iOS requires speech to start inside a user gesture — this tap IS one.
-  // Fire a silent utterance now to unlock the audio context for all future auto-speaks.
-  if (mode !== 'off') vnUnlockIOS();
+  if (mode !== 'off') {
+    // iOS requires speech inside a user gesture — this chip tap IS one.
+    // Fire silent utterance to prime iOS audio context.
+    vnUnlockIOS();
+    // Stop any existing timer — narration drives advance now.
+    clearInterval(ST.advTimer); clearTimeout(ST.advTimer);
+    // Speak the current pointer immediately so narration-driven advance starts.
+    // Delay 900ms: allows iOS unlock to settle before real speech begins.
+    setTimeout(() => {
+      if (VN.mode !== 'off' && !ST.addrMode && !ST.paused) {
+        const pool = getPool();
+        const ptr = pool[ST.cur % pool.length];
+        if (ptr) {
+          const txt = (ptr.text && (ptr.text[ST.lang] || ptr.text.en)) || '';
+          if (txt) vnSpeak(txt, 0); // preDelay=0 since we already waited 900ms
+        }
+      }
+    }, 900);
+  }
   toggleVoiceControls(mode !== 'off');
   vnUpdateCompatNote();
   // Sync settings chips
@@ -2227,24 +2243,26 @@ function showPtr(instant = false) {
     ptEl.classList.add('on'); pgEl.classList.add('on'); pcEl.classList.add('on');
     return;
   }
-  // iOS Safari: transitionend is unreliable (fires early or not at all).
-  // Pure setTimeout only — 550ms covers 0.4s fade + Safari GPU compositing lag.
-  ptEl.style.transition = 'opacity 0.4s ease';
-  pgEl.style.transition = 'opacity 0.4s ease';
-  pcEl.style.transition = 'opacity 0.4s ease';
+  // iOS Safari: CSS transitions (1.8s opacity) are unreliable to override with inline style.
+  // Fix: force opacity:0 via inline style (always wins over CSS, no animation)
+  // then use double-rAF to ensure iOS GPU has actually painted the invisible frame
+  // before content changes + fade-in begins.
+  ptEl.style.transition = 'none'; ptEl.style.opacity = '0';
+  pgEl.style.transition = 'none'; pgEl.style.opacity = '0';
+  pcEl.style.transition = 'none'; pcEl.style.opacity = '0';
   ptEl.classList.remove('on'); pgEl.classList.remove('on'); pcEl.classList.remove('on');
 
-  setTimeout(() => {
-    apply();
-    // Clear inline transition so CSS class-driven fade-in takes over
-    ptEl.style.transition = '';
-    pgEl.style.transition = '';
-    pcEl.style.transition = '';
-    ptEl.classList.add('on'); pgEl.classList.add('on'); pcEl.classList.add('on');
-    ST.ptrsHit++;
-    transitionSnd();
-    if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') arcStart();
-  }, 550);
+  requestAnimationFrame(() => {        // frame 1: iOS renders invisible state
+    requestAnimationFrame(() => {      // frame 2: safe to swap content + re-enable CSS
+      apply();
+      ptEl.style.transition = ''; pgEl.style.transition = ''; pcEl.style.transition = '';
+      ptEl.style.opacity = '';    pgEl.style.opacity = '';    pcEl.style.opacity = '';
+      ptEl.classList.add('on');   pgEl.classList.add('on');   pcEl.classList.add('on');
+      ST.ptrsHit++;
+      transitionSnd();
+      if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') arcStart();
+    });
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
