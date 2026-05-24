@@ -2155,6 +2155,7 @@ function vnUnlockIOS() {
 function vnSetMode(mode) {
   VN.mode = mode;
   vnStop();
+  if (mode !== 'off') mantraStop(); // cross-stop: narration on → kill mantra
   if (mode !== 'off') {
     // iOS requires speech inside a user gesture — this chip tap IS one.
     // Fire silent utterance to prime iOS audio context.
@@ -3159,7 +3160,60 @@ const MNT = {
   timer:       null,
   audio:       null,
   audioReady:  false,
+  voice:       null,   // single chosen voice — used for BOTH intro and chant
+  chantText:   'Aham Brahmasmi',  // romanised default; overridden if Hindi voice found
+  chantLang:   'en',
 };
+
+// Pick ONE voice at init and store it. Prefer deep male Indian/Hindi voices.
+// This same voice is used for both the intro sentence and every chant repetition
+// — no switching, no gender change.
+function mantraPickVoice() {
+  if (!('speechSynthesis' in window)) return;
+  const voices = speechSynthesis.getVoices();
+  if (!voices.length) return;
+
+  // Priority 1: Hindi male voice (best Sanskrit)
+  const hiMale = voices.find(v =>
+    v.lang && v.lang.startsWith('hi') && /male/i.test(v.name));
+  // Priority 2: any Hindi voice
+  const hiAny = voices.find(v => v.lang && v.lang.startsWith('hi'));
+  // Priority 3: Indian English male
+  const inMale = voices.find(v =>
+    v.lang && (v.lang === 'en-IN') && /male/i.test(v.name));
+  // Priority 4: any Indian English
+  const inAny = voices.find(v => v.lang && v.lang === 'en-IN');
+  // Priority 5: deep English male (desktop)
+  const enMale = voices.find(v =>
+    v.lang && v.lang.startsWith('en') && /male/i.test(v.name));
+
+  const chosen = hiMale || hiAny || inMale || inAny || enMale || voices[0];
+  MNT.voice = chosen;
+
+  // If we landed on a Hindi voice, use Sanskrit text; otherwise romanised
+  if (chosen && chosen.lang && chosen.lang.startsWith('hi')) {
+    MNT.chantText = 'अहं ब्रह्मास्मि';
+    MNT.chantLang = 'hi-IN';
+  } else {
+    MNT.chantText = 'Aham Brahmasmi';
+    MNT.chantLang = chosen ? chosen.lang : 'en';
+  }
+}
+
+function mantraSpeak(text, rate, cb) {
+  if (!('speechSynthesis' in window)) { if (cb) cb(); return; }
+  // Ensure voice is picked (may be called before voices loaded)
+  if (!MNT.voice) mantraPickVoice();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang   = MNT.chantLang;
+  utt.rate   = rate;
+  utt.pitch  = 0.85;
+  utt.volume = 1;
+  if (MNT.voice) utt.voice = MNT.voice;
+  if (cb) { utt.onend = cb; utt.onerror = cb; }
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utt);
+}
 
 function mantraInit() {
   // Try to load audio file if URL provided
@@ -3180,6 +3234,15 @@ function mantraInit() {
   } else {
     const n = q('mantra-src-note');
     if (n) n.textContent = 'using voice synthesis';
+  }
+
+  // Pick voice once voices are loaded (may be async on some browsers)
+  if ('speechSynthesis' in window) {
+    if (speechSynthesis.getVoices().length) {
+      mantraPickVoice();
+    } else {
+      speechSynthesis.addEventListener('voiceschanged', mantraPickVoice, { once: true });
+    }
   }
 
   // Silence interval slider
@@ -3215,12 +3278,7 @@ function mantraToggle() {
 }
 
 function mantraStart() {
-  // iOS: unlock audio context via silent utterance if needed
-  if ('speechSynthesis' in window) {
-    const silent = new SpeechSynthesisUtterance(' ');
-    silent.volume = 0;
-    speechSynthesis.speak(silent);
-  }
+  vnStop();          // cross-stop: kill meditation narration immediately
   MNT.playing = true;
   MNT.introSpoken = false;
   const pb = q('mantra-play');
@@ -3231,20 +3289,24 @@ function mantraStart() {
   if (pu) pu.classList.add('playing');
 
   if (MNT.introVoice && !MNT.introSpoken && 'speechSynthesis' in window) {
-    const utt = new SpeechSynthesisUtterance('Aham Brahmasmi. I am Brahman.');
-    utt.rate = 0.72; utt.pitch = 0.88; utt.volume = 1;
-    utt.onend  = () => { MNT.introSpoken = true; mantraChant(); };
-    utt.onerror = () => { MNT.introSpoken = true; mantraChant(); };
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utt);
+    // Intro uses the SAME voice as the chant — no gender/accent switch
+    const introText = MNT.chantLang.startsWith('hi')
+      ? 'अहं ब्रह्मास्मि — मैं ब्रह्म हूँ'
+      : 'Aham Brahmasmi. I am Brahman.';
+    mantraSpeak(introText, 0.68, () => {
+      MNT.introSpoken = true;
+      mantraChant();
+    });
   } else {
     mantraChant();
   }
 }
 
 function mantraStop() {
+  if (!MNT.playing && !MNT.timer) return; // already stopped — avoid double-cancel noise
   MNT.playing = false;
   clearTimeout(MNT.timer);
+  MNT.timer = null;
   if (MNT.audio) { try { MNT.audio.pause(); MNT.audio.currentTime = 0; } catch(e){} }
   if ('speechSynthesis' in window) speechSynthesis.cancel();
   const pb = q('mantra-play');
@@ -3264,7 +3326,7 @@ function mantraChant() {
       p.then(() => {
         MNT.audio.onended = mantraChantDone;
       }).catch(() => {
-        // Audio blocked (e.g. iOS policy) — fall back to voice
+        // Audio blocked (e.g. iOS policy) — fall back to voice synthesis
         MNT.audioReady = false;
         mantraChantVoice();
       });
@@ -3279,19 +3341,8 @@ function mantraChant() {
 function mantraChantVoice() {
   if (!MNT.playing) return;
   if (!('speechSynthesis' in window)) { mantraChantDone(); return; }
-  // Try Hindi (hi-IN) voice for Sanskrit pronunciation
-  const voices = speechSynthesis.getVoices();
-  const hiVoice = voices.find(v => v.lang && v.lang.startsWith('hi'));
-  const utt = new SpeechSynthesisUtterance(hiVoice ? 'अहं ब्रह्मास्मि' : 'Aham Brahmasmi');
-  utt.lang   = hiVoice ? 'hi-IN' : 'en';
-  utt.rate   = hiVoice ? 0.52 : 0.58;
-  utt.pitch  = 0.82;
-  utt.volume = 1;
-  if (hiVoice) utt.voice = hiVoice;
-  utt.onend  = mantraChantDone;
-  utt.onerror = mantraChantDone;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utt);
+  // Always use the single pre-chosen voice — same gender, same accent every time
+  mantraSpeak(MNT.chantText, 0.50, mantraChantDone);
 }
 
 function mantraChantDone() {
