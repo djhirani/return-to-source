@@ -2606,8 +2606,9 @@ function showNextTask() {
 function startMeditating() {
   q('task-card').classList.remove('on');
   ST.sessStart = Date.now();
+  showPtr(true);   // always show current pointer immediately — no blank screen
   resetAdv();
-  if (!ST.paused && ST.mode !== 'man') arcStart();
+  if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') arcStart();
   showCtrl();
 }
 q('task-next').addEventListener('click', () => { ST.taskIdx++; showNextTask(); });
@@ -3095,13 +3096,10 @@ window.addEventListener('appinstalled', () => {
   refreshUI();
   vnInit();  // initialise voice narration engine
 
-  const isFirstVisit = !saved.levelSet;
-  if (isFirstVisit) {
-    buildOnboard();
-    q('onboard').classList.add('on');
-  } else {
-    startMeditating();
-  }
+  // Always start meditating immediately — default level is 'all'.
+  // User can change level via the level strip on the meditate screen at any time.
+  // Saved level (from previous session) is restored via ST.level = saved.level || 'all'.
+  startMeditating();
 })();
 </script>
 </body>
