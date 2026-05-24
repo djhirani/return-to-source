@@ -371,11 +371,11 @@ a{color:var(--accent);text-decoration:none}
   background:rgba(3,10,20,.94);backdrop-filter:blur(24px) saturate(1.7);
   border-top:.5px solid rgba(77,184,212,.12);z-index:100}
 .nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:3px;background:transparent;
-  color:var(--txt3);font-size:.52rem;letter-spacing:.06em;
+  justify-content:center;gap:4px;background:transparent;
+  color:var(--txt3);font-size:.6rem;letter-spacing:.08em;
   text-transform:uppercase;transition:color .22s;position:relative;
-  padding:.45rem 0}
-.nav-tab .ni{font-size:1.15rem;transition:transform .22s,color .22s}
+  padding:.5rem 0}
+.nav-tab .ni{font-size:1.3rem;transition:transform .22s,color .22s}
 .nav-tab.on{color:var(--accent)}
 .nav-tab.on .ni{transform:scale(1.15);color:var(--accent)}
 .nav-tab::after{content:'';position:absolute;top:0;left:20%;right:20%;
@@ -501,73 +501,6 @@ a{color:var(--accent);text-decoration:none}
   border:none;cursor:pointer;text-decoration:underline;
   text-underline-offset:3px;margin-top:.2rem;transition:color .2s}
 .task-skip:hover{color:var(--txt2)}
-
-/* ── Mantra screen ── */
-.mantra-body{flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:0;padding:1.2rem 1.5rem;overflow:hidden}
-.mantra-sanskrit{font-family:var(--serif);font-size:clamp(1.4rem,6vw,2.1rem);
-  color:var(--gold);letter-spacing:.04em;text-align:center;margin-bottom:.28rem;
-  font-weight:300;line-height:1.2}
-.mantra-translit{font-size:.7rem;color:rgba(212,169,106,.62);letter-spacing:.2em;
-  text-transform:uppercase;text-align:center;margin-bottom:.2rem;font-family:var(--sans)}
-.mantra-meaning{font-size:.6rem;color:var(--txt3);letter-spacing:.1em;
-  text-align:center;font-family:var(--serif);font-style:italic;margin-bottom:1.5rem}
-.mantra-pulse{position:relative;width:96px;height:96px;
-  display:flex;align-items:center;justify-content:center;margin-bottom:.7rem;flex-shrink:0}
-.mp-ring{position:absolute;border-radius:50%;border:1px solid rgba(212,169,106,.14);
-  width:96px;height:96px}
-.mp-ring.r2{width:68px;height:68px;border-color:rgba(212,169,106,.24)}
-.mp-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);opacity:.5}
-.mantra-pulse.playing .mp-ring{animation:mpr 3.6s ease-in-out infinite}
-.mantra-pulse.playing .mp-ring.r2{animation:mpr 3.6s ease-in-out .7s infinite}
-.mantra-pulse.playing .mp-dot{animation:mpd 3.6s ease-in-out infinite}
-@keyframes mpr{0%,100%{transform:scale(1);opacity:.14}50%{transform:scale(1.09);opacity:.42}}
-@keyframes mpd{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.5);opacity:.92}}
-.mantra-status{font-size:.48rem;color:var(--txt3);letter-spacing:.14em;
-  text-transform:uppercase;text-align:center;margin-bottom:1.1rem;
-  min-height:.68rem;font-family:var(--sans)}
-.mantra-play-btn{width:56px;height:56px;border-radius:50%;
-  border:1.5px solid rgba(212,169,106,.38);background:rgba(212,169,106,.04);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--gold);font-size:1.25rem;cursor:pointer;
-  transition:all .22s;margin-bottom:1.1rem;flex-shrink:0;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.mantra-play-btn:hover{background:rgba(212,169,106,.14);border-color:rgba(212,169,106,.68)}
-.mantra-play-btn.playing{border-color:rgba(212,169,106,.68);background:rgba(212,169,106,.1)}
-.mantra-counter{display:flex;flex-direction:column;align-items:center;
-  margin-bottom:1.4rem;gap:.1rem}
-.mc-num{font-size:1.35rem;color:var(--gold);font-family:var(--serif);
-  font-weight:300;line-height:1}
-.mc-lbl{font-size:.46rem;color:var(--txt3);letter-spacing:.14em;
-  text-transform:uppercase;font-family:var(--sans)}
-.mantra-slider-section{width:100%;max-width:300px;padding:0 .2rem;box-sizing:border-box}
-.mantra-slider-label{font-size:.48rem;color:var(--txt3);letter-spacing:.14em;
-  text-transform:uppercase;text-align:center;margin-bottom:.5rem;font-family:var(--sans)}
-.mantra-slider-row{display:flex;align-items:center;gap:.65rem}
-.ms-lim{font-size:.5rem;color:var(--txt3);font-family:var(--sans);flex-shrink:0}
-#mantra-slider{flex:1;-webkit-appearance:none;appearance:none;
-  height:2px;background:rgba(212,169,106,.16);border-radius:1px;
-  outline:none;cursor:pointer}
-#mantra-slider::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;
-  border-radius:50%;background:var(--gold);cursor:pointer;opacity:.88}
-#mantra-slider::-moz-range-thumb{width:13px;height:13px;border-radius:50%;
-  background:var(--gold);cursor:pointer;border:none;opacity:.88}
-.ms-val{font-size:.56rem;color:rgba(212,169,106,.72);font-family:var(--sans);
-  min-width:28px;text-align:right;flex-shrink:0}
-.mantra-divider{width:100%;max-width:300px;height:.5px;
-  background:rgba(212,169,106,.1);margin:1rem 0 .85rem;flex-shrink:0}
-.mantra-intro-row{display:flex;align-items:center;justify-content:space-between;
-  width:100%;max-width:300px;padding:0 .2rem;box-sizing:border-box}
-.mi-label{font-size:.52rem;color:var(--txt3);letter-spacing:.12em;
-  text-transform:uppercase;font-family:var(--sans)}
-.mi-chips{display:flex;gap:.38rem}
-.mchip{background:none;border:.5px solid rgba(212,169,106,.18);border-radius:12px;
-  padding:.18rem .58rem;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--txt3);cursor:pointer;transition:all .2s;font-family:var(--sans)}
-.mchip.on{border-color:rgba(212,169,106,.52);color:var(--gold);
-  background:rgba(212,169,106,.07)}
-.mantra-src-note{font-size:.44rem;color:var(--txt3);letter-spacing:.1em;
-  text-align:center;margin-top:.75rem;font-family:var(--sans);opacity:.55;font-style:italic}
 
 /* ── Responsive ── */
 @media(min-width:600px){
@@ -797,53 +730,12 @@ a{color:var(--accent);text-decoration:none}
   </div>
 </div>
 
-<!-- ── MANTRA ── -->
-<div id="s-mantra" class="screen" role="region" aria-label="Mantra — Aham Brahmasmi">
-  <div class="mantra-body">
-    <div class="mantra-sanskrit" lang="sa">अहं ब्रह्मास्मि</div>
-    <div class="mantra-translit">Aham Brahmasmi</div>
-    <div class="mantra-meaning">I am Brahman</div>
-    <div class="mantra-pulse" id="mantra-pulse" aria-hidden="true">
-      <div class="mp-ring r1"></div>
-      <div class="mp-ring r2"></div>
-      <div class="mp-dot"></div>
-    </div>
-    <div class="mantra-status" id="mantra-status" aria-live="polite">tap play to begin</div>
-    <button class="mantra-play-btn" id="mantra-play" aria-label="Play mantra">▶</button>
-    <div class="mantra-counter" aria-live="polite" aria-label="Chant count">
-      <div class="mc-num" id="mantra-count">0</div>
-      <div class="mc-lbl">chants this session</div>
-    </div>
-    <div class="mantra-slider-section">
-      <div class="mantra-slider-label">silence between chants</div>
-      <div class="mantra-slider-row">
-        <span class="ms-lim">8s</span>
-        <input type="range" id="mantra-slider" min="8" max="45" value="15" step="1"
-          aria-label="Silence interval in seconds">
-        <span class="ms-val" id="mantra-iv-val">15s</span>
-      </div>
-    </div>
-    <div class="mantra-divider"></div>
-    <div class="mantra-intro-row">
-      <span class="mi-label">intro voice</span>
-      <div class="mi-chips" role="group" aria-label="Intro voice">
-        <button class="mchip on" id="mv-on" aria-pressed="true">on</button>
-        <button class="mchip" id="mv-off" aria-pressed="false">off</button>
-      </div>
-    </div>
-    <div class="mantra-src-note" id="mantra-src-note"></div>
-  </div>
-</div>
-
 </div><!-- #app -->
 
 <!-- ── NAV ── -->
 <nav id="nav" role="navigation" aria-label="Main navigation">
   <button class="nav-tab on" data-s="meditate" aria-label="Meditate" aria-pressed="true">
     <span class="ni" aria-hidden="true">◉</span><span data-ui="meditate">Meditate</span>
-  </button>
-  <button class="nav-tab" data-s="mantra" aria-label="Mantra" aria-pressed="false">
-    <span class="ni" aria-hidden="true">॥</span><span>Mantra</span>
   </button>
   <button class="nav-tab" data-s="journey" aria-label="Journey — all pointers" aria-pressed="false">
     <span class="ni" aria-hidden="true">◎</span><span data-ui="journey">Journey</span>
@@ -2862,8 +2754,7 @@ q('btn-continue').addEventListener('click', () => {
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════════
 function showScreen(name) {
-  vnStop();        // stop pointer narration on any tab/screen change
-  mantraStop();    // stop mantra chant on any tab/screen change
+  vnStop();  // stop narration on any tab/screen change
   ST.screen = name;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => {
@@ -3140,169 +3031,6 @@ initChips('snd-chips', v => { const was = ST.sndOn; ST.sndType = v; if (was) app
 initChips('start-chips', v => { ST.startMode = v; });
 
 // ═══════════════════════════════════════════════════════════════
-// MANTRA MODULE — Aham Brahmasmi
-// Primary: audio file (if MANTRA_AUDIO_URL is set and reachable)
-// Fallback: Web Speech API in Hindi (hi-IN), English if no Hindi voice
-// Intro: Speech synthesis reads "Aham Brahmasmi — I am Brahman" once on start
-// ═══════════════════════════════════════════════════════════════
-
-// Set this to a direct URL of an mp3/ogg recording to enable audio chant.
-// Leave empty ('') to use speech synthesis only.
-const MANTRA_AUDIO_URL = '';
-
-const MNT = {
-  playing:     false,
-  count:       0,
-  gapSec:      15,
-  introVoice:  true,
-  introSpoken: false,
-  timer:       null,
-  audio:       null,
-  audioReady:  false,
-};
-
-function mantraInit() {
-  // Try to load audio file if URL provided
-  if (MANTRA_AUDIO_URL) {
-    MNT.audio = new Audio(MANTRA_AUDIO_URL);
-    MNT.audio.preload = 'auto';
-    MNT.audio.addEventListener('canplaythrough', () => {
-      MNT.audioReady = true;
-      const n = q('mantra-src-note');
-      if (n) n.textContent = '♫ audio chant loaded';
-    }, { once: true });
-    MNT.audio.addEventListener('error', () => {
-      MNT.audioReady = false;
-      const n = q('mantra-src-note');
-      if (n) n.textContent = 'using voice synthesis';
-    }, { once: true });
-    MNT.audio.load();
-  } else {
-    const n = q('mantra-src-note');
-    if (n) n.textContent = 'using voice synthesis';
-  }
-
-  // Silence interval slider
-  const sl = q('mantra-slider');
-  if (sl) {
-    sl.addEventListener('input', () => {
-      MNT.gapSec = parseInt(sl.value);
-      const v = q('mantra-iv-val');
-      if (v) v.textContent = MNT.gapSec + 's';
-    });
-  }
-
-  // Play / stop
-  const pb = q('mantra-play');
-  if (pb) pb.addEventListener('click', mantraToggle);
-
-  // Intro voice chips
-  const von = q('mv-on'), voff = q('mv-off');
-  if (von) von.addEventListener('click', () => {
-    MNT.introVoice = true;
-    von.classList.add('on'); von.setAttribute('aria-pressed','true');
-    if (voff) { voff.classList.remove('on'); voff.setAttribute('aria-pressed','false'); }
-  });
-  if (voff) voff.addEventListener('click', () => {
-    MNT.introVoice = false;
-    voff.classList.add('on'); voff.setAttribute('aria-pressed','true');
-    if (von) { von.classList.remove('on'); von.setAttribute('aria-pressed','false'); }
-  });
-}
-
-function mantraToggle() {
-  if (MNT.playing) mantraStop(); else mantraStart();
-}
-
-function mantraStart() {
-  // iOS: unlock audio context via silent utterance if needed
-  if ('speechSynthesis' in window) {
-    const silent = new SpeechSynthesisUtterance(' ');
-    silent.volume = 0;
-    speechSynthesis.speak(silent);
-  }
-  MNT.playing = true;
-  MNT.introSpoken = false;
-  const pb = q('mantra-play');
-  const st = q('mantra-status');
-  const pu = q('mantra-pulse');
-  if (pb) { pb.textContent = '⏸'; pb.classList.add('playing'); pb.setAttribute('aria-label','Pause mantra'); }
-  if (st) st.textContent = 'playing continuously · pause to stop';
-  if (pu) pu.classList.add('playing');
-
-  if (MNT.introVoice && !MNT.introSpoken && 'speechSynthesis' in window) {
-    const utt = new SpeechSynthesisUtterance('Aham Brahmasmi. I am Brahman.');
-    utt.rate = 0.72; utt.pitch = 0.88; utt.volume = 1;
-    utt.onend  = () => { MNT.introSpoken = true; mantraChant(); };
-    utt.onerror = () => { MNT.introSpoken = true; mantraChant(); };
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utt);
-  } else {
-    mantraChant();
-  }
-}
-
-function mantraStop() {
-  MNT.playing = false;
-  clearTimeout(MNT.timer);
-  if (MNT.audio) { try { MNT.audio.pause(); MNT.audio.currentTime = 0; } catch(e){} }
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
-  const pb = q('mantra-play');
-  const st = q('mantra-status');
-  const pu = q('mantra-pulse');
-  if (pb) { pb.textContent = '▶'; pb.classList.remove('playing'); pb.setAttribute('aria-label','Play mantra'); }
-  if (st) st.textContent = 'tap play to begin';
-  if (pu) pu.classList.remove('playing');
-}
-
-function mantraChant() {
-  if (!MNT.playing) return;
-  if (MNT.audioReady && MNT.audio) {
-    MNT.audio.currentTime = 0;
-    const p = MNT.audio.play();
-    if (p !== undefined) {
-      p.then(() => {
-        MNT.audio.onended = mantraChantDone;
-      }).catch(() => {
-        // Audio blocked (e.g. iOS policy) — fall back to voice
-        MNT.audioReady = false;
-        mantraChantVoice();
-      });
-    } else {
-      MNT.audio.onended = mantraChantDone;
-    }
-  } else {
-    mantraChantVoice();
-  }
-}
-
-function mantraChantVoice() {
-  if (!MNT.playing) return;
-  if (!('speechSynthesis' in window)) { mantraChantDone(); return; }
-  // Try Hindi (hi-IN) voice for Sanskrit pronunciation
-  const voices = speechSynthesis.getVoices();
-  const hiVoice = voices.find(v => v.lang && v.lang.startsWith('hi'));
-  const utt = new SpeechSynthesisUtterance(hiVoice ? 'अहं ब्रह्मास्मि' : 'Aham Brahmasmi');
-  utt.lang   = hiVoice ? 'hi-IN' : 'en';
-  utt.rate   = hiVoice ? 0.52 : 0.58;
-  utt.pitch  = 0.82;
-  utt.volume = 1;
-  if (hiVoice) utt.voice = hiVoice;
-  utt.onend  = mantraChantDone;
-  utt.onerror = mantraChantDone;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utt);
-}
-
-function mantraChantDone() {
-  if (!MNT.playing) return;
-  MNT.count++;
-  const c = q('mantra-count');
-  if (c) c.textContent = MNT.count;
-  MNT.timer = setTimeout(mantraChant, MNT.gapSec * 1000);
-}
-
-// ═══════════════════════════════════════════════════════════════
 // TOUCH & KEYBOARD
 // ═══════════════════════════════════════════════════════════════
 let tx0 = 0, ty0 = 0;
@@ -3367,8 +3095,7 @@ window.addEventListener('appinstalled', () => {
   renderProgressDisplay();
   setActiveChip('lang-chips', ST.lang);
   refreshUI();
-  vnInit();       // initialise voice narration engine
-  mantraInit();   // initialise mantra module
+  vnInit();  // initialise voice narration engine
 
   // Always start meditating immediately — default level is 'all'.
   // User can change level via the level strip on the meditate screen at any time.
