@@ -1967,7 +1967,8 @@ function vnSpeak(text, preDelay = 1200) {
       // Chrome desktop bug: speech sometimes silently stops after ~15 s
       // Keep alive by re-checking every 10 s; when done, drive auto-advance
       vnKeepAlive(utt, () => {
-        // Narration-driven advance with level-aware post-speech pause
+        // Narration-driven advance with level-aware post-speech pause.
+        // Clear the fallback timer first so it doesn't double-fire with speech.
         if (VN.mode !== 'off' && !ST.paused && ST.mode !== 'man' && !ST.addrMode) {
           clearTimeout(ST.advTimer); clearInterval(ST.advTimer);
           // Determine effective level (for "all" mode, use current pointer's level)
@@ -2346,7 +2347,9 @@ function resetAdv() {
   clearInterval(ST.advTimer);
   clearTimeout(ST.advTimer);
   if (ST.paused || ST.mode === 'man') return;
-  if (VN.mode !== 'off') return;  // speech onend drives advance when narration is active
+  // Always run the fallback timer regardless of narration mode.
+  // If narration works, its onend handler clears this timer and takes over.
+  // If speech silently fails (iOS, no voice, network) the timer still advances.
   ST.advTimer = setInterval(next, ST.dur);
 }
 function goTo(idx) {
@@ -2658,10 +2661,11 @@ function refreshLevelStrip() {
     p.innerHTML = `<span class="lp-icon" aria-hidden="true">${lev.icon}</span><span>${lev.label[ST.lang] || lev.label.en}</span>`;
     p.addEventListener('click', () => {
       ST.level = lev.key; persist();
+      ST.cur = 0;
       refreshLevelStrip(); refreshLevelCards();
-      ST.cur = 0; buildDots(); showPtr(true); arcReset();
-      if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') { clearInterval(ST.advTimer); ST.advTimer = setInterval(next, ST.dur); arcStart(); }
+      buildDots(); arcReset();
       journeyBuilt = false; q('groups-list').innerHTML = '';
+      startMeditating();  // handles showPtr, resetAdv, arcStart cleanly
     });
     strip.appendChild(p);
   });
@@ -2681,19 +2685,14 @@ function refreshLevelCards() {
     c.addEventListener('click', () => {
       ST.level = lev.key;
       persist();
-      refreshLevelCards(); refreshLevelStrip();
       ST.cur = 0;
-      buildDots(); showPtr(true);
-      arcReset();
-      if (!ST.paused && ST.mode !== 'man' && VN.mode === 'off') {
-        clearInterval(ST.advTimer);
-        ST.advTimer = setInterval(next, ST.dur);
-        arcStart();
-      }
+      refreshLevelCards(); refreshLevelStrip();
+      buildDots(); arcReset();
       journeyBuilt = false;
       q('groups-list').innerHTML = '';
       const pc = q('prep-card');
       if (pc) pc.style.display = ST.level === 'beginner' ? '' : 'none';
+      startMeditating();  // handles showPtr, resetAdv, arcStart cleanly
     });
     row.appendChild(c);
   });
